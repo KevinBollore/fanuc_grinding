@@ -1,0 +1,9 @@
+string Message
+string ProgramName
+string IpAdress
+string ProgramLocation
+string Comment
+geometry_msgs/Pose[] RobotPoses
+---
+bool ReturnStatus
+string ReturnMessage

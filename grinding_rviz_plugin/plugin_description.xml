@@ -1,0 +1,9 @@
+<library path="lib/libgrinding_rviz_plugin">
+  <class name="grinding_rviz_plugin/fanuc_grinding"
+         type="grinding_rviz_plugin::GrindingRvizPlugin"
+         base_class_type="rviz::Panel">
+    <description>
+      A grinding panel for grinding demonstrator.
+    </description>
+  </class>
+</library>

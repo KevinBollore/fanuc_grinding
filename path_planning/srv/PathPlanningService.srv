@@ -1,0 +1,24 @@
+string CADFile
+string DefectFile
+float64 CoveringPercentage
+int32 ExtricationCoefficient
+int32 ExtricationFrequency
+float64 GrindDiameter
+float64 DepthOfPath
+bool AngleX
+bool AngleY
+bool AngleZ
+#uint8 AngleXYZ
+float64 AngleValue
+bool Compute
+bool Visualization
+bool Simulation
+geometry_msgs/Pose[] RobotPosesInput
+bool[] PointColorVizInput
+int32[] IndexVectorInput
+---
+bool ReturnStatus
+string ReturnMessage
+geometry_msgs/Pose[] RobotPosesOutput
+bool[] PointColorVizOutput
+int32[] IndexVectorOutput

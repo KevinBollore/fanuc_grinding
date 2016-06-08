@@ -1,0 +1,4 @@
+string Message
+---
+bool ReturnStatus
+string ReturnMessage

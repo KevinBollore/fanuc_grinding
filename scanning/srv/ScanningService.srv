@@ -1,0 +1,10 @@
+string YamlFileName
+string YamlCalibrationFileName
+string CADName
+string MarkerName
+string SLS2ServerName
+string SLS2IpAddress
+---
+bool ReturnStatus
+string ReturnMessage
+string NumerizedMeshName

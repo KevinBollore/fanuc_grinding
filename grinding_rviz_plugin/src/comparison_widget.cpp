@@ -1,0 +1,122 @@
+
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QLabel>
+#include <QRadioButton>
+#include <QDoubleSpinBox>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QFuture>
+#include <QtConcurrentRun>
+
+#include "comparison_widget.h"
+
+grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) : QWidget(parent)
+{
+  this->setObjectName("ComparisonWidget_");
+  comparison_button_ = new QPushButton;
+  comparison_button_->setText("Start Comparison");
+
+  comparison_layout_ = new QVBoxLayout(this);
+  comparison_layout_->addWidget(comparison_button_);
+
+  // Connect handlers
+  connect(comparison_button_, SIGNAL(released()), this, SLOT(ComparisonButtonHandler()));
+
+  //Setup client
+  comparison_service_ = comparison_node_.serviceClient<comparison::ComparisonService>("comparison_service");
+
+}
+
+void grinding_rviz_plugin::ComparisonWidget::triggerSave()
+{
+  Q_EMIT GUIChanged();
+  updateInternalValues();
+  updateGUI();
+}
+
+comparison::ComparisonService::Request grinding_rviz_plugin::ComparisonWidget::getComparisonParams()
+{
+  return comparison_params_;
+}
+
+void grinding_rviz_plugin::ComparisonWidget::setComparisonParams(comparison::ComparisonService::Request params)
+{
+  comparison_params_.Message=params.Message;
+  updateGUI();
+}
+
+void grinding_rviz_plugin::ComparisonWidget::updateGUI()
+{
+  // Not implemented yet
+}
+
+void grinding_rviz_plugin::ComparisonWidget::updateInternalValues()
+{
+  // Not implemented yet
+}
+
+void grinding_rviz_plugin::ComparisonWidget::ComparisonButtonHandler()
+{
+  // Fill in the request
+  srv_comparison_.request.Message = "Comparison Service envoi";
+  //srv_.request.*request* = *value*;
+  // Start client service call in an other thread
+  QFuture<void> future = QtConcurrent::run(this, &ComparisonWidget::Comparison);
+}
+
+void grinding_rviz_plugin::ComparisonWidget::Comparison()
+{
+  // Disable UI
+  Q_EMIT enablePanel(false);
+
+  // Call client service
+  comparison_service_.call(srv_comparison_);
+  // Display return message in Qt panel
+  Q_EMIT sendStatus(QString::fromStdString(srv_comparison_.response.ReturnMessage));
+
+  Q_EMIT enablePanelPathPlanning();
+
+  // Re-enable UI
+  Q_EMIT enablePanel(true); // Enable UI
+}
+
+void grinding_rviz_plugin::ComparisonWidget::connectToServices()
+{
+  Q_EMIT enablePanel(false);
+
+  // Check offset_move_robot_ connection
+  Q_EMIT sendStatus("Connecting to service");
+  while (ros::ok())
+  {
+    if (comparison_service_.waitForExistence(ros::Duration(2)))
+    {
+      ROS_INFO_STREAM("RViz panel connected to the service " << comparison_service_.getService());
+      Q_EMIT sendStatus(QString::fromStdString("RViz panel connected to the service: " + comparison_service_.getService()));
+      break;
+    }
+    else
+    {
+      ROS_ERROR_STREAM("RViz panel could not connect to ROS service:\n\t" << comparison_service_.getService());
+      Q_EMIT sendStatus(QString::fromStdString("RViz panel could not connect to ROS service: " + comparison_service_.getService()));
+      sleep(1);
+    }
+  }
+
+  ROS_WARN_STREAM("Service connection have been made");
+  Q_EMIT sendStatus("Ready to take commands");
+  Q_EMIT enablePanel(true);
+}
+
+// Save all configuration data from this panel to the given Config object
+void grinding_rviz_plugin::ComparisonWidget::save(rviz::Config config)
+{
+  // NOT IMPLEMENTED YET
+}
+
+// Load all configuration data for this panel from the given Config object.
+void grinding_rviz_plugin::ComparisonWidget::load(const rviz::Config& config)
+{
+  // NOT IMPLEMENTED YET
+}

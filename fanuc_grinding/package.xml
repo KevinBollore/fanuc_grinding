@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fanuc_grinding</name>
+  <version>0.0.1</version>
+  <description>Institut Maupertuis Fanuc grinding package.</description>
+  <author>Victor Lamoine, Kévin Bolloré - Institut Maupertuis</author>
+  <maintainer email="victor.lamoine@gmail.com">Victor Lamoine</maintainer>
+  <license>BSD</license>
+
+  <url type="website">https://github.com/InstitutMaupertuis/fanuc_grinding/blob/indigo-devel/README.md</url>
+  <url type="bugtracker">https://github.com/InstitutMaupertuis/fanuc_grinding/issues</url>
+  <url type="repository">https://github.com/InstitutMaupertuis/fanuc_grinding/</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>ros_industrial</exec_depend>
+  <exec_depend>fanuc</exec_depend>
+  <exec_depend>fanuc_experimental</exec_depend>
+  <exec_depend>institut_maupertuis_robots_descriptions</exec_depend>
+
+  <export>
+    <metapackage/>
+	<architecture_independent/>
+	<rosindex>
+	  <tags>
+		<tag>metapackage</tag>
+		<tag>fanuc</tag>
+		<tag>industrial</tag>
+		<tag>ros-industrial</tag>
+		<tag>grinding</tag>
+	  </tags>
+	</rosindex>
+  </export>
+</package>

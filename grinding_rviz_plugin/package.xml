@@ -1,0 +1,28 @@
+<package format="2">
+  <name>grinding_rviz_plugin</name>
+  <version>0.0.0</version>
+  <description>Grinding RViz plugin</description>
+  <author>Kévin Bolloré, Victor Lamoine</author>
+  <maintainer email="victor.lamoine@institutmaupertuis.fr">Victor Lamoine</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rviz</build_depend>
+  <build_depend>alignment</build_depend>
+  <build_depend>scanning</build_depend>
+  <build_depend>comparison</build_depend>
+  <build_depend>path_planning</build_depend>
+  <build_depend>post_processor</build_depend>
+
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>alignment</exec_depend>
+  <exec_depend>scanning</exec_depend>
+  <exec_depend>comparison</exec_depend>
+  <exec_depend>path_planning</exec_depend>
+  <exec_depend>post_processor</exec_depend>
+
+  <export>
+      <rviz plugin="${prefix}/plugin_description.xml"/>
+  </export>
+</package>
