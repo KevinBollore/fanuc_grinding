@@ -2,6 +2,11 @@ string CADFileName
 string CADMarkerName
 string ScanFileName
 string ScanMarkerName
+int32 NumberUniformSampling
+float64 LeafSize
+int32 IterationNumber
+int32 MaxIterationNumber
+float64 MaxCorrDist
 ---
 bool ReturnStatus
 string ReturnMessage

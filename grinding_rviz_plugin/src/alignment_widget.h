@@ -14,6 +14,8 @@ class QHBoxLayout;
 class QVBoxLayout;
 class QLineEdit;
 class QPushButton;
+class QSpinBox;
+class QDoubleSpinBox;
 
 #include <alignment/AlignmentService.h>
 
@@ -64,8 +66,23 @@ protected:
 
   alignment::AlignmentService::Request alignment_params_;
 
-  QPushButton *alignment_button_;
+  QLabel *uniform_sampling_label_;
+  QLabel *number_samples_label_;
+  QSpinBox *number_samples_;
 
+  QLabel *voxel_grid_label_;
+  QLabel *leaf_size_label_;
+  QDoubleSpinBox *leaf_size_;
+
+  QLabel *icp_label_;
+  QLabel *iteration_number_label_;
+  QSpinBox *iteration_number_;
+  QLabel *max_iteration_number_label_;
+  QSpinBox *max_iteration_number_;
+  QLabel *max_corr_dist_label_;
+  QDoubleSpinBox *max_corr_dist_;
+
+  QPushButton *alignment_button_;
 };
 
 } // End namespace
