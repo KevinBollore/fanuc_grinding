@@ -109,6 +109,11 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   connect(comparison_widget_,SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
   // Enable general panel when comparison_widget_ send the SIGNAL
   connect(comparison_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
+  // Received a signal from comparison widget in order to get CAD and scan params
+  connect(comparison_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
+  // Send a signal to comparison widget in order to give CAD and scan params
+  connect(this             , SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
+          comparison_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
 
   //PATH PLANNING
   // Will display a status in general status label ( from path_planning widget )
