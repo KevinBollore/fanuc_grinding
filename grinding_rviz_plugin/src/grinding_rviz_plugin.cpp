@@ -77,6 +77,12 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   // Enable general panel when scanning_widget_ send the SIGNAL
   connect(scanning_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
 
+  // Will send information about cad and scan in the other widgets
+  connect(scanning_widget_, SIGNAL(sendCADDatas(QString, QString)),
+                      this, SLOT(setCADDatas(QString, QString)));
+  connect(scanning_widget_, SIGNAL(sendScanDatas(QString, QString)),
+                      this, SLOT(setScanDatas(QString, QString)));
+
   //ALIGNMENT
   // Will display a status in general status label ( from alignment widget )
   connect(alignment_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
@@ -88,6 +94,11 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   connect(alignment_widget_,SIGNAL(enablePanelComparison()), this, SLOT(enablePanelComparisonHandler()));
   // Enable general panel when alignment_widget_ send the SIGNAL
   connect(alignment_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
+  // Received a signal from alignment widget in order to get CAD and scan params
+  connect(alignment_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
+  // Send a signal to alignment widget in order to give CAD and scan params
+  connect(this             , SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
+          alignment_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
 
   //COMPARISON
   // Will display a status in general status label ( from comparison widget )
@@ -98,6 +109,11 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   connect(comparison_widget_,SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
   // Enable general panel when comparison_widget_ send the SIGNAL
   connect(comparison_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
+  // Received a signal from comparison widget in order to get CAD and scan params
+  connect(comparison_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
+  // Send a signal to comparison widget in order to give CAD and scan params
+  connect(this             , SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
+          comparison_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
 
   //PATH PLANNING
   // Will display a status in general status label ( from path_planning widget )
@@ -110,6 +126,11 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   connect(path_planning_widget_, SIGNAL(enablePanelPostProcessor()), this, SLOT(enablePanelPostProcessorHandler()));
   // Enable general panel when path_planning send the SIGNAL
   connect(path_planning_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
+  // Received a signal from comparison widget in order to get CAD and scan params
+  connect(path_planning_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
+  // Send a signal to comparison widget in order to give CAD and scan params
+  connect(this             , SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
+          path_planning_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
 
   //POST_PROCESSOR
   // Will display a status in general status label ( from post_processor widget )
@@ -174,6 +195,23 @@ void GrindingRvizPlugin::displayMsgBoxHandler(const QString title, const QString
 void GrindingRvizPlugin::triggerSave()
 {
   Q_EMIT configChanged();
+}
+
+void GrindingRvizPlugin::setCADDatas(const QString cad_filename, const QString cad_marker_name)
+{
+  cad_filename_ = cad_filename;
+  cad_marker_name_ = cad_marker_name;
+}
+
+void GrindingRvizPlugin::setScanDatas(const QString scan_filename, const QString scan_marker_name)
+{
+  scan_filename_ = scan_filename;
+  scan_marker_name_ = scan_marker_name;
+}
+
+void GrindingRvizPlugin::sendCADAndScanDatasSlot()
+{
+  Q_EMIT sendCADAndScanDatas(cad_filename_, cad_marker_name_, scan_filename_, scan_marker_name_);
 }
 
 void GrindingRvizPlugin::connectToServices()

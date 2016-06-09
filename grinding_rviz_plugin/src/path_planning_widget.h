@@ -43,6 +43,7 @@ Q_SIGNALS:
   void enableComputeTrajectoryButton(bool);
   void enableVizSimButton();
   void enablePanelPostProcessor();
+  void getCADAndScanParams();
 
 public Q_SLOTS:
   virtual void ComputeTrajectory();
@@ -60,6 +61,10 @@ protected Q_SLOTS:
   void enableComputeTrajectoryButtonHandler(bool);
   void enableVizSimButtonHandler();
   void generateTrajectoryButtonHandler();
+  void setCADAndScanParams(const QString cad_filename,
+                           const QString cad_marker_name,
+                           const QString scan_filename,
+                           const QString scan_marker_name);
 
 protected:
   // ROS

@@ -70,8 +70,8 @@ bool moveRobotPathPlanning(path_planning::PathPlanningService::Request &req,
   normal_publisher        = node->advertise<visualization_msgs::MarkerArray>("normals", 1);
 
   // Get PLY file name from command line
-  std::string input_mesh_filename = req.CADFile;
-  std::string defect_mesh_filename = req.DefectFile;
+  std::string input_mesh_filename = req.CADFileName;
+  std::string defect_mesh_filename = req.ScanFileName;
 
   // Determine lean angle axis
   std::string lean_angle_axis;

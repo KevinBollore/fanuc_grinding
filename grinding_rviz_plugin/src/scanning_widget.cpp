@@ -356,7 +356,11 @@ void grinding_rviz_plugin::ScanningWidget::publishCADMeshOrCloudFile()
   Q_EMIT sendStatus(QString::fromStdString(srv_publish_meshfile_.response.ReturnMessage));
 
   if(srv_publish_meshfile_.response.ReturnStatus == true)
+  {
     Q_EMIT enableScanWidget();
+    Q_EMIT sendCADDatas(QString::fromStdString(srv_publish_meshfile_.request.MeshName),
+                        QString::fromStdString(srv_publish_meshfile_.request.MarkerName));
+  }
   else
   {
     Q_EMIT sendMsgBox("Error importing mesh/point cloud file",
@@ -378,7 +382,11 @@ void grinding_rviz_plugin::ScanningWidget::publishScanMeshOrCloudFile()
   Q_EMIT sendStatus(QString::fromStdString(srv_publish_meshfile_.response.ReturnMessage));
 
   if(srv_publish_meshfile_.response.ReturnStatus == true)
+  {
     Q_EMIT enableScanWidget();
+    Q_EMIT sendScanDatas(QString::fromStdString(srv_publish_meshfile_.request.MeshName),
+                         QString::fromStdString(srv_publish_meshfile_.request.MarkerName));
+  }
   else
   {
     Q_EMIT sendMsgBox("Error importing mesh/point cloud file",
@@ -442,7 +450,11 @@ void grinding_rviz_plugin::ScanningWidget::scanning()
   Q_EMIT sendStatus(QString::fromStdString(srv_scanning_.response.ReturnMessage));
 
   if(srv_scanning_.response.ReturnStatus == true)
+  {
     Q_EMIT enablePanelAlignment();
+    Q_EMIT sendScanDatas(QString::fromStdString(srv_scanning_.response.NumerizedMeshName),
+                         QString::fromStdString(srv_scanning_.request.MarkerName));
+  }
   else
   {
     Q_EMIT sendMsgBox("Error scanning",

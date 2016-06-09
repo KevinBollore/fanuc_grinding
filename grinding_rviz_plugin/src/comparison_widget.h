@@ -39,6 +39,7 @@ Q_SIGNALS:
   void enablePanelPathPlanning();
   void sendStatus(QString status);
   void enablePanel(bool);
+  void getCADAndScanParams();
 
 public Q_SLOTS:
   virtual void Comparison();
@@ -49,6 +50,10 @@ protected Q_SLOTS:
   void updateInternalValues();
   void ComparisonButtonHandler();
   void enablePanelPathPlanningHandler();
+  void setCADAndScanParams(const QString cad_filename,
+                           const QString cad_marker_name,
+                           const QString scan_filename,
+                           const QString scan_marker_name);
 
 protected:
   //ROS

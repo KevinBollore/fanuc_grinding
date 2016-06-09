@@ -46,6 +46,7 @@ public:
   Q_SIGNALS:
   void enableWidget(bool);
   void displayStatus(const QString);
+  void sendCADAndScanDatas(const QString, const QString, const QString, const QString);
 
 protected Q_SLOTS:
   virtual void
@@ -59,6 +60,9 @@ protected Q_SLOTS:
   void enablePanelComparisonHandler();
   void enablePanelPathPlanningHandler();
   void enablePanelPostProcessorHandler();
+  void setCADDatas(const QString cad_path, const QString cad_marker_name);
+  void setScanDatas(const QString scan_path, const QString scan_marker_name);
+  void sendCADAndScanDatasSlot();
 
   virtual void load(const rviz::Config& config);
   virtual void save(rviz::Config config) const;
@@ -81,6 +85,12 @@ protected:
 
   // Global Layout
   QVBoxLayout *global_layout_;
+
+private:
+  QString cad_filename_;
+  QString cad_marker_name_;
+  QString scan_filename_;
+  QString scan_marker_name_;
 
 };
 

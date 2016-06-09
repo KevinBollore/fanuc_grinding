@@ -43,7 +43,6 @@ comparison::ComparisonService::Request grinding_rviz_plugin::ComparisonWidget::g
 
 void grinding_rviz_plugin::ComparisonWidget::setComparisonParams(comparison::ComparisonService::Request params)
 {
-  comparison_params_.Message=params.Message;
   updateGUI();
 }
 
@@ -57,10 +56,23 @@ void grinding_rviz_plugin::ComparisonWidget::updateInternalValues()
   // Not implemented yet
 }
 
+void grinding_rviz_plugin::ComparisonWidget::setCADAndScanParams(const QString cad_filename,
+                                                                const QString cad_marker_name,
+                                                                const QString scan_filename,
+                                                                const QString scan_marker_name)
+{
+  comparison_params_.CADFileName = cad_filename.toStdString();
+  comparison_params_.CADMarkerName = cad_marker_name.toStdString();
+  comparison_params_.ScanFileName = scan_filename.toStdString();
+  comparison_params_.ScanMarkerName = scan_marker_name.toStdString();
+}
+
 void grinding_rviz_plugin::ComparisonWidget::ComparisonButtonHandler()
 {
+  // get CAD and Scan params which are stored in grinding rviz plugin
+  Q_EMIT getCADAndScanParams();
   // Fill in the request
-  srv_comparison_.request.Message = "Comparison Service envoi";
+  srv_comparison_.request = getComparisonParams();
   //srv_.request.*request* = *value*;
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &ComparisonWidget::Comparison);
