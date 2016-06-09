@@ -180,8 +180,8 @@ path_planning::PathPlanningService::Request grinding_rviz_plugin::PathPlanningWi
 
 void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planning::PathPlanningService::Request params)
 {
-  path_planning_params_.CADFile = params.CADFile;
-  path_planning_params_.DefectFile = params.DefectFile;
+  path_planning_params_.CADFileName = params.CADFileName;
+  path_planning_params_.ScanFileName = params.ScanFileName;
   path_planning_params_.CoveringPercentage = params.CoveringPercentage;
   path_planning_params_.ExtricationFrequency = params.ExtricationFrequency;
   path_planning_params_.ExtricationCoefficient = params.ExtricationCoefficient;
@@ -196,8 +196,8 @@ void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planni
 
 void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 {
-  CAD_line_->setText(QString::fromStdString(path_planning_params_.CADFile));
-  defect_mesh_line_->setText(QString::fromStdString(path_planning_params_.DefectFile));
+  CAD_line_->setText(QString::fromStdString(path_planning_params_.CADFileName));
+  defect_mesh_line_->setText(QString::fromStdString(path_planning_params_.ScanFileName));
   covering_percentage_->setValue(path_planning_params_.CoveringPercentage);
   extrication_frequency_->setValue(path_planning_params_.ExtricationFrequency);
   extrication_coefficient_->setValue(path_planning_params_.ExtricationCoefficient);
@@ -211,8 +211,8 @@ void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 
 void grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
 {
-  path_planning_params_.CADFile = CAD_line_->text().toStdString();
-  path_planning_params_.DefectFile = defect_mesh_line_->text().toStdString();
+  path_planning_params_.CADFileName = CAD_line_->text().toStdString();
+  path_planning_params_.ScanFileName = defect_mesh_line_->text().toStdString();
   path_planning_params_.CoveringPercentage = covering_percentage_->value();
   path_planning_params_.ExtricationFrequency = extrication_frequency_->value();
   path_planning_params_.ExtricationCoefficient = extrication_coefficient_->value();
@@ -224,13 +224,26 @@ void grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
   path_planning_params_.AngleValue = angle_value_spin_box_->value();
 }
 
+void grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString cad_filename,
+                                                                const QString cad_marker_name,
+                                                                const QString scan_filename,
+                                                                const QString scan_marker_name)
+{
+  path_planning_params_.CADFileName = cad_filename.toStdString();
+  path_planning_params_.CADMarkerName = cad_marker_name.toStdString();
+  path_planning_params_.ScanFileName = scan_filename.toStdString();
+  path_planning_params_.ScanMarkerName = scan_marker_name.toStdString();
+}
+
 void grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectoryButtonHandler()
 {
   // Fill service parameters with GUI values
   updateInternalValues();
+  // get CAD and Scan params which are stored in grinding rviz plugin
+  Q_EMIT getCADAndScanParams();
 
   // Fill in the request
-  srv_path_planning_.request = this->getPathPlanningParams();
+  srv_path_planning_.request = getPathPlanningParams();
   srv_path_planning_.request.Compute = true;
   srv_path_planning_.request.Visualization = false;
   srv_path_planning_.request.Simulation = false;
@@ -297,8 +310,11 @@ void grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectoryButtonHandler(
         return;
   }
 
+  // get CAD and Scan params which are stored in grinding rviz plugin
+  Q_EMIT getCADAndScanParams();
+
   // Fill in the request
-  srv_path_planning_.request = this->getPathPlanningParams();
+  srv_path_planning_.request = getPathPlanningParams();
   srv_path_planning_.request.Compute = false;
   srv_path_planning_.request.Visualization = true;
   srv_path_planning_.request.Simulation = false;
@@ -354,8 +370,11 @@ void grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectoryButtonHandler()
       return;
   }
 
+  // get CAD and Scan params which are stored in grinding rviz plugin
+  Q_EMIT getCADAndScanParams();
+
   // Fill in the request
-  srv_path_planning_.request = this->getPathPlanningParams();
+  srv_path_planning_.request = getPathPlanningParams();
   srv_path_planning_.request.Compute = false;
   srv_path_planning_.request.Visualization = false;
   srv_path_planning_.request.Simulation = true;
