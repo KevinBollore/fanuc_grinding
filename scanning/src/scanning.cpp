@@ -252,8 +252,7 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   status_pub->publish(status);
 
   pcl::VoxelGrid<PointXYZ> sor;
-  double leaf_size (0.003);
-  sor.setLeafSize (leaf_size, leaf_size, leaf_size);
+  sor.setLeafSize (req.VoxelGridLeafSize, req.VoxelGridLeafSize, req.VoxelGridLeafSize);
   sor.setInputCloud (stacked_point_cloud);
   sor.filter (*stacked_point_cloud);
 

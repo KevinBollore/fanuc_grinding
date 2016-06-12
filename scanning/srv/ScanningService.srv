@@ -4,6 +4,7 @@ string CADName
 string MarkerName
 string SLS2ServerName
 string SLS2IpAddress
+float64 VoxelGridLeafSize
 ---
 bool ReturnStatus
 string ReturnMessage
