@@ -110,8 +110,6 @@ protected:
   QPushButton *compute_trajectory_button_;
   QPushButton *path_planning_simulation_button_;
   QPushButton *visualize_trajectory_button_;
-
-  QPushButton *generate_trajectory_button_;
 };
 
 } // End namespace

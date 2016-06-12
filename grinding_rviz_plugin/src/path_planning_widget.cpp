@@ -96,10 +96,6 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   button_path_planning_layout->addWidget(visualize_trajectory_button_);
   button_path_planning_layout->addWidget(path_planning_simulation_button_);
 
-  generate_trajectory_button_ = new QPushButton;
-  generate_trajectory_button_->setText("Generate trajectory");
-  generate_trajectory_button_->setEnabled(false);
-
   QVBoxLayout* path_planning_layout = new QVBoxLayout(this);
   path_planning_layout->addLayout(covering_percentage_layout);
   path_planning_layout->addLayout(extrication_frequency_layout);
@@ -110,7 +106,6 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   path_planning_layout->addLayout(angle_value_layout);
   path_planning_layout->addWidget(compute_trajectory_button_);
   path_planning_layout->addLayout(button_path_planning_layout);
-  path_planning_layout->addWidget(generate_trajectory_button_);
 
   //Connect handlers
   // At each modification of the widget, we call triggerSave
@@ -131,7 +126,6 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   connect(compute_trajectory_button_, SIGNAL(released()), this, SLOT(ComputeTrajectoryButtonHandler()));
   connect(visualize_trajectory_button_, SIGNAL(released()), this, SLOT(VisualizeTrajectoryButtonHandler()));
   connect(path_planning_simulation_button_, SIGNAL(released()), this, SLOT(SimulateTrajectoryButtonHandler()));
-  connect(generate_trajectory_button_, SIGNAL(released()), this, SLOT(generateTrajectoryButtonHandler()));
   connect(this, SIGNAL(enableVizSimButton()), this, SLOT(enableVizSimButtonHandler()));
 
   // Subscriber to receive messages from the exterior
@@ -237,6 +231,7 @@ void grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectory()
   {
     // If visualization and simulation buttons are disabled, we put them to an enable state
     Q_EMIT enableVizSimButton();
+    Q_EMIT enablePanelPostProcessor();
   }
   else
   {
@@ -257,10 +252,6 @@ void grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
   if(path_planning_simulation_button_->isEnabled() == false)
   {
     path_planning_simulation_button_->setEnabled(true);
-  }
-  if(generate_trajectory_button_->isEnabled() == false)
-  {
-    generate_trajectory_button_->setEnabled(true);
   }
 }
 
@@ -381,11 +372,6 @@ void grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectory()
 
   // Re-enable UI
   Q_EMIT enablePanel(true); // Enable UI
-}
-
-void grinding_rviz_plugin::PathPlanningWidget::generateTrajectoryButtonHandler()
-{
-  Q_EMIT enablePanelPostProcessor();
 }
 
 void grinding_rviz_plugin::PathPlanningWidget::connectToServices()
