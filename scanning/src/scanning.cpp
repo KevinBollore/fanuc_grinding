@@ -193,7 +193,7 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   status_pub->publish(status);
 
   // Create entire point cloud
-  PointCloudXYZ::Ptr entire_point_cloud (new PointCloudXYZ());
+  PointCloudXYZ::Ptr stacked_point_cloud (new PointCloudXYZ());
 
   // For each joint state, we call a service which execute this joint state
   execute_joint_state::ExecuteJointStateService srv_execute_joint_state;
@@ -240,11 +240,10 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
       Eigen::Affine3d transformation_pc(Eigen::Affine3d::Identity());
       transformation_pc = matrix_transform * calibration * calib_sls_2;
       transformation_pc *= 0.001; // Transform millimeters to meters
-
       pcl::transformPointCloud(*point_cloud, *point_cloud, transformation_pc);
 
       // Store it into global point cloud
-      *entire_point_cloud += *point_cloud;
+      *stacked_point_cloud += *point_cloud;
     }
   }
 
@@ -255,10 +254,10 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   pcl::VoxelGrid<PointXYZ> sor;
   double leaf_size (0.003);
   sor.setLeafSize (leaf_size, leaf_size, leaf_size);
-  sor.setInputCloud (entire_point_cloud);
-  sor.filter (*entire_point_cloud);
+  sor.setInputCloud (stacked_point_cloud);
+  sor.filter (*stacked_point_cloud);
 
-  if(entire_point_cloud->size() == 0)
+  if(stacked_point_cloud->size() == 0)
   {
     res.ReturnStatus = false;
     res.ReturnMessage = "Filtered point cloud is empty";
@@ -267,7 +266,7 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
 
   // Save the point cloud with CAD meshname and a suffix
   res.NumerizedMeshName = req.CADName.substr(0, req.CADName.size() - 4) + "_defect.ply";
-  pcl::io::savePLYFileBinary(res.NumerizedMeshName, *entire_point_cloud);
+  pcl::io::savePLYFileBinary(res.NumerizedMeshName, *stacked_point_cloud);
 
   // Call publish_meshfile service
   publish_meshfile::PublishMeshfileService srv_publish_meshfile;
