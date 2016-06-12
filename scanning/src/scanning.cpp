@@ -110,7 +110,7 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   catch(const YAML::Exception &e)
   {
     res.ReturnStatus = false;
-    res.ReturnMessage = "Problem occured during parsing yaml file for joint values, problem is: " + e.msg;
+    res.ReturnMessage = "Problem occurred during parsing yaml file for joint values, problem is: " + e.msg;
     return true;
   }
 
@@ -236,14 +236,10 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
                     "/" + boost::lexical_cast<std::string>(joint_list.size()) + " captured";
       status_pub->publish(status);
 
-      // Resize point cloud in meters
-      Eigen::Affine3d resize_pc_meters(Eigen::Affine3d::Identity());
-      resize_pc_meters.matrix() *= 0.001;
-      pcl::transformPointCloud(*point_cloud, *point_cloud, resize_pc_meters);
-
-      // Transform point cloud in order to put it on robot frame
+      // Transform point cloud in order into the robot frame
       Eigen::Affine3d transformation_pc(Eigen::Affine3d::Identity());
       transformation_pc = matrix_transform * calibration * calib_sls_2;
+      transformation_pc *= 0.001; // Transform millimeters to meters
 
       pcl::transformPointCloud(*point_cloud, *point_cloud, transformation_pc);
 
