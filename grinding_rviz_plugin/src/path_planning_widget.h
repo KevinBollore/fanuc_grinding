@@ -84,12 +84,6 @@ protected:
   ros::Subscriber status_sub_;
 
   // GUI
-  QLabel *CAD_label_;
-  QLineEdit *CAD_line_;
-
-  QLabel *defect_mesh_label_;
-  QLineEdit *defect_mesh_line_;
-
   QLabel *covering_percentage_label_;
   QSpinBox *covering_percentage_;
 

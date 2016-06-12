@@ -16,24 +16,6 @@
 grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
 {
   this->setObjectName("PathPlanningWidget_");
-  CAD_label_ = new QLabel;
-  CAD_label_->setText(QString::fromStdString("CAD File:"));
-  CAD_line_ = new QLineEdit;
-  //CAD_line_->setReadOnly(true);
-  CAD_line_->setText(QString::fromStdString("/home/dell/catkin_workspace/src/bezier/bezier_application/meshes/plane/planeBIN.ply"));
-  QHBoxLayout* CAD_layout = new QHBoxLayout;
-  CAD_layout->addWidget(CAD_label_);
-  CAD_layout->addWidget(CAD_line_);
-
-  defect_mesh_label_ = new QLabel;
-  defect_mesh_label_->setText(QString::fromStdString("Defect:"));
-  defect_mesh_line_ = new QLineEdit;
-  //defect_mesh_line_->setReadOnly(true);
-  defect_mesh_line_->setText(QString::fromStdString("/home/dell/catkin_workspace/src/bezier/bezier_application/meshes/plane/planeBIN_defect.ply"));
-  QHBoxLayout* defect_mesh_layout = new QHBoxLayout;
-  defect_mesh_layout->addWidget(defect_mesh_label_);
-  defect_mesh_layout->addWidget(defect_mesh_line_);
-
   covering_percentage_label_ = new QLabel;
   covering_percentage_label_->setText(QString::fromStdString("Covering percentage:"));
   covering_percentage_ = new QSpinBox;
@@ -119,8 +101,6 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   generate_trajectory_button_->setEnabled(false);
 
   QVBoxLayout* path_planning_layout = new QVBoxLayout(this);
-  path_planning_layout->addLayout(CAD_layout);
-  path_planning_layout->addLayout(defect_mesh_layout);
   path_planning_layout->addLayout(covering_percentage_layout);
   path_planning_layout->addLayout(extrication_frequency_layout);
   path_planning_layout->addLayout(extrication_coefficient_layout);
@@ -134,8 +114,6 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
 
   //Connect handlers
   // At each modification of the widget, we call triggerSave
-  connect(CAD_line_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
-  connect(defect_mesh_line_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(covering_percentage_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
   connect(extrication_frequency_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
   connect(extrication_coefficient_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
@@ -180,8 +158,6 @@ path_planning::PathPlanningService::Request grinding_rviz_plugin::PathPlanningWi
 
 void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planning::PathPlanningService::Request params)
 {
-  path_planning_params_.CADFileName = params.CADFileName;
-  path_planning_params_.ScanFileName = params.ScanFileName;
   path_planning_params_.CoveringPercentage = params.CoveringPercentage;
   path_planning_params_.ExtricationFrequency = params.ExtricationFrequency;
   path_planning_params_.ExtricationCoefficient = params.ExtricationCoefficient;
@@ -196,8 +172,6 @@ void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planni
 
 void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 {
-  CAD_line_->setText(QString::fromStdString(path_planning_params_.CADFileName));
-  defect_mesh_line_->setText(QString::fromStdString(path_planning_params_.ScanFileName));
   covering_percentage_->setValue(path_planning_params_.CoveringPercentage);
   extrication_frequency_->setValue(path_planning_params_.ExtricationFrequency);
   extrication_coefficient_->setValue(path_planning_params_.ExtricationCoefficient);
@@ -211,8 +185,6 @@ void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 
 void grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
 {
-  path_planning_params_.CADFileName = CAD_line_->text().toStdString();
-  path_planning_params_.ScanFileName = defect_mesh_line_->text().toStdString();
   path_planning_params_.CoveringPercentage = covering_percentage_->value();
   path_planning_params_.ExtricationFrequency = extrication_frequency_->value();
   path_planning_params_.ExtricationCoefficient = extrication_coefficient_->value();
@@ -455,8 +427,6 @@ void grinding_rviz_plugin::PathPlanningWidget::triggerSave()
 void grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
-  config.mapSetValue(this->objectName() + "CAD_file", CAD_line_->text());
-  config.mapSetValue(this->objectName() + "defect_file", defect_mesh_line_->text());
   config.mapSetValue(this->objectName() + "covering_percentage", covering_percentage_->value());
   config.mapSetValue(this->objectName() + "extrication_frequency", extrication_frequency_->value());
   config.mapSetValue(this->objectName() + "extrication_coefficient", extrication_coefficient_->value());
@@ -476,10 +446,6 @@ void grinding_rviz_plugin::PathPlanningWidget::load(const rviz::Config& config)
   float tmp_float;
   QString tmp_string;
   // Load offset value from config file (if it exists)
-  if (config.mapGetString(this->objectName() + "CAD_file", &tmp_string))
-      CAD_line_->setText(tmp_string);
-  if (config.mapGetString(this->objectName() + "defect_file", &tmp_string))
-      defect_mesh_line_->setText(tmp_string);
   if (config.mapGetInt(this->objectName() + "covering_percentage", &tmp_int))
       covering_percentage_->setValue(tmp_int);
   if (config.mapGetInt(this->objectName() + "extrication_frequency", &tmp_int))
