@@ -117,6 +117,7 @@ protected:
   //YAML part in order to parse calibration sls2 matrix value
   QLabel *calibration_yaml_label_;
   QLineEdit *calibration_yaml_file_;
+  QDoubleSpinBox* down_sampling_leaf_size_;
   QPushButton *calibration_yaml_browse_button_;
 
   //Widget for point cloud

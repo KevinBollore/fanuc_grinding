@@ -96,6 +96,17 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
   scan_yaml_widget_layout->addStretch(1);
   scan_yaml_widget_layout->addLayout(sls_2_server_name_layout);
   scan_yaml_widget_layout->addLayout(sls_2_ip_address_layout);
+
+  QLabel* down_sampling_label = new QLabel;
+  down_sampling_label->setText("Point cloud down-sampling leaf size:");
+  down_sampling_leaf_size_ = new QDoubleSpinBox;
+  down_sampling_leaf_size_->setRange(0.0001, 0.5);
+  down_sampling_leaf_size_->setDecimals(4);
+  down_sampling_leaf_size_->setSingleStep(0.001);
+  down_sampling_leaf_size_->setSuffix(" meters");
+  scan_yaml_widget_layout->addWidget(down_sampling_label);
+  scan_yaml_widget_layout->addWidget(down_sampling_leaf_size_);
+
   start_scan_ = new QPushButton;
   start_scan_->setText("Start scanning");
   scan_yaml_widget_layout->addWidget(start_scan_);
@@ -152,6 +163,7 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
   connect(traj_yaml_file_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(sls_2_server_name_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(sls_2_ip_address_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
+  connect(down_sampling_leaf_size_, SIGNAL(valueChanged(double)), this, SLOT(triggerSave()));
   connect(calibration_yaml_file_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(cad_marker_name_line_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(scan_file_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
@@ -223,6 +235,7 @@ void grinding_rviz_plugin::ScanningWidget::updateGUI()
   cad_meshname_->setText(QString::fromStdString(publish_meshfile_params_.MeshName));
   cad_marker_name_line_->setText(QString::fromStdString(publish_meshfile_params_.MarkerName));
   scan_marker_name_line_->setText(QString::fromStdString(scanning_params_.MarkerName));
+  down_sampling_leaf_size_->setValue(scanning_params_.VoxelGridLeafSize);
 }
 
 void grinding_rviz_plugin::ScanningWidget::updateInternalValues()
@@ -233,6 +246,7 @@ void grinding_rviz_plugin::ScanningWidget::updateInternalValues()
   scanning_params_.YamlCalibrationFileName = calibration_yaml_file_->text().toStdString();
   scanning_params_.MarkerName = scan_marker_name_line_->text().toStdString();
   scanning_params_.CADName = cad_meshname_->text().toStdString();
+  scanning_params_.VoxelGridLeafSize = down_sampling_leaf_size_->value();
   publish_meshfile_params_.MeshName = cad_meshname_->text().toStdString();
   publish_meshfile_params_.MarkerName = cad_marker_name_line_->text().toStdString();
 }
@@ -531,6 +545,7 @@ void grinding_rviz_plugin::ScanningWidget::save(rviz::Config config)
   config.mapSetValue(this->objectName() + "scan_marker_name", scan_marker_name_line_->text());
   config.mapSetValue(this->objectName() + "calibration_yaml_file", calibration_yaml_file_->text());
   config.mapSetValue(this->objectName() + "scan_filename", scan_file_->text());
+  config.mapSetValue(this->objectName() + "down_sampling_leaf_size", down_sampling_leaf_size_->value());
 }
 
 // Load all configuration data for this panel from the given Config object.
@@ -590,4 +605,10 @@ void grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
     scan_marker_name_line_->setText(tmp);
   else
     scan_marker_name_line_->setText("scan");
+
+  float tmp_float;
+  if (config.mapGetFloat(this->objectName() + "down_sampling_leaf_size", &tmp_float))
+      down_sampling_leaf_size_->setValue(tmp_float);
+    else
+      down_sampling_leaf_size_->setValue(0.03);
 }

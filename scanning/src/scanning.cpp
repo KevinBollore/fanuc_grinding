@@ -110,7 +110,7 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   catch(const YAML::Exception &e)
   {
     res.ReturnStatus = false;
-    res.ReturnMessage = "Problem occured during parsing yaml file for joint values, problem is: " + e.msg;
+    res.ReturnMessage = "Problem occurred during parsing yaml file for joint values, problem is: " + e.msg;
     return true;
   }
 
@@ -193,7 +193,7 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   status_pub->publish(status);
 
   // Create entire point cloud
-  PointCloudXYZ::Ptr entire_point_cloud (new PointCloudXYZ());
+  PointCloudXYZ::Ptr stacked_point_cloud (new PointCloudXYZ());
 
   // For each joint state, we call a service which execute this joint state
   execute_joint_state::ExecuteJointStateService srv_execute_joint_state;
@@ -236,19 +236,14 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
                     "/" + boost::lexical_cast<std::string>(joint_list.size()) + " captured";
       status_pub->publish(status);
 
-      // Resize point cloud in meters
-      Eigen::Affine3d resize_pc_meters(Eigen::Affine3d::Identity());
-      resize_pc_meters.matrix() *= 0.001;
-      pcl::transformPointCloud(*point_cloud, *point_cloud, resize_pc_meters);
-
-      // Transform point cloud in order to put it on robot frame
+      // Transform point cloud in order into the robot frame
       Eigen::Affine3d transformation_pc(Eigen::Affine3d::Identity());
       transformation_pc = matrix_transform * calibration * calib_sls_2;
-
+      transformation_pc *= 0.001; // Transform millimeters to meters
       pcl::transformPointCloud(*point_cloud, *point_cloud, transformation_pc);
 
       // Store it into global point cloud
-      *entire_point_cloud += *point_cloud;
+      *stacked_point_cloud += *point_cloud;
     }
   }
 
@@ -257,12 +252,11 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   status_pub->publish(status);
 
   pcl::VoxelGrid<PointXYZ> sor;
-  double leaf_size (0.003);
-  sor.setLeafSize (leaf_size, leaf_size, leaf_size);
-  sor.setInputCloud (entire_point_cloud);
-  sor.filter (*entire_point_cloud);
+  sor.setLeafSize (req.VoxelGridLeafSize, req.VoxelGridLeafSize, req.VoxelGridLeafSize);
+  sor.setInputCloud (stacked_point_cloud);
+  sor.filter (*stacked_point_cloud);
 
-  if(entire_point_cloud->size() == 0)
+  if(stacked_point_cloud->size() == 0)
   {
     res.ReturnStatus = false;
     res.ReturnMessage = "Filtered point cloud is empty";
@@ -271,7 +265,7 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
 
   // Save the point cloud with CAD meshname and a suffix
   res.NumerizedMeshName = req.CADName.substr(0, req.CADName.size() - 4) + "_defect.ply";
-  pcl::io::savePLYFileBinary(res.NumerizedMeshName, *entire_point_cloud);
+  pcl::io::savePLYFileBinary(res.NumerizedMeshName, *stacked_point_cloud);
 
   // Call publish_meshfile service
   publish_meshfile::PublishMeshfileService srv_publish_meshfile;
