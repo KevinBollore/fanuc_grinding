@@ -84,12 +84,6 @@ protected:
   ros::Subscriber status_sub_;
 
   // GUI
-  QLabel *CAD_label_;
-  QLineEdit *CAD_line_;
-
-  QLabel *defect_mesh_label_;
-  QLineEdit *defect_mesh_line_;
-
   QLabel *covering_percentage_label_;
   QSpinBox *covering_percentage_;
 
@@ -100,24 +94,22 @@ protected:
   QSpinBox *extrication_coefficient_;
 
   QLabel *grind_diameter_label_;
-  QSpinBox *grind_diameter_;
+  QDoubleSpinBox *grind_diameter_;
 
   QLabel *depth_label_;
-  QSpinBox *depth_spin_box_;
+  QDoubleSpinBox *depth_of_pass_;
 
   QLabel *lean_angle_axis_label_;
-  QRadioButton *lean_angle_axis_x_radio_;
-  QRadioButton *lean_angle_axis_y_radio_;
-  QRadioButton *lean_angle_axis_z_radio_;
+  QRadioButton *lean_angle_axis_x_;
+  QRadioButton *lean_angle_axis_y_;
+  QRadioButton *lean_angle_axis_z_;
 
   QLabel *angle_value_label_;
-  QDoubleSpinBox *angle_value_spin_box_;
+  QDoubleSpinBox *angle_value_;
 
-  QPushButton *compute_trajectory_button_;
-  QPushButton *path_planning_simulation_button_;
-  QPushButton *visualize_trajectory_button_;
-
-  QPushButton *generate_trajectory_button_;
+  QPushButton *compute_trajectory_;
+  QPushButton *path_planning_simulation_;
+  QPushButton *visualize_trajectory_;
 };
 
 } // End namespace
