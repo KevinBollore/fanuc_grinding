@@ -44,6 +44,7 @@ Q_SIGNALS:
   void enablePanel(bool);
   void enableScanningButton();
   void enablePanelAlignment();
+  void enablePanelPathPlanning();
   void enableScanWidget();
   void sendCADDatas(QString cad_path, QString cad_marker_name);
   void sendScanDatas(QString scan_path, QString scan_marker_name);

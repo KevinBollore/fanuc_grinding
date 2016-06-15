@@ -82,6 +82,8 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
                       this, SLOT(setCADDatas(QString, QString)));
   connect(scanning_widget_, SIGNAL(sendScanDatas(QString, QString)),
                       this, SLOT(setScanDatas(QString, QString)));
+  // For the demonstrator, we will skip alignment and comparison parts for the moment
+  connect(scanning_widget_, SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
 
   //ALIGNMENT
   // Will display a status in general status label ( from alignment widget )
