@@ -17,6 +17,7 @@ class QLineEdit;
 class QRadioButton;
 class QPushButton;
 class QMessageBox;
+class QCheckBox;
 
 namespace grinding_rviz_plugin
 {
@@ -61,6 +62,7 @@ protected Q_SLOTS:
   void enableComputeTrajectoryButtonHandler(bool);
   void enableVizSimButtonHandler();
   void generateTrajectoryButtonHandler();
+  void setDepthOfPassEnable(const int state);
   void setCADAndScanParams(const QString cad_filename,
                            const QString cad_marker_name,
                            const QString scan_filename,
@@ -84,15 +86,20 @@ protected:
   ros::Subscriber status_sub_;
 
   // GUI
+  QLabel *surfacing_mode_label_;
+  QCheckBox *surfacing_mode_;
+
+  QLabel* depth_of_pass_label_;
+  QDoubleSpinBox *depth_of_pass_;
+
   QSpinBox *covering_percentage_;
 
   QSpinBox *extrication_frequency_;
 
   QSpinBox *extrication_coefficient_;
+
   QLabel *grind_diameter_label_;
   QDoubleSpinBox *grind_diameter_;
-
-  QDoubleSpinBox *depth_of_pass_;
 
   QRadioButton *lean_angle_axis_x_;
   QRadioButton *lean_angle_axis_y_;
