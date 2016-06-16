@@ -10,6 +10,7 @@ catkin_package()
 
 include_directories(${catkin_INCLUDE_DIRS})
 
-add_executable(alignment src/alignment.cpp)
-target_link_libraries(alignment ${catkin_LIBRARIES})
+add_executable(${PROJECT_NAME} src/alignment.cpp)
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)

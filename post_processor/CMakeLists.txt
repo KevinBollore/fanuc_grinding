@@ -21,8 +21,8 @@ catkin_package(CATKIN_DEPENDS fanuc_post_processor_library)
 include_directories(${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 
-add_executable(post_processor src/post_processor.cpp)
-set_property(TARGET post_processor APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
-target_link_libraries (post_processor ${catkin_LIBRARIES} fanuc_post_processor_library curl curlite)
+add_executable(${PROJECT_NAME} src/post_processor.cpp)
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
+target_link_libraries (${PROJECT_NAME} ${catkin_LIBRARIES} fanuc_post_processor_library curl curlite)
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)

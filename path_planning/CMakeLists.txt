@@ -14,12 +14,12 @@ include_directories(${VTK_USE_FILE} ${PCL_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 add_definitions(${PCL_DEFINITIONS} ${VTK_DEFINITIONS})
 link_directories(${catkin_LIBRARY_DIRS})
 
-add_executable(path_planning src/path_planning.cpp)
-set_property(TARGET path_planning APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
+add_executable(${PROJECT_NAME} src/path_planning.cpp)
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
 if(VTK_LIBRARIES) # May never happen because we expect VTK 7.0 minimum
-  target_link_libraries(path_planning ${catkin_LIBRARIES} ${VTK_LIBRARIES} ${PCL_LIBRARIES} bezier_library)
+  target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${VTK_LIBRARIES} ${PCL_LIBRARIES} bezier_library)
 else()
-  target_link_libraries (path_planning ${catkin_LIBRARIES} vtkHybrid vtkWidgets ${PCL_LIBRARIES} bezier_library)
+  target_link_libraries (${PROJECT_NAME} ${catkin_LIBRARIES} vtkHybrid vtkWidgets ${PCL_LIBRARIES} bezier_library)
 endif()
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)

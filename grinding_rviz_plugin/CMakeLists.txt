@@ -33,6 +33,7 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES})
 add_dependencies(${PROJECT_NAME} scanning_generate_messages_cpp)
 

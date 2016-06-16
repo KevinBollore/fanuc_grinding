@@ -12,6 +12,7 @@ catkin_package()
 
 include_directories(${PCL_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
-add_executable(publish_meshfile src/publish_meshfile.cpp)
-target_link_libraries(publish_meshfile ${PCL_LIBRARIES} ${catkin_LIBRARIES})
+add_executable(${PROJECT_NAME} src/publish_meshfile.cpp)
+set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
+target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} ${catkin_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
