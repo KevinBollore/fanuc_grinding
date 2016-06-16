@@ -93,10 +93,15 @@ bool moveRobotPathPlanning(path_planning::PathPlanningService::Request &req,
   req.GrindDiameter = req.GrindDiameter / 1000; // Bezier needs GrindDiameter in millimeters
   req.CoveringPercentage = req.CoveringPercentage / 100; // Bezier needs CoveringPercentage like a percentage
 
+  std::string rviz_fixed_frame = "base_link";
+  std::string rviz_topic_name = normal_publisher.getTopic();
+
   status.data = "Create Bezier object";
   status_pub->publish(status);
   Bezier bezier_planner(input_mesh_filename,
                         defect_mesh_filename,
+                        rviz_fixed_frame,
+                        rviz_topic_name,
                         lean_angle_axis,
                         req.AngleValue,
                         req.DepthOfPath,
