@@ -16,92 +16,83 @@
 grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
 {
   this->setObjectName("PathPlanningWidget_");
-  covering_percentage_label_ = new QLabel;
-  covering_percentage_label_->setText(QString::fromStdString("Covering percentage:"));
+  QLabel* covering_percentage_label = new QLabel("Covering percentage:");
   covering_percentage_ = new QSpinBox;
-  covering_percentage_->setSuffix(QString::fromStdString("%"));
+  covering_percentage_->setSuffix("%");
   covering_percentage_->setValue(40);
+  covering_percentage_->setRange(0, 99);
   QHBoxLayout* covering_percentage_layout = new QHBoxLayout;
-  covering_percentage_layout->addWidget(covering_percentage_label_);
+  covering_percentage_layout->addWidget(covering_percentage_label);
   covering_percentage_layout->addWidget(covering_percentage_);
 
-  extrication_frequency_label_ = new QLabel;
-  extrication_frequency_label_->setText(QString::fromStdString("Extrication frequency:"));
+  QLabel* extrication_frequency_label = new QLabel("Extrication frequency:");
   extrication_frequency_ = new QSpinBox;
   extrication_frequency_->setValue(5);
+  extrication_frequency_->setRange(0, 50);
   QHBoxLayout* extrication_frequency_layout = new QHBoxLayout;
-  extrication_frequency_layout->addWidget(extrication_frequency_label_);
+  extrication_frequency_layout->addWidget(extrication_frequency_label);
   extrication_frequency_layout->addWidget(extrication_frequency_);
 
-  extrication_coefficient_label_ = new QLabel;
-  extrication_coefficient_label_->setText(QString::fromStdString("Extrication coefficient:"));
+  QLabel* extrication_coefficient_label = new QLabel("Extrication coefficient:");
   extrication_coefficient_ = new QSpinBox;
   extrication_coefficient_->setValue(5);
+  extrication_coefficient_->setRange(1, 20);
   QHBoxLayout* extrication_coefficient_layout = new QHBoxLayout;
-  extrication_coefficient_layout->addWidget(extrication_coefficient_label_);
+  extrication_coefficient_layout->addWidget(extrication_coefficient_label);
   extrication_coefficient_layout->addWidget(extrication_coefficient_);
 
-  grind_diameter_label_ = new QLabel;
-  grind_diameter_label_->setText("Grinder diameter:");
+  QLabel* grind_diameter_label = new QLabel("Grinder diameter:");
   grind_diameter_ = new QDoubleSpinBox;
   grind_diameter_->setSuffix(" mm");
   grind_diameter_->setValue(30);
   grind_diameter_->setDecimals(1);
+  grind_diameter_->setRange(1.0, 200.0);
   QHBoxLayout* grind_diameter_layout = new QHBoxLayout;
-  grind_diameter_layout->addWidget(grind_diameter_label_);
+  grind_diameter_layout->addWidget(grind_diameter_label);
   grind_diameter_layout->addWidget(grind_diameter_);
 
-  depth_label_ = new QLabel;
-  depth_label_->setText("Depth of path:");
+  QLabel* depth_label = new QLabel("Depth of pass");
   depth_of_pass_ = new QDoubleSpinBox;
   depth_of_pass_->setSuffix(" mm");
   depth_of_pass_->setValue(1.0);
   depth_of_pass_->setDecimals(3);
+  depth_of_pass_->setRange(0.001, 10.0);
   QHBoxLayout* select_depth_layout = new QHBoxLayout;
-  select_depth_layout->addWidget(depth_label_);
+  select_depth_layout->addWidget(depth_label);
   select_depth_layout->addWidget(depth_of_pass_);
 
-  lean_angle_axis_label_ = new QLabel;
-  lean_angle_axis_label_->setText(QString::fromStdString("Axis of rotation:"));
-  lean_angle_axis_x_ = new QRadioButton;
-  lean_angle_axis_x_->setText("x");
-  lean_angle_axis_y_ = new QRadioButton;
-  lean_angle_axis_y_->setText("y");
-  lean_angle_axis_z_ = new QRadioButton;
-  lean_angle_axis_z_->setText("z");
+  QLabel* lean_angle_axis_label = new QLabel("Axis of rotation:");
+  lean_angle_axis_x_ = new QRadioButton("x");
+  lean_angle_axis_y_ = new QRadioButton("y");
+  lean_angle_axis_z_ = new QRadioButton("z");
   QHBoxLayout* lean_angle_axis_layout = new QHBoxLayout;
-  lean_angle_axis_layout->addWidget(lean_angle_axis_label_);
+  lean_angle_axis_layout->addWidget(lean_angle_axis_label);
   lean_angle_axis_layout->addStretch(1);
   lean_angle_axis_layout->addWidget(lean_angle_axis_x_);
   lean_angle_axis_layout->addWidget(lean_angle_axis_y_);
   lean_angle_axis_layout->addWidget(lean_angle_axis_z_);
   lean_angle_axis_layout->addStretch(1);
 
-  angle_value_label_ = new QLabel;
-  angle_value_label_->setText(QString::fromStdString("Angle Value:"));
+  QLabel* angle_value_label = new QLabel("Angle value:");
   angle_value_ = new QDoubleSpinBox;
-  angle_value_->setSuffix(QString::fromStdString(" degrees"));
-  angle_value_->setMinimum(-90);
-  angle_value_->setMaximum(90);
+  angle_value_->setSuffix(" degrees");
+  angle_value_->setRange(-90, 90);
   QHBoxLayout* angle_value_layout = new QHBoxLayout;
-  angle_value_layout->addWidget(angle_value_label_);
+  angle_value_layout->addWidget(angle_value_label);
   angle_value_layout->addWidget(angle_value_);
 
-  compute_trajectory_ = new QPushButton;
-  compute_trajectory_->setText("Compute trajectory");
+  compute_trajectory_ = new QPushButton("Compute trajectory");
   compute_trajectory_->setMinimumHeight(90);
 
-  path_planning_simulation_ = new QPushButton;
-  path_planning_simulation_->setText("Execute trajectory");
-  path_planning_simulation_->setEnabled(false);
-  path_planning_simulation_->setMinimumHeight(60);
-  visualize_trajectory_ = new QPushButton;
-  visualize_trajectory_->setText("Visualize trajectory");
+  execute_trajectory_ = new QPushButton("Execute trajectory");
+  execute_trajectory_->setEnabled(false);
+  execute_trajectory_->setMinimumHeight(60);
+  visualize_trajectory_ = new QPushButton("Visualize trajectory");
   visualize_trajectory_->setEnabled(false);
   visualize_trajectory_->setMinimumHeight(60);
   QHBoxLayout* button_path_planning_layout = new QHBoxLayout;
   button_path_planning_layout->addWidget(visualize_trajectory_);
-  button_path_planning_layout->addWidget(path_planning_simulation_);
+  button_path_planning_layout->addWidget(execute_trajectory_);
 
   QVBoxLayout* path_planning_layout = new QVBoxLayout(this);
   path_planning_layout->addLayout(covering_percentage_layout);
@@ -135,7 +126,7 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   // connect each buttons to different functions
   connect(compute_trajectory_, SIGNAL(released()), this, SLOT(ComputeTrajectoryButtonHandler()));
   connect(visualize_trajectory_, SIGNAL(released()), this, SLOT(VisualizeTrajectoryButtonHandler()));
-  connect(path_planning_simulation_, SIGNAL(released()), this, SLOT(SimulateTrajectoryButtonHandler()));
+  connect(execute_trajectory_, SIGNAL(released()), this, SLOT(SimulateTrajectoryButtonHandler()));
   connect(this, SIGNAL(enableVizSimButton()), this, SLOT(enableVizSimButtonHandler()));
 
   // Subscriber to receive messages from the exterior
@@ -259,9 +250,9 @@ void grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
   {
     visualize_trajectory_->setEnabled(true);
   }
-  if(path_planning_simulation_->isEnabled() == false)
+  if(execute_trajectory_->isEnabled() == false)
   {
-    path_planning_simulation_->setEnabled(true);
+    execute_trajectory_->setEnabled(true);
   }
 }
 
