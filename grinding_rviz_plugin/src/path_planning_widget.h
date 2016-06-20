@@ -84,31 +84,24 @@ protected:
   ros::Subscriber status_sub_;
 
   // GUI
-  QLabel *covering_percentage_label_;
   QSpinBox *covering_percentage_;
 
-  QLabel *extrication_frequency_label_;
   QSpinBox *extrication_frequency_;
 
-  QLabel *extrication_coefficient_label_;
   QSpinBox *extrication_coefficient_;
-
   QLabel *grind_diameter_label_;
   QDoubleSpinBox *grind_diameter_;
 
-  QLabel *depth_label_;
   QDoubleSpinBox *depth_of_pass_;
 
-  QLabel *lean_angle_axis_label_;
   QRadioButton *lean_angle_axis_x_;
   QRadioButton *lean_angle_axis_y_;
   QRadioButton *lean_angle_axis_z_;
 
-  QLabel *angle_value_label_;
   QDoubleSpinBox *angle_value_;
 
   QPushButton *compute_trajectory_;
-  QPushButton *path_planning_simulation_;
+  QPushButton *execute_trajectory_;
   QPushButton *visualize_trajectory_;
 };
 
