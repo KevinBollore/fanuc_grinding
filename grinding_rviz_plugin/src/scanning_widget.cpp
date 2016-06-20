@@ -18,26 +18,22 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
     package_name_("scanning")
 {
   this->setObjectName("ScanningWidget_");
-  cad_meshname_label_ = new QLabel;
-  cad_meshname_label_->setText("CAD mesh file:");
+  QLabel* cad_meshname_label = new QLabel("CAD mesh file:");
   cad_meshname_ = new QLineEdit;
   cad_meshname_->setReadOnly(true);
-  cad_meshname_browse_button_ = new QPushButton;
-  cad_meshname_browse_button_->setText("...");
+  cad_meshname_browse_button_ = new QPushButton("...");
   cad_meshname_browse_button_->setMaximumSize(QSize(30,30));
   QHBoxLayout* cad_meshname_layout = new QHBoxLayout;
   cad_meshname_layout->addWidget(cad_meshname_);
   cad_meshname_layout->addWidget(cad_meshname_browse_button_);
 
-  cad_marker_name_label_ = new QLabel;
-  cad_marker_name_label_->setText("CAD marker name:");
+  QLabel* cad_marker_name_label = new QLabel("CAD marker name:");
   cad_marker_name_line_ = new QLineEdit;
   QHBoxLayout* cad_marker_name_layout = new QHBoxLayout;
-  cad_marker_name_layout->addWidget(cad_marker_name_label_);
+  cad_marker_name_layout->addWidget(cad_marker_name_label);
   cad_marker_name_layout->addWidget(cad_marker_name_line_);
 
-  import_cad_button_ = new QPushButton;
-  import_cad_button_->setText("Import CAD file");
+  import_cad_button_ = new QPushButton("Import CAD file");
 
   scan_choice_container_ = new QWidget;
   scan_choice_container_->setEnabled(false);
@@ -47,58 +43,51 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
   scan_choice_layout->addWidget(scan_choice_widget_);
   start_scan_tab_ = new QWidget();
   import_scan_tab_ = new QWidget();
-  scan_choice_widget_->addTab(start_scan_tab_, "Scan");
   scan_choice_widget_->addTab(import_scan_tab_, "Import scan");
+  scan_choice_widget_->addTab(start_scan_tab_, "Scan");
 
   // Import a yaml file to load robot's joint states and start scan
-  trajectory_yaml_label_ = new QLabel;
-  trajectory_yaml_label_->setText("Scan trajectory YAML file:");
+  QLabel* trajectory_yaml_label = new QLabel("Scan trajectory YAML file:");
   traj_yaml_file_ = new QLineEdit;
   traj_yaml_file_->setReadOnly(true);
-  traj_yaml_browse_button_ = new QPushButton;
-  traj_yaml_browse_button_->setText("...");
+  traj_yaml_browse_button_ = new QPushButton("...");
   traj_yaml_browse_button_->setMaximumSize(QSize(30,30));
   QHBoxLayout* traj_yaml_layout = new QHBoxLayout;
   traj_yaml_layout->addWidget(traj_yaml_file_);
   traj_yaml_layout->addWidget(traj_yaml_browse_button_);
   // Parameters of the SLS-2
-  sls_2_server_name_label_ = new QLabel;
-  sls_2_server_name_label_->setText("SLS-2 server name:");
+  QLabel* sls_2_server_name_label = new QLabel("SLS-2 server name:");
   sls_2_server_name_ = new QLineEdit;
   QHBoxLayout* sls_2_server_name_layout = new QHBoxLayout;
-  sls_2_server_name_layout->addWidget(sls_2_server_name_label_);
+  sls_2_server_name_layout->addWidget(sls_2_server_name_label);
   sls_2_server_name_layout->addWidget(sls_2_server_name_);
-  sls_2_ip_address_label_ = new QLabel;
-  sls_2_ip_address_label_->setText("SLS-2 IP address:");
+  QLabel* sls_2_ip_address_label = new QLabel("SLS-2 IP address:");
   sls_2_ip_address_ = new QLineEdit;
   sls_2_ip_address_->setInputMask("000.000.000.000;_");
   QHBoxLayout* sls_2_ip_address_layout = new QHBoxLayout;
-  sls_2_ip_address_layout->addWidget(sls_2_ip_address_label_);
+  sls_2_ip_address_layout->addWidget(sls_2_ip_address_label);
   sls_2_ip_address_layout->addWidget(sls_2_ip_address_);
   // Import SLS-2 calibration matrix
-  calibration_yaml_label_ = new QLabel;
-  calibration_yaml_label_->setText("SLS-2 calibration YAML file:");
+  QLabel* calibration_yaml_label = new QLabel("SLS-2 calibration YAML file:");
   calibration_yaml_file_ = new QLineEdit;
   calibration_yaml_file_->setReadOnly(true);
-  calibration_yaml_browse_button_ = new QPushButton;
-  calibration_yaml_browse_button_->setText("...");
+  calibration_yaml_browse_button_ = new QPushButton("...");
   calibration_yaml_browse_button_->setMaximumSize(QSize(30,30));
   QHBoxLayout* calibration_yaml_layout = new QHBoxLayout;
   calibration_yaml_layout->addWidget(calibration_yaml_file_);
   calibration_yaml_layout->addWidget(calibration_yaml_browse_button_);
 
   QVBoxLayout* scan_yaml_widget_layout = new QVBoxLayout(start_scan_tab_);
-  scan_yaml_widget_layout->addWidget(trajectory_yaml_label_);
+  scan_yaml_widget_layout->addWidget(trajectory_yaml_label);
   scan_yaml_widget_layout->addLayout(traj_yaml_layout);
   scan_yaml_widget_layout->addStretch(1);
-  scan_yaml_widget_layout->addWidget(calibration_yaml_label_);
+  scan_yaml_widget_layout->addWidget(calibration_yaml_label);
   scan_yaml_widget_layout->addLayout(calibration_yaml_layout);
   scan_yaml_widget_layout->addStretch(1);
   scan_yaml_widget_layout->addLayout(sls_2_server_name_layout);
   scan_yaml_widget_layout->addLayout(sls_2_ip_address_layout);
 
-  QLabel* down_sampling_label = new QLabel;
-  down_sampling_label->setText("Point cloud down-sampling leaf size:");
+  QLabel* down_sampling_label = new QLabel("Point cloud down-sampling leaf size:");
   down_sampling_leaf_size_ = new QDoubleSpinBox;
   down_sampling_leaf_size_->setRange(0.0001, 0.5);
   down_sampling_leaf_size_->setDecimals(4);
@@ -107,57 +96,40 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
   scan_yaml_widget_layout->addWidget(down_sampling_label);
   scan_yaml_widget_layout->addWidget(down_sampling_leaf_size_);
 
-  start_scan_ = new QPushButton;
-  start_scan_->setText("Start scanning");
+  start_scan_ = new QPushButton("Start scanning");
   scan_yaml_widget_layout->addWidget(start_scan_);
 
   //Import point cloud from an older scan
-  scan_mesh_label_ = new QLabel;
-  scan_mesh_label_->setText("Import a scan file:");
+  QLabel* scan_mesh_label = new QLabel("Import a scan file:");
   scan_file_ = new QLineEdit;
   scan_file_->setReadOnly(true);
-  scan_file_browse_button_ = new QPushButton;
-  scan_file_browse_button_->setText("...");
+  scan_file_browse_button_ = new QPushButton("...");
   scan_file_browse_button_->setMaximumSize(QSize(30,30));
   QHBoxLayout* scan_file_label_layout = new QHBoxLayout;
   scan_file_label_layout->addWidget(scan_file_);
   scan_file_label_layout->addWidget(scan_file_browse_button_);
-  import_scan_ = new QPushButton;
-  import_scan_->setText("Import scan mesh or point cloud");
+  import_scan_ = new QPushButton("Import scan mesh or point cloud");
   QVBoxLayout* import_scan_widget_layout = new QVBoxLayout (import_scan_tab_);
-  import_scan_widget_layout->addWidget(scan_mesh_label_);
+  import_scan_widget_layout->addWidget(scan_mesh_label);
   import_scan_widget_layout->addLayout(scan_file_label_layout);
   import_scan_widget_layout->addStretch(1);
   import_scan_widget_layout->addWidget(import_scan_);
 
-  scan_marker_name_label_ = new QLabel;
-  scan_marker_name_label_->setText("Scan marker name:");
+  QLabel* scan_marker_name_label = new QLabel("Scan marker name:");
   scan_marker_name_line_ = new QLineEdit;
   QVBoxLayout* scan_marker_name_layout = new QVBoxLayout;
   scan_choice_layout->addLayout(scan_marker_name_layout);
-  scan_marker_name_layout->addWidget(scan_marker_name_label_);
+  scan_marker_name_layout->addWidget(scan_marker_name_label);
   scan_marker_name_layout->addWidget(scan_marker_name_line_);
 
   QVBoxLayout* scanning_layout = new QVBoxLayout(this);
-  scanning_layout->addWidget(cad_meshname_label_);
+  scanning_layout->addWidget(cad_meshname_label);
   scanning_layout->addLayout(cad_meshname_layout);
   scanning_layout->addLayout(cad_marker_name_layout);
   scanning_layout->addWidget(import_cad_button_);
   scanning_layout->addStretch(2);
   scanning_layout->addWidget(scan_choice_container_);
   scanning_layout->addStretch(1);
-
-  publish_meshfile::PublishMeshfileService::Request publish_meshfile_params_init;
-  publish_meshfile_params_init.PosX = 1.4;
-  publish_meshfile_params_init.PosY = 0.0;
-  publish_meshfile_params_init.PosZ = -0.065;
-  publish_meshfile_params_init.RotX = 0.0;
-  publish_meshfile_params_init.RotY = 0.0;
-  publish_meshfile_params_init.RotZ = 0.0;
-  publish_meshfile_params_init.RotW = 1.0;
-
-  this->setPublishParams(publish_meshfile_params_init);
-  this->triggerSave();
 
   connect(cad_meshname_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(traj_yaml_file_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
@@ -223,6 +195,10 @@ void grinding_rviz_plugin::ScanningWidget::setPublishParams(publish_meshfile::Pu
   publish_meshfile_params_.RotY = params.RotY;
   publish_meshfile_params_.RotZ = params.RotZ;
   publish_meshfile_params_.RotW = params.RotW;
+  publish_meshfile_params_.color_r = params.color_r;
+  publish_meshfile_params_.color_g = params.color_g;
+  publish_meshfile_params_.color_b = params.color_b;
+  publish_meshfile_params_.color_a = params.color_a;
   updateGUI();
 }
 
@@ -323,10 +299,18 @@ void grinding_rviz_plugin::ScanningWidget::importCADFileButtonHandler()
   srv_publish_meshfile_.request = this->getPublishParams();
   srv_publish_meshfile_.request.MeshName = cad_meshname_->text().toStdString();
   srv_publish_meshfile_.request.MarkerName = cad_marker_name_line_->text().toStdString();
-  srv_publish_meshfile_.request.color_a = 1.0;
+  srv_publish_meshfile_.request.PosX = 1.4;
+  srv_publish_meshfile_.request.PosY = 0.0;
+  srv_publish_meshfile_.request.PosZ = -0.065;
+  srv_publish_meshfile_.request.RotX = 0.0;
+  srv_publish_meshfile_.request.RotY = 0.0;
+  srv_publish_meshfile_.request.RotZ = 0.0;
+  srv_publish_meshfile_.request.RotW = 1.0;
   srv_publish_meshfile_.request.color_r = 130 / 255.0;
   srv_publish_meshfile_.request.color_g = 75 / 255.0;
   srv_publish_meshfile_.request.color_b = 75 / 255.0;
+  srv_publish_meshfile_.request.color_a = 1.0;
+
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::publishCADMeshOrCloudFile);
 }
@@ -355,6 +339,18 @@ void grinding_rviz_plugin::ScanningWidget::importScanFileButtonHandler()
     srv_publish_meshfile_.request = this->getPublishParams();
     srv_publish_meshfile_.request.MeshName = scan_file_->text().toStdString();
     srv_publish_meshfile_.request.MarkerName = scan_marker_name_line_->text().toStdString();
+    srv_publish_meshfile_.request.PosX = 0.0;
+    srv_publish_meshfile_.request.PosY = 0.0;
+    srv_publish_meshfile_.request.PosZ = 0.0;
+    srv_publish_meshfile_.request.RotX = 0.0;
+    srv_publish_meshfile_.request.RotY = 0.0;
+    srv_publish_meshfile_.request.RotZ = 0.0;
+    srv_publish_meshfile_.request.RotW = 1.0;
+    srv_publish_meshfile_.request.color_r = 75 / 255.0;
+    srv_publish_meshfile_.request.color_g = 75 / 255.0;
+    srv_publish_meshfile_.request.color_b = 130 / 255.0;
+    srv_publish_meshfile_.request.color_a = 1.0;
+
     // Start client service call in an other thread
     QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::publishScanMeshOrCloudFile);
   }
