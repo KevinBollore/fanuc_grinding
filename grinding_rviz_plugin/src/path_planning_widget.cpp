@@ -223,6 +223,30 @@ void grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString
   path_planning_params_.ScanMarkerName = scan_marker_name.toStdString();
 }
 
+std::vector<geometry_msgs::Pose> grinding_rviz_plugin::PathPlanningWidget::getRobotPoses()
+{
+  return srv_path_planning_.response.RobotPosesOutput;
+}
+
+std::vector<bool> grinding_rviz_plugin::PathPlanningWidget::getPointColorViz()
+{
+  // TODO: Can we avoid copying/duplicating?
+  std::vector<bool> temp;
+  for(std::vector<uint8_t>::iterator iter (srv_path_planning_.response.PointColorVizOutput.begin());
+      iter != srv_path_planning_.response.PointColorVizOutput.end();
+      ++iter)
+  {
+    temp.push_back(*iter);
+  }
+
+  return temp;
+}
+
+std::vector<int> grinding_rviz_plugin::PathPlanningWidget::getIndexVector()
+{
+  return srv_path_planning_.response.IndexVectorOutput;
+}
+
 void grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectoryButtonHandler()
 {
   // Fill service parameters with GUI values

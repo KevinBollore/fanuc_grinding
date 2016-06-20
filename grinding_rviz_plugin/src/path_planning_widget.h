@@ -31,6 +31,10 @@ public:
   path_planning::PathPlanningService::Request getPathPlanningParams();
   void setPathPlanningParams(path_planning::PathPlanningService::Request params);
 
+  std::vector<geometry_msgs::Pose> getRobotPoses();
+  std::vector<bool> getPointColorViz();
+  std::vector<int> getIndexVector();
+
   void connectToServices();
 
   void load(const rviz::Config& config);
@@ -75,12 +79,6 @@ protected:
   path_planning::PathPlanningService srv_path_planning_;
 
   path_planning::PathPlanningService::Request path_planning_params_;
-
-  // Declare variable in order to store path planning service response
-  // ( Robot poses msgs, point color viz & index_vector )
-  std::vector<geometry_msgs::Pose> robot_poses_msg_response;
-  std::vector<bool> color_points_viz_response;
-  std::vector<int> index_vector_response;
 
   // Status subscriber, allows to receive status messages from the exterior
   ros::Subscriber status_sub_;

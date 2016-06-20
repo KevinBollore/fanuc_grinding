@@ -63,6 +63,7 @@ protected Q_SLOTS:
   void setCADDatas(const QString cad_path, const QString cad_marker_name);
   void setScanDatas(const QString scan_path, const QString scan_marker_name);
   void sendCADAndScanDatasSlot();
+  void setRobotPosesData();
 
   virtual void load(const rviz::Config& config);
   virtual void save(rviz::Config config) const;

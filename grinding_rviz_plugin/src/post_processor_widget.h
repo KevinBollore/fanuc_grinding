@@ -29,6 +29,10 @@ public:
   post_processor::PostProcessorService::Request getPostProcessorParams();
   void setPostProcessorParams(post_processor::PostProcessorService::Request params);
 
+  void setRobotPoses(std::vector<geometry_msgs::Pose> robot_poses);
+  void setPointColorViz(std::vector<bool> point_color_viz);
+  void setIndexVector(std::vector<int> index_vector);
+
   void connectToServices();
 
   void load(const rviz::Config& config);
@@ -38,6 +42,7 @@ Q_SIGNALS:
   void GUIChanged();
   void sendStatus(QString status);
   void enablePanel(bool);
+  void getRobotPosesData();
 
 public Q_SLOTS:
   void GenerateProgram();
