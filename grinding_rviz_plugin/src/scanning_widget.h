@@ -12,7 +12,6 @@
 #endif
 
 class QDoubleSpinBox;
-class QLabel;
 class QWidget;
 class QLineEdit;
 class QPushButton;
@@ -89,13 +88,11 @@ protected:
 
   // GUI
   // Import CAD
-  QLabel *cad_meshname_label_;
   QLineEdit *cad_meshname_;
   QPushButton *cad_meshname_browse_button_;
   QPushButton *import_cad_button_;
 
   // Give a marker name for CAD file
-  QLabel *cad_marker_name_label_;
   QLineEdit *cad_marker_name_line_;
 
   // Container for all the scan import widgets
@@ -107,28 +104,22 @@ protected:
 
   // Widget for scan
   // YAML part in order to parse joint values
-  QLabel *trajectory_yaml_label_;
   QLineEdit *traj_yaml_file_;
   QPushButton *traj_yaml_browse_button_;
   //Parameters for SLS-2
-  QLabel *sls_2_server_name_label_;
   QLineEdit *sls_2_server_name_;
-  QLabel *sls_2_ip_address_label_;
   QLineEdit *sls_2_ip_address_;
   //YAML part in order to parse calibration sls2 matrix value
-  QLabel *calibration_yaml_label_;
   QLineEdit *calibration_yaml_file_;
   QDoubleSpinBox* down_sampling_leaf_size_;
   QPushButton *calibration_yaml_browse_button_;
 
   //Widget for point cloud
-  QLabel *scan_mesh_label_;
   QLineEdit *scan_file_;
   QPushButton *scan_file_browse_button_;
   QPushButton *import_scan_;
 
   // Widget for scan file
-  QLabel *scan_marker_name_label_;
   QLineEdit *scan_marker_name_line_;
 
   QPushButton *start_scan_;
