@@ -4,6 +4,8 @@ string IpAdress
 string ProgramLocation
 string Comment
 geometry_msgs/Pose[] RobotPoses
+bool[] PointColorViz
+int32[] IndexVector
 ---
 bool ReturnStatus
 string ReturnMessage

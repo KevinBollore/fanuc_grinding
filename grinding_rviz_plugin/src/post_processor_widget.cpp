@@ -126,6 +126,36 @@ void grinding_rviz_plugin::PostProcessorWidget::tweakProgramName()
     program_name_->setText(program_name_->text().append(".ls"));
 }
 
+void grinding_rviz_plugin::PostProcessorWidget::setRobotPoses(std::vector<geometry_msgs::Pose> robot_poses)
+{
+  for(std::vector<geometry_msgs::Pose>::iterator iter (robot_poses.begin());
+      iter != robot_poses.end();
+      ++iter)
+  {
+    post_processor_params_.RobotPoses.push_back(*iter);
+  }
+}
+
+void grinding_rviz_plugin::PostProcessorWidget::setPointColorViz(std::vector<bool> point_color_viz)
+{
+  for(std::vector<bool>::iterator iter (point_color_viz.begin());
+        iter != point_color_viz.end();
+        ++iter)
+  {
+    post_processor_params_.PointColorViz.push_back(*iter);
+  }
+}
+
+void grinding_rviz_plugin::PostProcessorWidget::setIndexVector(std::vector<int> index_vector)
+{
+  for(std::vector<int>::iterator iter (index_vector.begin());
+        iter != index_vector.end();
+        ++iter)
+  {
+    post_processor_params_.IndexVector.push_back(*iter);
+  }
+}
+
 void grinding_rviz_plugin::PostProcessorWidget::browseProgramLocation()
 {
   QFileDialog program_location_browser;
@@ -142,11 +172,8 @@ void grinding_rviz_plugin::PostProcessorWidget::GenerateProgramButtonHandler()
   else
   {
     // Fill in the request
+    Q_EMIT getRobotPosesData();
     srv_post_processor_.request = this->getPostProcessorParams();
-    for(unsigned int i = 0; i < robot_poses_.size(); ++i)
-    {
-      srv_post_processor_.request.RobotPoses.push_back(robot_poses_[i]);
-    }
     //srv_.request.*request* = *value*;
     // Start client service call in an other thread
     QFuture<void> future = QtConcurrent::run(this, &PostProcessorWidget::GenerateProgram);

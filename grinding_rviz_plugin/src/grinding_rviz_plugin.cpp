@@ -141,6 +141,8 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   connect(post_processor_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
   // Enable general panel when post_processor send the SIGNAL
   connect(post_processor_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
+  // Receive a signal from post processor widget in order to send robot poses data
+  connect(post_processor_widget_, SIGNAL(getRobotPosesData()), this, SLOT(setRobotPosesData()));
 
   connect(this, SIGNAL(displayStatus(const QString)), this, SLOT(displayStatusHandler(const QString)));
 
@@ -209,6 +211,13 @@ void GrindingRvizPlugin::setScanDatas(const QString scan_filename, const QString
 {
   scan_filename_ = scan_filename;
   scan_marker_name_ = scan_marker_name;
+}
+
+void GrindingRvizPlugin::setRobotPosesData()
+{
+  post_processor_widget_->setRobotPoses(path_planning_widget_->getRobotPoses());
+  post_processor_widget_->setPointColorViz(path_planning_widget_->getPointColorViz());
+  post_processor_widget_->setIndexVector(path_planning_widget_->getIndexVector());
 }
 
 void GrindingRvizPlugin::sendCADAndScanDatasSlot()
