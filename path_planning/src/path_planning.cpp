@@ -110,12 +110,7 @@ bool moveRobotPathPlanning(path_planning::PathPlanningService::Request &req,
                         req.CoveringPercentage,
                         req.ExtricationCoefficient,
                         req.ExtricationFrequency,
-                        false);
-  if(req.SurfacingMode)
-    bezier_planner.setSurfacingOn();
-  else
-    bezier_planner.setSurfacingOff();
-
+                        req.SurfacingMode);
   if(req.Compute)
   {
     status.data = "Compute Bezier trajectory";
