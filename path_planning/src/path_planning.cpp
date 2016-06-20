@@ -45,6 +45,7 @@ const std::string tcp_name("/grinding_disk_tcp");
 bool moveRobotPathPlanning(path_planning::PathPlanningService::Request &req,
                            path_planning::PathPlanningService::Response &res)
 {
+  ROS_WARN_STREAM(std::endl << req);
   std_msgs::String status;
   status.data = "Loading mesh/cloud files";
   status_pub->publish(status);
@@ -110,6 +111,11 @@ bool moveRobotPathPlanning(path_planning::PathPlanningService::Request &req,
                         req.ExtricationCoefficient,
                         req.ExtricationFrequency,
                         false);
+  if(req.SurfacingMode)
+    bezier_planner.setSurfacingOn();
+  else
+    bezier_planner.setSurfacingOff();
+
   if(req.Compute)
   {
     status.data = "Compute Bezier trajectory";

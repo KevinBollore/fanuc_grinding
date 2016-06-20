@@ -10,12 +10,31 @@
 #include <QFuture>
 #include <QtConcurrentRun>
 #include <QMessageBox>
+#include <QCheckBox>
 
 #include "path_planning_widget.h"
 
 grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
 {
   this->setObjectName("PathPlanningWidget_");
+  surfacing_mode_label_ = new QLabel;
+  surfacing_mode_label_->setText("Surfacing mode ");
+  surfacing_mode_ = new QCheckBox;
+  surfacing_mode_->setChecked(false);
+  QHBoxLayout* surfacing_mode_layout = new QHBoxLayout;
+  surfacing_mode_layout->addWidget(surfacing_mode_label_);
+  surfacing_mode_layout->addWidget(surfacing_mode_);
+
+  depth_of_pass_label_ = new QLabel("Depth of pass");
+  depth_of_pass_ = new QDoubleSpinBox;
+  depth_of_pass_->setSuffix(" mm");
+  depth_of_pass_->setValue(1.0);
+  depth_of_pass_->setDecimals(3);
+  depth_of_pass_->setRange(0.001, 100);
+  QHBoxLayout* depth_of_pass_layout = new QHBoxLayout;
+  depth_of_pass_layout->addWidget(depth_of_pass_label_);
+  depth_of_pass_layout->addWidget(depth_of_pass_);
+
   QLabel* covering_percentage_label = new QLabel("Covering percentage:");
   covering_percentage_ = new QSpinBox;
   covering_percentage_->setSuffix("%");
@@ -51,16 +70,6 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   grind_diameter_layout->addWidget(grind_diameter_label);
   grind_diameter_layout->addWidget(grind_diameter_);
 
-  QLabel* depth_label = new QLabel("Depth of pass");
-  depth_of_pass_ = new QDoubleSpinBox;
-  depth_of_pass_->setSuffix(" mm");
-  depth_of_pass_->setValue(1.0);
-  depth_of_pass_->setDecimals(3);
-  depth_of_pass_->setRange(0.001, 10.0);
-  QHBoxLayout* select_depth_layout = new QHBoxLayout;
-  select_depth_layout->addWidget(depth_label);
-  select_depth_layout->addWidget(depth_of_pass_);
-
   QLabel* lean_angle_axis_label = new QLabel("Axis of rotation:");
   lean_angle_axis_x_ = new QRadioButton("x");
   lean_angle_axis_y_ = new QRadioButton("y");
@@ -95,11 +104,12 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   button_path_planning_layout->addWidget(execute_trajectory_);
 
   QVBoxLayout* path_planning_layout = new QVBoxLayout(this);
+  path_planning_layout->addLayout(surfacing_mode_layout);
+  path_planning_layout->addLayout(depth_of_pass_layout);
   path_planning_layout->addLayout(covering_percentage_layout);
   path_planning_layout->addLayout(extrication_frequency_layout);
   path_planning_layout->addLayout(extrication_coefficient_layout);
   path_planning_layout->addLayout(grind_diameter_layout);
-  path_planning_layout->addLayout(select_depth_layout);
   path_planning_layout->addLayout(lean_angle_axis_layout);
   path_planning_layout->addLayout(angle_value_layout);
   path_planning_layout->addStretch(2);
@@ -110,6 +120,8 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
 
   //Connect handlers
   // At each modification of the widget, we call triggerSave
+  connect(surfacing_mode_, SIGNAL(stateChanged(int)), this, SLOT(setDepthOfPassEnable(int)));
+  connect(surfacing_mode_, SIGNAL(stateChanged(int)), this, SLOT(triggerSave()));
   connect(covering_percentage_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
   connect(extrication_frequency_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
   connect(extrication_coefficient_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
@@ -153,6 +165,7 @@ path_planning::PathPlanningService::Request grinding_rviz_plugin::PathPlanningWi
 
 void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planning::PathPlanningService::Request params)
 {
+  path_planning_params_.SurfacingMode = params.SurfacingMode;
   path_planning_params_.CoveringPercentage = params.CoveringPercentage;
   path_planning_params_.ExtricationFrequency = params.ExtricationFrequency;
   path_planning_params_.ExtricationCoefficient = params.ExtricationCoefficient;
@@ -167,6 +180,7 @@ void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planni
 
 void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 {
+  surfacing_mode_->setChecked(path_planning_params_.SurfacingMode);
   covering_percentage_->setValue(path_planning_params_.CoveringPercentage);
   extrication_frequency_->setValue(path_planning_params_.ExtricationFrequency);
   extrication_coefficient_->setValue(path_planning_params_.ExtricationCoefficient);
@@ -180,6 +194,7 @@ void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 
 void grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
 {
+  path_planning_params_.SurfacingMode = surfacing_mode_->isChecked();
   path_planning_params_.CoveringPercentage = covering_percentage_->value();
   path_planning_params_.ExtricationFrequency = extrication_frequency_->value();
   path_planning_params_.ExtricationCoefficient = extrication_coefficient_->value();
@@ -189,6 +204,12 @@ void grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
   path_planning_params_.AngleY = lean_angle_axis_y_->isChecked();
   path_planning_params_.AngleZ = lean_angle_axis_z_->isChecked();
   path_planning_params_.AngleValue = angle_value_->value() / 360.0 * M_PI; // degrees to radians
+}
+
+void grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const int state)
+{
+  depth_of_pass_->setEnabled(!state);
+  depth_of_pass_label_->setEnabled(!state);
 }
 
 void grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString cad_filename,
@@ -406,6 +427,7 @@ void grinding_rviz_plugin::PathPlanningWidget::triggerSave()
 void grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
+  config.mapSetValue(this->objectName() + "surfacing_mode", surfacing_mode_->isChecked());
   config.mapSetValue(this->objectName() + "covering_percentage", covering_percentage_->value());
   config.mapSetValue(this->objectName() + "extrication_frequency", extrication_frequency_->value());
   config.mapSetValue(this->objectName() + "extrication_coefficient", extrication_coefficient_->value());
@@ -425,6 +447,10 @@ void grinding_rviz_plugin::PathPlanningWidget::load(const rviz::Config& config)
   float tmp_float;
   QString tmp_string;
   // Load offset value from config file (if it exists)
+  if (config.mapGetBool(this->objectName() + "surfacing_mode", &tmp_bool))
+    surfacing_mode_->setChecked(tmp_bool);
+  else
+    surfacing_mode_->setChecked(false);
   if (config.mapGetInt(this->objectName() + "covering_percentage", &tmp_int))
     covering_percentage_->setValue(tmp_int);
   else

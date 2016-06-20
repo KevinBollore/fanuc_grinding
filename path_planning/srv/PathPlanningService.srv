@@ -2,6 +2,7 @@ string CADFileName
 string CADMarkerName
 string ScanFileName
 string ScanMarkerName
+bool SurfacingMode
 float64 CoveringPercentage
 int32 ExtricationCoefficient
 int32 ExtricationFrequency
