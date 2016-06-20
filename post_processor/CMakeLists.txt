@@ -6,12 +6,8 @@ find_package(catkin REQUIRED COMPONENTS
 			 std_msgs
 			 genmsg
 			 tf_conversions
-			 moveit_ros_planning_interface
-			 visualization_msgs
 			 geometry_msgs
 			 fanuc_post_processor_library)
-
-#find_package(CURL)
 
 add_service_files(FILES PostProcessorService.srv)
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)

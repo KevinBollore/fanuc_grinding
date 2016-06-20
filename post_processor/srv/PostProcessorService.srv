@@ -1,8 +1,8 @@
-string Message
-string ProgramName
-string IpAdress
 string ProgramLocation
+string ProgramName
 string Comment
+bool Upload
+string IpAdress
 geometry_msgs/Pose[] RobotPoses
 bool[] PointColorViz
 int32[] IndexVector

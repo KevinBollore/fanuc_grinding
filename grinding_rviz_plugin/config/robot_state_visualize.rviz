@@ -42,10 +42,11 @@ Panels:
     PathPlanningWidget_radio_x: false
     PathPlanningWidget_radio_y: true
     PathPlanningWidget_radio_z: false
-    PostProcessorWidget_comment: hfd
+    PathPlanningWidget_surfacing_mode: false
+    PostProcessorWidget_comment: ""
     PostProcessorWidget_ip_adress: 192.168.100.200
-    PostProcessorWidget_program_location: ""
-    PostProcessorWidget_program_name: meulage_DaC
+    PostProcessorWidget_program_name: ros_meulage_DaC.ls
+    PostProcessorWidget_upload_program: false
     ScanningWidget_cad_marker_name: cad
     ScanningWidget_down_sampling_leaf_size: 0.03
     ScanningWidget_scan_marker_name: scan
@@ -347,7 +348,7 @@ Visualization Manager:
       Marker Topic: /cad
       Name: Marker
       Namespaces:
-        "": true
+        {}
       Queue Size: 2
       Value: true
     - Class: rviz/Marker
@@ -387,7 +388,7 @@ Visualization Manager:
       Marker Topic: /scan
       Name: Marker
       Namespaces:
-        "": true
+        {}
       Queue Size: 2
       Value: true
   Enabled: true

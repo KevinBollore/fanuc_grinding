@@ -3,9 +3,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>
-#include <QDoubleSpinBox>
-#include <QFileDialog>
 #include <QLineEdit>
+#include <QCheckBox>
 #include <QFuture>
 #include <QtConcurrentRun>
 
@@ -15,63 +14,66 @@ grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* parent) 
 {
   this->setObjectName("PostProcessorWidget_");
 
-  program_name_label_ = new QLabel;
-  program_name_label_->setText("Program name: ");
+  QLabel* program_name_label = new QLabel("Program name:");
   program_name_ = new QLineEdit;
-  program_name_layout_ = new QHBoxLayout;
-  program_name_layout_->addWidget(program_name_label_);
-  program_name_layout_->addWidget(program_name_);
+  QHBoxLayout* program_name_layout = new QHBoxLayout;
+  program_name_layout->addWidget(program_name_label);
+  program_name_layout->addWidget(program_name_);
 
-  ip_adress_label_ = new QLabel;
-  ip_adress_label_->setText("Robot IP: ");
-  ip_adress_ = new QLineEdit;
-  ip_adress_->setInputMask("000.000.000.000;_"); // FIXME: Take a look on this line
-  ip_adress_->setText("192.168.100.200");
-  ip_adress_layout_ = new QHBoxLayout;
-  ip_adress_layout_->addWidget(ip_adress_label_);
-  ip_adress_layout_->addWidget(ip_adress_);
-
-  program_location_label_ = new QLabel;
-  program_location_label_->setText("Program location :");
-  browse_program_location_button_ = new QPushButton;
-  browse_program_location_button_->setText("Browse...");
-  program_location_ = new QLineEdit;
-  program_location_->setReadOnly(true);
-  program_location_layout_ = new QHBoxLayout;
-  program_location_layout_->addWidget(program_location_label_);
-  program_location_layout_->addWidget(browse_program_location_button_);
-
-  comment_label_ = new QLabel;
-  comment_label_->setText("Comment (Optional) :");
+  QLabel* comment_label = new QLabel("Comment (optional):");
   comment_ = new QLineEdit;
-  comment_layout_ = new QHBoxLayout();
-  comment_layout_->addWidget(comment_label_);
+  QHBoxLayout* comment_layout_ = new QHBoxLayout();
+  comment_layout_->addWidget(comment_label);
   comment_layout_->addWidget(comment_);
 
-  generate_program_button_ = new QPushButton;
-  generate_program_button_->setText("Generate TP program");
+  QLabel* upload_label = new QLabel("Upload program:");
+  upload_program_ = new QCheckBox;
+  QHBoxLayout* upload_layout_ = new QHBoxLayout();
+  upload_layout_->addWidget(upload_label);
+  upload_layout_->addStretch(1);
+  upload_layout_->addWidget(upload_program_);
+  upload_layout_->addStretch(9);
 
-  post_processor_layout_ = new QVBoxLayout(this);
-  post_processor_layout_->addLayout(program_name_layout_);
-  post_processor_layout_->addStretch(10);
-  post_processor_layout_->addLayout(ip_adress_layout_);
-  post_processor_layout_->addStretch(10);
-  post_processor_layout_->addLayout(program_location_layout_);
-  post_processor_layout_->addWidget(program_location_);
-  post_processor_layout_->addStretch(10);
-  post_processor_layout_->addLayout(comment_layout_);
-  post_processor_layout_->addStretch(10);
-  post_processor_layout_->addWidget(generate_program_button_);
+  ip_adress_label_ = new QLabel("Robot IP:");
+  ip_address_ = new QLineEdit;
+  ip_address_->setInputMask("000.000.000.000;_");
+  ip_address_->setText("192.168.100.200");
+  QHBoxLayout* ip_adress_layout = new QHBoxLayout;
+  ip_adress_layout->addWidget(ip_adress_label_);
+  ip_adress_layout->addWidget(ip_address_);
+
+  QLabel* program_location_label = new QLabel("Program location:");
+  program_location_ = new QLineEdit;
+  program_location_->setReadOnly(true);
+  QHBoxLayout* program_location_layout = new QHBoxLayout;
+  program_location_layout->addWidget(program_location_label);
+  program_location_layout->addWidget(program_location_);
+
+  generate_program_button_ = new QPushButton("Generate TP program");
+  generate_program_button_->setMinimumHeight(90);
+
+  QVBoxLayout* post_processor_layout = new QVBoxLayout(this);
+  post_processor_layout->addLayout(program_name_layout);
+  post_processor_layout->addLayout(comment_layout_);
+  post_processor_layout->addLayout(upload_layout_);
+  post_processor_layout->addLayout(ip_adress_layout);
+  post_processor_layout->addLayout(program_location_layout);
+  post_processor_layout->addStretch(2);
+  post_processor_layout->addWidget(generate_program_button_);
+  post_processor_layout->addStretch(8);
 
   // Connect Handlers
   connect(program_name_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
-  connect(ip_adress_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
-  connect(program_location_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(comment_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
-  connect(browse_program_location_button_, SIGNAL(released()), this, SLOT(browseProgramLocation()));
-  connect(generate_program_button_, SIGNAL(released()), this, SLOT(GenerateProgramButtonHandler()));
-
+  connect(upload_program_, SIGNAL(stateChanged(int)), this, SLOT(setIpAddressEnable(int)));
+  connect(upload_program_, SIGNAL(stateChanged(int)), this, SLOT(triggerSave()));
+  connect(ip_address_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
+  connect(generate_program_button_, SIGNAL(released()), this, SLOT(generateProgramButtonHandler()));
   connect(program_name_, SIGNAL(editingFinished()), this, SLOT(tweakProgramName()));
+  tweakProgramName();
+
+  // Program location is hard-coded
+  setProgramLocation(ros::package::getPath("grinding_rviz_plugin")+"/tp_programs/");
 
   //Setup client
   post_processor_service_ = post_processor_node_.serviceClient<post_processor::PostProcessorService>("post_processor_service");
@@ -81,41 +83,46 @@ void grinding_rviz_plugin::PostProcessorWidget::triggerSave()
 {
   Q_EMIT GUIChanged();
   updateInternalValues();
-  updateGUI();
 }
 
-post_processor::PostProcessorService::Request grinding_rviz_plugin::PostProcessorWidget::getPostProcessorParams()
+void grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(const post_processor::PostProcessorService::Request &params)
 {
-  return post_processor_params_;
-}
-
-void grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(post_processor::PostProcessorService::Request params)
-{
-  post_processor_params_.ProgramName=params.ProgramName;
-  post_processor_params_.IpAdress=params.IpAdress;
-  post_processor_params_.ProgramLocation=params.ProgramLocation;
-  post_processor_params_.Comment=params.Comment;
+  // Copy all BUT trajectory data
+  srv_post_processor_.request.ProgramLocation = params.ProgramLocation;
+  srv_post_processor_.request.ProgramName = params.ProgramName;
+  srv_post_processor_.request.Comment = params.Comment;
+  srv_post_processor_.request.Upload = params.Upload;
+  srv_post_processor_.request.IpAdress = params.IpAdress;
+  // Probably not filled
+  srv_post_processor_.request.RobotPoses = params.RobotPoses;
+  srv_post_processor_.request.PointColorViz = params.PointColorViz;
+  srv_post_processor_.request.IndexVector = params.IndexVector;
   updateGUI();
 }
 
 void grinding_rviz_plugin::PostProcessorWidget::updateGUI()
 {
-  program_name_->setText(QString::fromStdString(post_processor_params_.ProgramName));
-  ip_adress_->setText(QString::fromStdString(post_processor_params_.IpAdress));
-  program_location_->setText(QString::fromStdString(post_processor_params_.ProgramLocation));
-  comment_->setText(QString::fromStdString(post_processor_params_.Comment));
+  program_name_->setText(QString::fromStdString(srv_post_processor_.request.ProgramName));
+  comment_->setText(QString::fromStdString(srv_post_processor_.request.Comment));
+  upload_program_->setChecked(srv_post_processor_.request.Upload);
+  ip_address_->setText(QString::fromStdString(srv_post_processor_.request.IpAdress));
+  program_location_->setText(QString::fromStdString(srv_post_processor_.request.ProgramLocation));
 }
 
 void grinding_rviz_plugin::PostProcessorWidget::updateInternalValues()
 {
-  post_processor_params_.ProgramName = program_name_->text().toStdString();
-  post_processor_params_.IpAdress = ip_adress_->text().toStdString();
-  post_processor_params_.ProgramLocation = program_location_->text().toStdString();
-  post_processor_params_.Comment = comment_->text().toStdString();
+  srv_post_processor_.request.ProgramName = program_name_->text().toStdString();
+  srv_post_processor_.request.Comment = comment_->text().toStdString();
+  srv_post_processor_.request.Upload = upload_program_->isChecked();
+  srv_post_processor_.request.IpAdress = ip_address_->text().toStdString();
+  // program_location_ is read only
 }
 
 void grinding_rviz_plugin::PostProcessorWidget::tweakProgramName()
 {
+  if (program_name_->text().size() == 0)
+    return;
+
   if (program_name_->text().endsWith("."))
     program_name_->setText(program_name_->text().append("ls"));
 
@@ -126,68 +133,87 @@ void grinding_rviz_plugin::PostProcessorWidget::tweakProgramName()
     program_name_->setText(program_name_->text().append(".ls"));
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setRobotPoses(std::vector<geometry_msgs::Pose> robot_poses)
+void grinding_rviz_plugin::PostProcessorWidget::setIpAddressEnable(const int state)
 {
-  for(std::vector<geometry_msgs::Pose>::iterator iter (robot_poses.begin());
+  ip_address_->setEnabled(state);
+  ip_adress_label_->setEnabled(state);
+}
+
+void grinding_rviz_plugin::PostProcessorWidget::setProgramLocation(const std::string &location)
+{
+  srv_post_processor_.request.ProgramLocation = location;
+  updateGUI();
+}
+
+void grinding_rviz_plugin::PostProcessorWidget::setRobotPoses(const std::vector<geometry_msgs::Pose> &robot_poses)
+{
+  srv_post_processor_.request.RobotPoses.clear();
+  for(std::vector<geometry_msgs::Pose>::const_iterator iter (robot_poses.begin());
       iter != robot_poses.end();
       ++iter)
   {
-    post_processor_params_.RobotPoses.push_back(*iter);
+    srv_post_processor_.request.RobotPoses.push_back(*iter);
   }
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setPointColorViz(std::vector<bool> point_color_viz)
+void grinding_rviz_plugin::PostProcessorWidget::setPointColorViz(const std::vector<bool> &point_color_viz)
 {
-  for(std::vector<bool>::iterator iter (point_color_viz.begin());
+  srv_post_processor_.request.PointColorViz.clear();
+  for(std::vector<bool>::const_iterator iter (point_color_viz.begin());
         iter != point_color_viz.end();
         ++iter)
   {
-    post_processor_params_.PointColorViz.push_back(*iter);
+    srv_post_processor_.request.PointColorViz.push_back(*iter);
   }
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setIndexVector(std::vector<int> index_vector)
+void grinding_rviz_plugin::PostProcessorWidget::setIndexVector(const std::vector<int> &index_vector)
 {
-  for(std::vector<int>::iterator iter (index_vector.begin());
+  srv_post_processor_.request.IndexVector.clear();
+  for(std::vector<int>::const_iterator iter (index_vector.begin());
         iter != index_vector.end();
         ++iter)
   {
-    post_processor_params_.IndexVector.push_back(*iter);
+    srv_post_processor_.request.IndexVector.push_back(*iter);
   }
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::browseProgramLocation()
+void grinding_rviz_plugin::PostProcessorWidget::generateProgramButtonHandler()
 {
-  QFileDialog program_location_browser;
+  updateInternalValues();
+  Q_EMIT getRobotTrajectoryData();
 
-  program_location_->setText(program_location_browser.getExistingDirectory(0, tr("Select file location"), "/home/dell"));
+  if (srv_post_processor_.request.ProgramName.empty())
+  {
+    Q_EMIT sendMsgBox("Program name",
+                      "The program name cannot be empty", "");
+    Q_EMIT sendStatus("Program name is empty");
+    return;
+  }
+
+  // Request has been filled with updateInternalValues and getRobotTrajectoryData();
+  // Start client service call in an other thread
+  QFuture<void> future = QtConcurrent::run(this, &PostProcessorWidget::generateProgram);
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::GenerateProgramButtonHandler()
-{
-  if(program_name_->text().isEmpty() || ip_adress_->text().isEmpty() || program_location_->text().isEmpty())
-  {
-    Q_EMIT sendStatus("Program name, Robot IP address and program location fields have to be filled");
-  }
-  else
-  {
-    // Fill in the request
-    Q_EMIT getRobotPosesData();
-    srv_post_processor_.request = this->getPostProcessorParams();
-    //srv_.request.*request* = *value*;
-    // Start client service call in an other thread
-    QFuture<void> future = QtConcurrent::run(this, &PostProcessorWidget::GenerateProgram);
-  }
-}
-
-void grinding_rviz_plugin::PostProcessorWidget::GenerateProgram()
+void grinding_rviz_plugin::PostProcessorWidget::generateProgram()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
 
   // Call client service
   post_processor_service_.call(srv_post_processor_);
-  Q_EMIT sendStatus(QString::fromStdString(srv_post_processor_.response.ReturnMessage));
+
+  if(srv_post_processor_.response.ReturnStatus == true)
+  {
+    Q_EMIT sendStatus(QString::fromStdString(srv_post_processor_.response.ReturnMessage));
+  }
+  else
+  {
+    Q_EMIT sendMsgBox("Error in post-processor",
+                      QString::fromStdString(srv_post_processor_.response.ReturnMessage),
+                      "");
+  }
 
   // Re-enable UI
   Q_EMIT enablePanel(true); // Enable UI
@@ -225,9 +251,9 @@ void grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
   config.mapSetValue(this->objectName() + "program_name", program_name_->text());
-  config.mapSetValue(this->objectName() + "ip_adress", ip_adress_->text());
-  config.mapSetValue(this->objectName() + "program_location", program_location_->text());
   config.mapSetValue(this->objectName() + "comment", comment_->text());
+  config.mapSetValue(this->objectName() + "upload_program", upload_program_->isChecked());
+  config.mapSetValue(this->objectName() + "ip_adress", ip_address_->text());
 }
 
 // Load all configuration data for this panel from the given Config object.
@@ -237,10 +263,16 @@ void grinding_rviz_plugin::PostProcessorWidget::load(const rviz::Config& config)
   // Load offset value from config file (if it exists)
   if (config.mapGetString(this->objectName() + "program_name", &tmp))
     program_name_->setText(tmp);
-  if (config.mapGetString(this->objectName() + "ip_adress", &tmp))
-    ip_adress_->setText(tmp);
-  if (config.mapGetString(this->objectName() + "program_location", &tmp))
-    program_location_->setText(tmp);
   if (config.mapGetString(this->objectName() + "comment", &tmp))
     comment_->setText(tmp);
+
+  bool state_tmp;
+  if (config.mapGetBool(this->objectName() + "upload_program", &state_tmp))
+      upload_program_->setChecked(state_tmp);
+  setIpAddressEnable(upload_program_->isChecked());
+
+  if (config.mapGetString(this->objectName() + "ip_adress", &tmp))
+    ip_address_->setText(tmp);
+
+  updateInternalValues();
 }
