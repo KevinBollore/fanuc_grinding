@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(post_processor)
+project(fanuc_grinding_post_processor)
 
 find_package(catkin REQUIRED COMPONENTS
 			 roscpp

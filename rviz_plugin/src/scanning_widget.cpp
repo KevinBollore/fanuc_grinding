@@ -13,9 +13,9 @@
 
 #include "scanning_widget.h"
 
-grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
+fanuc_grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
     QWidget(parent),
-    package_name_("scanning")
+    package_name_("fanuc_grinding_scanning")
 {
   setObjectName("ScanningWidget_");
   QLabel* cad_meshname_label = new QLabel("CAD mesh file:");
@@ -151,26 +151,26 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
   connect(this, SIGNAL(enableScanWidget()), this, SLOT(enableScanWidgetHandler()));
 
   // Subscriber to receive messages from the exterior
-  status_sub_ = nh_.subscribe("scanning_status", 1, &grinding_rviz_plugin::ScanningWidget::newStatusMessage, this);
+  status_sub_ = nh_.subscribe("scanning_status", 1, &fanuc_grinding_rviz_plugin::ScanningWidget::newStatusMessage, this);
 
   // Setup client
-  scanning_service_ = nh_.serviceClient<scanning::ScanningService>("scanning_service");
-  publish_meshfile_service_ = nh_.serviceClient<publish_meshfile::PublishMeshfileService>("publish_meshfile_service");
+  scanning_service_ = nh_.serviceClient<fanuc_grinding_scanning::ScanningService>("scanning_service");
+  publish_meshfile_service_ = nh_.serviceClient<fanuc_grinding_publish_meshfile::PublishMeshfileService>("publish_meshfile_service");
 
-  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::ScanningWidget::connectToServices);
+  QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::ScanningWidget::connectToServices);
 }
 
-void grinding_rviz_plugin::ScanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)
+void fanuc_grinding_rviz_plugin::ScanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)
 {
   Q_EMIT sendStatus(QString::fromStdString(msg->data));
 }
 
-scanning::ScanningService::Request grinding_rviz_plugin::ScanningWidget::getScanningParams()
+fanuc_grinding_scanning::ScanningService::Request fanuc_grinding_rviz_plugin::ScanningWidget::getScanningParams()
 {
   return scanning_params_;
 }
 
-void grinding_rviz_plugin::ScanningWidget::setScanningParams(scanning::ScanningService::Request params)
+void fanuc_grinding_rviz_plugin::ScanningWidget::setScanningParams(fanuc_grinding_scanning::ScanningService::Request params)
 {
   scanning_params_.YamlFileName = params.YamlFileName;
   scanning_params_.SLS2ServerName = params.SLS2ServerName;
@@ -181,12 +181,12 @@ void grinding_rviz_plugin::ScanningWidget::setScanningParams(scanning::ScanningS
   updateGUI();
 }
 
-publish_meshfile::PublishMeshfileService::Request grinding_rviz_plugin::ScanningWidget::getPublishParams()
+fanuc_grinding_publish_meshfile::PublishMeshfileService::Request fanuc_grinding_rviz_plugin::ScanningWidget::getPublishParams()
 {
   return publish_meshfile_params_;
 }
 
-void grinding_rviz_plugin::ScanningWidget::setPublishParams(publish_meshfile::PublishMeshfileService::Request params)
+void fanuc_grinding_rviz_plugin::ScanningWidget::setPublishParams(fanuc_grinding_publish_meshfile::PublishMeshfileService::Request params)
 {
   publish_meshfile_params_.MeshName = params.MeshName;
   publish_meshfile_params_.MarkerName = params.MarkerName;
@@ -204,7 +204,7 @@ void grinding_rviz_plugin::ScanningWidget::setPublishParams(publish_meshfile::Pu
   updateGUI();
 }
 
-void grinding_rviz_plugin::ScanningWidget::updateGUI()
+void fanuc_grinding_rviz_plugin::ScanningWidget::updateGUI()
 {
   traj_yaml_file_->setText(QString::fromStdString(scanning_params_.YamlFileName));
   sls_2_server_name_->setText(QString::fromStdString(scanning_params_.SLS2ServerName));
@@ -216,7 +216,7 @@ void grinding_rviz_plugin::ScanningWidget::updateGUI()
   down_sampling_leaf_size_->setValue(scanning_params_.VoxelGridLeafSize);
 }
 
-void grinding_rviz_plugin::ScanningWidget::updateInternalValues()
+void fanuc_grinding_rviz_plugin::ScanningWidget::updateInternalValues()
 {
   scanning_params_.YamlFileName = traj_yaml_file_->text().toStdString();
   scanning_params_.SLS2ServerName = sls_2_server_name_->text().toStdString();
@@ -229,7 +229,7 @@ void grinding_rviz_plugin::ScanningWidget::updateInternalValues()
   publish_meshfile_params_.MarkerName = cad_marker_name_line_->text().toStdString();
 }
 
-void grinding_rviz_plugin::ScanningWidget::browseCADFiles()
+void fanuc_grinding_rviz_plugin::ScanningWidget::browseCADFiles()
 {
   QFileDialog cad_mesh_browser;
   std::string meshes_path = ros::package::getPath(package_name_) + "/meshes/";
@@ -240,7 +240,7 @@ void grinding_rviz_plugin::ScanningWidget::browseCADFiles()
   }
 }
 
-void grinding_rviz_plugin::ScanningWidget::browseTrajectoryFiles()
+void fanuc_grinding_rviz_plugin::ScanningWidget::browseTrajectoryFiles()
 {
   QFileDialog yaml_browser;
   std::string yaml_path = ros::package::getPath(package_name_) + "/yaml/";
@@ -251,7 +251,7 @@ void grinding_rviz_plugin::ScanningWidget::browseTrajectoryFiles()
   }
 }
 
-void grinding_rviz_plugin::ScanningWidget::browseCalibrationFiles()
+void fanuc_grinding_rviz_plugin::ScanningWidget::browseCalibrationFiles()
 {
   QFileDialog yaml_browser;
   std::string yaml_path = ros::package::getPath(package_name_) + "/yaml/";
@@ -262,7 +262,7 @@ void grinding_rviz_plugin::ScanningWidget::browseCalibrationFiles()
   }
 }
 
-void grinding_rviz_plugin::ScanningWidget::browseScannedFiles()
+void fanuc_grinding_rviz_plugin::ScanningWidget::browseScannedFiles()
 {
   QFileDialog scan_file_browser;
   QString file_path = scan_file_browser.getOpenFileName(0, tr("Import File Dialog"), "/home/dell/catkin_ws/src/fanuc_grinding/meshes");
@@ -272,12 +272,12 @@ void grinding_rviz_plugin::ScanningWidget::browseScannedFiles()
   }
 }
 
-void grinding_rviz_plugin::ScanningWidget::enableScanWidgetHandler()
+void fanuc_grinding_rviz_plugin::ScanningWidget::enableScanWidgetHandler()
 {
   scan_choice_container_->setEnabled(true);
 }
 
-void grinding_rviz_plugin::ScanningWidget::importCADFileButtonHandler()
+void fanuc_grinding_rviz_plugin::ScanningWidget::importCADFileButtonHandler()
 {
   QFileInfo Fout(cad_meshname_->text());
   if (!Fout.exists())
@@ -317,7 +317,7 @@ void grinding_rviz_plugin::ScanningWidget::importCADFileButtonHandler()
   QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::publishCADMeshOrCloudFile);
 }
 
-void grinding_rviz_plugin::ScanningWidget::importScanFileButtonHandler()
+void fanuc_grinding_rviz_plugin::ScanningWidget::importScanFileButtonHandler()
 {
   QFileInfo Fout(cad_meshname_->text());
   if(!Fout.exists())
@@ -358,7 +358,7 @@ void grinding_rviz_plugin::ScanningWidget::importScanFileButtonHandler()
   }
 }
 
-void grinding_rviz_plugin::ScanningWidget::publishCADMeshOrCloudFile()
+void fanuc_grinding_rviz_plugin::ScanningWidget::publishCADMeshOrCloudFile()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -384,7 +384,7 @@ void grinding_rviz_plugin::ScanningWidget::publishCADMeshOrCloudFile()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::ScanningWidget::publishScanMeshOrCloudFile()
+void fanuc_grinding_rviz_plugin::ScanningWidget::publishScanMeshOrCloudFile()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -411,7 +411,7 @@ void grinding_rviz_plugin::ScanningWidget::publishScanMeshOrCloudFile()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::ScanningWidget::scanningButtonHandler()
+void fanuc_grinding_rviz_plugin::ScanningWidget::scanningButtonHandler()
 {
   QFileInfo traj_yaml_file(traj_yaml_file_->text());
   if (!traj_yaml_file.exists())
@@ -451,7 +451,7 @@ void grinding_rviz_plugin::ScanningWidget::scanningButtonHandler()
   QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::scanning);
 }
 
-void grinding_rviz_plugin::ScanningWidget::scanning()
+void fanuc_grinding_rviz_plugin::ScanningWidget::scanning()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -478,7 +478,7 @@ void grinding_rviz_plugin::ScanningWidget::scanning()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::ScanningWidget::connectToServices()
+void fanuc_grinding_rviz_plugin::ScanningWidget::connectToServices()
 {
   Q_EMIT enablePanel(false);
 
@@ -522,7 +522,7 @@ void grinding_rviz_plugin::ScanningWidget::connectToServices()
   Q_EMIT enablePanel(true);
 }
 
-void grinding_rviz_plugin::ScanningWidget::triggerSave()
+void fanuc_grinding_rviz_plugin::ScanningWidget::triggerSave()
 {
   Q_EMIT GUIChanged();
   updateInternalValues();
@@ -530,7 +530,7 @@ void grinding_rviz_plugin::ScanningWidget::triggerSave()
 }
 
 // Save all configuration data from this panel to the given Config object
-void grinding_rviz_plugin::ScanningWidget::save(rviz::Config config)
+void fanuc_grinding_rviz_plugin::ScanningWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
   config.mapSetValue(objectName() + "traj_yaml_file", traj_yaml_file_->text());
@@ -545,7 +545,7 @@ void grinding_rviz_plugin::ScanningWidget::save(rviz::Config config)
 }
 
 // Load all configuration data for this panel from the given Config object.
-void grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
+void fanuc_grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
 {
   QString tmp;
   // Load offset value from config file (if it exists)

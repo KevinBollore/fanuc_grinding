@@ -1,5 +1,5 @@
 <package format="2">
-  <name>scanning</name>
+  <name>fanuc_grinding_scanning</name>
   <version>0.0.0</version>
   <description>Scanning part of grinding demonstrator</description>
   <author>Kévin Bolloré, Victor Lamoine</author>
@@ -11,13 +11,13 @@
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>message_generation</build_depend>
-  <build_depend>execute_joint_state</build_depend>
-  <build_depend>publish_meshfile</build_depend>
+  <build_depend>fanuc_grinding_execute_joint_state</build_depend>
+  <build_depend>fanuc_grinding_publish_meshfile</build_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
-  <exec_depend>execute_joint_state</exec_depend>
-  <exec_depend>publish_meshfile</exec_depend>
+  <exec_depend>fanuc_grinding_execute_joint_state</exec_depend>
+  <exec_depend>fanuc_grinding_publish_meshfile</exec_depend>
   <exec_depend>fanuc_r1000ia_sls_2_grinding_moveit_config</exec_depend>
 </package>

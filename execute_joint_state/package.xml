@@ -1,5 +1,5 @@
 <package format="2">
-  <name>execute_joint_state</name>
+  <name>fanuc_grinding_execute_joint_state</name>
   <version>0.0.0</version>
   <description>Execute Joint State</description>
   <author>Kévin Bolloré, Victor Lamoine</author>

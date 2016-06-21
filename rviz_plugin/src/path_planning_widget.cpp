@@ -14,7 +14,7 @@
 
 #include "path_planning_widget.h"
 
-grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
+fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
 {
   setObjectName("PathPlanningWidget_");
   QLabel* surfacing_mode_label = new QLabel("Surfacing mode ");
@@ -141,30 +141,30 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
   connect(this, SIGNAL(enableVizSimButton()), this, SLOT(enableVizSimButtonHandler()));
 
   // Subscriber to receive messages from the exterior
-  status_sub_ = nh_.subscribe("path_planning_status", 1, &grinding_rviz_plugin::PathPlanningWidget::newStatusMessage, this);
+  status_sub_ = nh_.subscribe("path_planning_status", 1, &fanuc_grinding_rviz_plugin::PathPlanningWidget::newStatusMessage, this);
 
   // Setup client
-  path_planning_service_ = nh_.serviceClient<path_planning::PathPlanningService>("path_planning_service");
+  path_planning_service_ = nh_.serviceClient<fanuc_grinding_path_planning::PathPlanningService>("path_planning_service");
 
-  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::PathPlanningWidget::connectToServices);
+  QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::PathPlanningWidget::connectToServices);
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)
 {
   Q_EMIT sendStatus(QString::fromStdString(msg->data));
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::enableComputeTrajectoryButtonHandler(bool state)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableComputeTrajectoryButtonHandler(bool state)
 {
   compute_trajectory_->setEnabled(state);
 }
 
-path_planning::PathPlanningService::Request grinding_rviz_plugin::PathPlanningWidget::getPathPlanningParams()
+fanuc_grinding_path_planning::PathPlanningService::Request fanuc_grinding_rviz_plugin::PathPlanningWidget::getPathPlanningParams()
 {
   return path_planning_params_;
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planning::PathPlanningService::Request params)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request params)
 {
   path_planning_params_.SurfacingMode = params.SurfacingMode;
   path_planning_params_.CoveringPercentage = params.CoveringPercentage;
@@ -179,7 +179,7 @@ void grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(path_planni
   updateGUI();
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 {
   surfacing_mode_->setChecked(path_planning_params_.SurfacingMode);
   covering_percentage_->setValue(path_planning_params_.CoveringPercentage);
@@ -193,7 +193,7 @@ void grinding_rviz_plugin::PathPlanningWidget::updateGUI()
   angle_value_->setValue(path_planning_params_.AngleValue * 360.0 / M_PI); // radians to degrees
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
 {
   path_planning_params_.SurfacingMode = surfacing_mode_->isChecked();
   path_planning_params_.CoveringPercentage = covering_percentage_->value();
@@ -207,13 +207,13 @@ void grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
   path_planning_params_.AngleValue = angle_value_->value() / 360.0 * M_PI; // degrees to radians
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const int state)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const int state)
 {
   depth_of_pass_->setEnabled(!state);
   depth_of_pass_label_->setEnabled(!state);
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString cad_filename,
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString cad_filename,
                                                                 const QString cad_marker_name,
                                                                 const QString scan_filename,
                                                                 const QString scan_marker_name)
@@ -224,12 +224,12 @@ void grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString
   path_planning_params_.ScanMarkerName = scan_marker_name.toStdString();
 }
 
-std::vector<geometry_msgs::Pose> grinding_rviz_plugin::PathPlanningWidget::getRobotPoses()
+std::vector<geometry_msgs::Pose> fanuc_grinding_rviz_plugin::PathPlanningWidget::getRobotPoses()
 {
   return srv_path_planning_.response.RobotPosesOutput;
 }
 
-std::vector<bool> grinding_rviz_plugin::PathPlanningWidget::getPointColorViz()
+std::vector<bool> fanuc_grinding_rviz_plugin::PathPlanningWidget::getPointColorViz()
 {
   // TODO: Can we avoid copying/duplicating?
   std::vector<bool> temp;
@@ -243,12 +243,12 @@ std::vector<bool> grinding_rviz_plugin::PathPlanningWidget::getPointColorViz()
   return temp;
 }
 
-std::vector<int> grinding_rviz_plugin::PathPlanningWidget::getIndexVector()
+std::vector<int> fanuc_grinding_rviz_plugin::PathPlanningWidget::getIndexVector()
 {
   return srv_path_planning_.response.IndexVectorOutput;
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectoryButtonHandler()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectoryButtonHandler()
 {
   // Fill service parameters with GUI values
   updateInternalValues();
@@ -264,7 +264,7 @@ void grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectoryButtonHandler()
   QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::ComputeTrajectory);
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectory()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectory()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -290,7 +290,7 @@ void grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectory()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
 {
   if(visualize_trajectory_->isEnabled() == false)
   {
@@ -302,7 +302,7 @@ void grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
   }
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectoryButtonHandler()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectoryButtonHandler()
 {
   // If GUI has been changed, compute_trajectory_button_ is enabled.
   // So the pose is not up-to-date with GUI values
@@ -344,7 +344,7 @@ void grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectoryButtonHandler(
 
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectory()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectory()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -358,7 +358,7 @@ void grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectory()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectoryButtonHandler()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectoryButtonHandler()
 {
   // If GUI has been changed, compute_trajectory_button_ is enable.
   // So, the pose is not up-to-date with GUI values
@@ -399,7 +399,7 @@ void grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectoryButtonHandler()
   QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::SimulateTrajectory);
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectory()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectory()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -413,7 +413,7 @@ void grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectory()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::connectToServices()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::connectToServices()
 {
   Q_EMIT enablePanel(false);
 
@@ -440,7 +440,7 @@ void grinding_rviz_plugin::PathPlanningWidget::connectToServices()
   Q_EMIT enablePanel(true);
 }
 
-void grinding_rviz_plugin::PathPlanningWidget::triggerSave()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::triggerSave()
 {
   Q_EMIT GUIChanged();
   updateInternalValues();
@@ -449,7 +449,7 @@ void grinding_rviz_plugin::PathPlanningWidget::triggerSave()
 }
 
 // Save all configuration data from this panel to the given Config object
-void grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
   config.mapSetValue(objectName() + "surfacing_mode", surfacing_mode_->isChecked());
@@ -465,7 +465,7 @@ void grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
 }
 
 // Load all configuration data for this panel from the given Config object.
-void grinding_rviz_plugin::PathPlanningWidget::load(const rviz::Config& config)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::load(const rviz::Config& config)
 {
   int tmp_int;
   bool tmp_bool;

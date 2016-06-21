@@ -1,5 +1,5 @@
 <package format="2">
-  <name>path_planning</name>
+  <name>fanuc_grinding_path_planning</name>
   <version>0.0.0</version>
   <description>Path Planning of grinding demonstrator</description>
   <author>Kévin Bolloré, Victor Lamoine</author>

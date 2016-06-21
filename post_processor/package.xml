@@ -1,5 +1,5 @@
 <package format="2">
-  <name>post_processor</name>
+  <name>fanuc_grinding_post_processor</name>
   <version>0.0.0</version>
   <description>Post Processor of grinding demonstrator</description>
   <author>Kévin Bolloré, Victor Lamoine</author>

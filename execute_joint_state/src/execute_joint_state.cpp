@@ -18,7 +18,7 @@
 #include <moveit/move_group_interface/move_group.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 
-#include <execute_joint_state/ExecuteJointStateService.h> // Description of the Service we will use
+#include <fanuc_grinding_execute_joint_state/ExecuteJointStateService.h> // Description of the Service we will use
 
 boost::shared_ptr<move_group_interface::MoveGroup> group;
 boost::shared_ptr<ros::NodeHandle> node;
@@ -29,8 +29,8 @@ boost::shared_ptr<ros::NodeHandle> node;
  * @param res[out]
  * @return Always true
  */
-bool moveRobotExecuteJointState(execute_joint_state::ExecuteJointStateService::Request &req,
-                                execute_joint_state::ExecuteJointStateService::Response &res)
+bool moveRobotExecuteJointState(fanuc_grinding_execute_joint_state::ExecuteJointStateService::Request &req,
+                                fanuc_grinding_execute_joint_state::ExecuteJointStateService::Response &res)
 {
   // We create a joint state and fill it with the request of JointState
   std::vector<double> joint_state;

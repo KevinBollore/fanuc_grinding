@@ -6,7 +6,7 @@
 #include <ros/service.h>
 #include <rviz/panel.h>
 #include <std_msgs/String.h>
-#include <path_planning/PathPlanningService.h>
+#include <fanuc_grinding_path_planning/PathPlanningService.h>
 #endif
 
 class QDoubleSpinBox;
@@ -19,7 +19,7 @@ class QPushButton;
 class QMessageBox;
 class QCheckBox;
 
-namespace grinding_rviz_plugin
+namespace fanuc_grinding_rviz_plugin
 {
 class PathPlanningWidget : public QWidget
 {
@@ -28,8 +28,8 @@ class PathPlanningWidget : public QWidget
 public:
   PathPlanningWidget(QWidget* parent =  NULL);
 
-  path_planning::PathPlanningService::Request getPathPlanningParams();
-  void setPathPlanningParams(path_planning::PathPlanningService::Request params);
+  fanuc_grinding_path_planning::PathPlanningService::Request getPathPlanningParams();
+  void setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request params);
 
   std::vector<geometry_msgs::Pose> getRobotPoses();
   std::vector<bool> getPointColorViz();
@@ -76,9 +76,9 @@ protected:
   // ROS
   ros::NodeHandle nh_;
   ros::ServiceClient path_planning_service_;
-  path_planning::PathPlanningService srv_path_planning_;
+  fanuc_grinding_path_planning::PathPlanningService srv_path_planning_;
 
-  path_planning::PathPlanningService::Request path_planning_params_;
+  fanuc_grinding_path_planning::PathPlanningService::Request path_planning_params_;
 
   // Status subscriber, allows to receive status messages from the exterior
   ros::Subscriber status_sub_;

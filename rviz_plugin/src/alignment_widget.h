@@ -15,9 +15,9 @@ class QVBoxLayout;
 class QLineEdit;
 class QPushButton;
 
-#include <alignment/AlignmentService.h>
+#include <fanuc_grinding_alignment/AlignmentService.h>
 
-namespace grinding_rviz_plugin
+namespace fanuc_grinding_rviz_plugin
 {
 class AlignmentWidget : public QWidget
 {
@@ -26,8 +26,8 @@ class AlignmentWidget : public QWidget
 public:
   AlignmentWidget(QWidget* parent =  NULL);
 
-  alignment::AlignmentService::Request getAlignmentParams();
-  void setAlignmentParams(alignment::AlignmentService::Request params);
+  fanuc_grinding_alignment::AlignmentService::Request getAlignmentParams();
+  void setAlignmentParams(fanuc_grinding_alignment::AlignmentService::Request params);
 
   void connectToServices();
 
@@ -60,9 +60,9 @@ protected:
   //ROS
   ros::NodeHandle nh_;
   ros::ServiceClient alignment_service_;
-  alignment::AlignmentService srv_alignment_;
+  fanuc_grinding_alignment::AlignmentService srv_alignment_;
 
-  alignment::AlignmentService::Request alignment_params_;
+  fanuc_grinding_alignment::AlignmentService::Request alignment_params_;
 
   QPushButton *alignment_button_;
 

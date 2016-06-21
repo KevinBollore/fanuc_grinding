@@ -56,14 +56,14 @@ Usage
 -----
 Simulation:
 ```
-roslaunch grinding_rviz_plugin grinding_application_r1000ia.launch
+roslaunch fanuc_grinding_rviz_plugin r1000ia_sls_2.launch
 ```
 
 Load a scan from the drive to skip the scanning part.
 
 Real hardware:
 ```
-roslaunch grinding_rviz_plugin grinding_application_r1000ia.launch \
+roslaunch fanuc_grinding_rviz_plugin r1000ia_sls_2.launch \
 sim:=false \
 robot_ip:=192.168.100.200
 ```

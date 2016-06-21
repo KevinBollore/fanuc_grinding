@@ -18,7 +18,7 @@ demonstrator
 #include <moveit/move_group_interface/move_group.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 
-#include <comparison/ComparisonService.h> // Description of the Service we will use
+#include <fanuc_grinding_comparison/ComparisonService.h> // Description of the Service we will use
 
 boost::shared_ptr<move_group_interface::MoveGroup> group;
 boost::shared_ptr<ros::NodeHandle> node;
@@ -29,7 +29,8 @@ boost::shared_ptr<ros::NodeHandle> node;
  * @param res[out]
  * @return Alway true
  */
-bool moveRobotComparison(comparison::ComparisonService::Request &req, comparison::ComparisonService::Response &res)
+bool moveRobotComparison(fanuc_grinding_comparison::ComparisonService::Request &req,
+                         fanuc_grinding_comparison::ComparisonService::Response &res)
 {
   // Get parameters from the message and print them
   ROS_WARN_STREAM(std::endl << req);

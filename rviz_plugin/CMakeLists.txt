@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(grinding_rviz_plugin)
+project(fanuc_grinding_rviz_plugin)
 
-find_package(catkin REQUIRED COMPONENTS rviz alignment scanning comparison path_planning post_processor)
+find_package(catkin REQUIRED COMPONENTS
+                    rviz 
+                    fanuc_grinding_alignment
+                    fanuc_grinding_scanning
+                    fanuc_grinding_comparison
+                    fanuc_grinding_path_planning
+                    fanuc_grinding_post_processor)
 
 catkin_package()
 
@@ -19,7 +25,7 @@ qt4_wrap_cpp(MOC_FILES
   src/comparison_widget.h
   src/path_planning_widget.h
   src/post_processor_widget.h
-  src/grinding_rviz_plugin.h
+  src/fanuc_grinding_rviz_plugin.h
 )
 
 set(SOURCE_FILES
@@ -28,14 +34,14 @@ set(SOURCE_FILES
   src/comparison_widget.cpp
   src/path_planning_widget.cpp
   src/post_processor_widget.cpp
-  src/grinding_rviz_plugin.cpp 
+  src/fanuc_grinding_rviz_plugin.cpp 
   ${MOC_FILES}
 )
 
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES})
-add_dependencies(${PROJECT_NAME} scanning_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME} fanuc_grinding_scanning_generate_messages_cpp)
 
 ## Install rules
 install(TARGETS

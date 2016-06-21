@@ -1,5 +1,5 @@
 <package format="2">
-  <name>comparison</name>
+  <name>fanuc_grinding_comparison</name>
   <version>0.0.0</version>
   <description>Comparison part of grinding demonstrator</description>
   <author>Kévin Bolloré, Victor Lamoine</author>

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(scanning)
+project(fanuc_grinding_scanning)
 
 find_package(catkin REQUIRED COMPONENTS
 			 roscpp
@@ -8,8 +8,8 @@ find_package(catkin REQUIRED COMPONENTS
 			 tf_conversions
 			 moveit_ros_planning_interface
 			 visualization_msgs
-			 execute_joint_state
-			 publish_meshfile)
+			 fanuc_grinding_execute_joint_state
+			 fanuc_grinding_publish_meshfile)
 
 find_package(PCL 1.8.0 REQUIRED)
 

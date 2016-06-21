@@ -66,15 +66,15 @@
   </node>
 
   <!-- Including different nodes -->
-  <node name="publish_meshfile" pkg="publish_meshfile" type="publish_meshfile" output="screen"/>
-  <node name="scanning" pkg="scanning" type="scanning" output="screen"/>
-  <node name="execute_joint_state" pkg="execute_joint_state" type="execute_joint_state" output="screen"/>
-  <node name="alignment" pkg="alignment" type="alignment" output="screen"/>
-  <node name="comparison" pkg="comparison" type="comparison" output="screen"/>
-  <node name="path_planning" pkg="path_planning" type="path_planning" output="screen"/>
-  <node name="post_processor" pkg="post_processor" type="post_processor" output="screen"/>
+  <node name="publish_meshfile" pkg="fanuc_grinding_publish_meshfile" type="fanuc_grinding_publish_meshfile" output="screen"/>
+  <node name="scanning" pkg="fanuc_grinding_scanning" type="fanuc_grinding_scanning" output="screen"/>
+  <node name="execute_joint_state" pkg="fanuc_grinding_execute_joint_state" type="fanuc_grinding_execute_joint_state" output="screen"/>
+  <node name="alignment" pkg="fanuc_grinding_alignment" type="fanuc_grinding_alignment" output="screen"/>
+  <node name="comparison" pkg="fanuc_grinding_comparison" type="fanuc_grinding_comparison" output="screen"/>
+  <node name="path_planning" pkg="fanuc_grinding_path_planning" type="fanuc_grinding_path_planning" output="screen"/>
+  <node name="post_processor" pkg="fanuc_grinding_post_processor" type="fanuc_grinding_post_processor" output="screen"/>
 
   <include file="$(find fanuc_r1000ia_sls_2_grinding_support)/launch/load_r1000ia_grinding.launch" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grinding_rviz_plugin)/config/robot_state_visualize.rviz" output="screen" required="true" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find fanuc_grinding_rviz_plugin)/config/robot_state_visualize.rviz" output="screen" required="true" />
 
 </launch>

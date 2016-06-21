@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(path_planning)
+project(fanuc_grinding_path_planning)
 
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs genmsg tf_conversions moveit_ros_planning_interface visualization_msgs bezier_library geometry_msgs)
 find_package(PCL 1.8.0 REQUIRED)

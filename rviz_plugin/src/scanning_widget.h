@@ -7,8 +7,8 @@
 #include <ros/service.h>
 #include <rviz/panel.h>
 #include <std_msgs/String.h>
-#include <scanning/ScanningService.h>
-#include <publish_meshfile/PublishMeshfileService.h>
+#include <fanuc_grinding_scanning/ScanningService.h>
+#include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h>
 #endif
 
 class QDoubleSpinBox;
@@ -17,7 +17,7 @@ class QLineEdit;
 class QPushButton;
 class QTabWidget;
 
-namespace grinding_rviz_plugin
+namespace fanuc_grinding_rviz_plugin
 {
 class ScanningWidget : public QWidget
 {
@@ -26,10 +26,10 @@ class ScanningWidget : public QWidget
 public:
   ScanningWidget(QWidget* parent =  NULL);
 
-  scanning::ScanningService::Request getScanningParams();
-  publish_meshfile::PublishMeshfileService::Request getPublishParams();
-  void setScanningParams(scanning::ScanningService::Request params);
-  void setPublishParams(publish_meshfile::PublishMeshfileService::Request params);
+  fanuc_grinding_scanning::ScanningService::Request getScanningParams();
+  fanuc_grinding_publish_meshfile::PublishMeshfileService::Request getPublishParams();
+  void setScanningParams(fanuc_grinding_scanning::ScanningService::Request params);
+  void setPublishParams(fanuc_grinding_publish_meshfile::PublishMeshfileService::Request params);
 
   void connectToServices();
 
@@ -75,13 +75,13 @@ protected:
   ros::NodeHandle nh_;
 
   ros::ServiceClient scanning_service_;
-  scanning::ScanningService srv_scanning_;
+  fanuc_grinding_scanning::ScanningService srv_scanning_;
 
   ros::ServiceClient publish_meshfile_service_;
-  publish_meshfile::PublishMeshfileService srv_publish_meshfile_;
+  fanuc_grinding_publish_meshfile::PublishMeshfileService srv_publish_meshfile_;
 
-  scanning::ScanningService::Request scanning_params_;
-  publish_meshfile::PublishMeshfileService::Request publish_meshfile_params_;
+  fanuc_grinding_scanning::ScanningService::Request scanning_params_;
+  fanuc_grinding_publish_meshfile::PublishMeshfileService::Request publish_meshfile_params_;
 
   // Status subscriber, allows to receive status messages from the exterior
   ros::Subscriber status_sub_;

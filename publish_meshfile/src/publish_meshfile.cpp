@@ -26,7 +26,7 @@ demonstrator
 #include <pcl/io/vtk_lib_io.h>
 #include <pcl/PolygonMesh.h>
 
-#include <publish_meshfile/PublishMeshfileService.h> // Description of the Service we will use
+#include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h> // Description of the Service we will use
 
 boost::shared_ptr<ros::NodeHandle> node;
 
@@ -41,8 +41,8 @@ typedef pcl::PointCloud<PointXYZ> PointCloudXYZ;
  * @param res[out]
  * @return Alway true
  */
-bool publishMeshFile(publish_meshfile::PublishMeshfileService::Request &req,
-                     publish_meshfile::PublishMeshfileService::Response &res)
+bool publishMeshFile(fanuc_grinding_publish_meshfile::PublishMeshfileService::Request &req,
+                     fanuc_grinding_publish_meshfile::PublishMeshfileService::Response &res)
 {
   if (req.color_a <= 0.1)
     ROS_WARN_STREAM("publishMeshFile: Alpha is set to 0, mesh will be invisible!");

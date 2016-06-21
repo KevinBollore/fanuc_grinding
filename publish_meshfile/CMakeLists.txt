@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(publish_meshfile)
+project(fanuc_grinding_publish_meshfile)
 
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs genmsg tf_conversions moveit_ros_planning_interface visualization_msgs)
 
