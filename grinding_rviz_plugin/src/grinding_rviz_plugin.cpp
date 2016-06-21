@@ -178,7 +178,7 @@ void GrindingRvizPlugin::enablePanelPostProcessorHandler()
 
 void GrindingRvizPlugin::enablePanelHandler(bool status)
 {
-  this->setEnabled(status);
+  setEnabled(status);
 }
 
 void GrindingRvizPlugin::displayStatusHandler(const QString message)

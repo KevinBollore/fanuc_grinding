@@ -14,7 +14,7 @@
 
 grinding_rviz_plugin::AlignmentWidget::AlignmentWidget(QWidget* parent) : QWidget(parent)
 {
-  this->setObjectName("AlignmentWidget_");
+  setObjectName("AlignmentWidget_");
   alignment_button_ = new QPushButton;
   alignment_button_->setText("Start Alignment");
 
