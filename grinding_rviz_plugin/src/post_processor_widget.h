@@ -3,17 +3,17 @@
 
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
+#include <ros/package.h>
 #include <ros/service.h>
 #include <rviz/panel.h>
 #endif
 
-class QDoubleSpinBox;
 class QLabel;
-class QWidget;
 class QHBoxLayout;
 class QVBoxLayout;
 class QLineEdit;
 class QPushButton;
+class QCheckBox;
 
 #include <post_processor/PostProcessorService.h>
 
@@ -26,12 +26,11 @@ class PostProcessorWidget : public QWidget
 public:
   PostProcessorWidget(QWidget* parent =  NULL);
 
-  post_processor::PostProcessorService::Request getPostProcessorParams();
-  void setPostProcessorParams(post_processor::PostProcessorService::Request params);
-
-  void setRobotPoses(std::vector<geometry_msgs::Pose> robot_poses);
-  void setPointColorViz(std::vector<bool> point_color_viz);
-  void setIndexVector(std::vector<int> index_vector);
+  void setPostProcessorParams(const post_processor::PostProcessorService::Request &params);
+  void setProgramLocation(const std::string &location);
+  void setRobotPoses(const std::vector<geometry_msgs::Pose> &robot_poses);
+  void setPointColorViz(const std::vector<bool> &point_color_viz);
+  void setIndexVector(const std::vector<int> &index_vector);
 
   void connectToServices();
 
@@ -41,19 +40,20 @@ public:
 Q_SIGNALS:
   void GUIChanged();
   void sendStatus(QString status);
+  void sendMsgBox(QString title, QString msg, QString info_msg);
   void enablePanel(bool);
-  void getRobotPosesData();
+  void getRobotTrajectoryData();
 
 public Q_SLOTS:
-  void GenerateProgram();
+  void generateProgram();
 
 protected Q_SLOTS:
   virtual void triggerSave();
   void updateGUI();
   void updateInternalValues();
-  void browseProgramLocation();
-  void GenerateProgramButtonHandler();
+  void generateProgramButtonHandler();
   void tweakProgramName();
+  void setIpAddressEnable(const int state);
 
 protected:
   // ROS
@@ -61,31 +61,14 @@ protected:
   ros::ServiceClient post_processor_service_;
   post_processor::PostProcessorService srv_post_processor_;
 
-  post_processor::PostProcessorService::Request post_processor_params_;
-
-  std::vector<geometry_msgs::Pose> robot_poses_;
-
   // GUI
-  QLabel *program_name_label_;
-  QLineEdit *program_name_;
-  QHBoxLayout *program_name_layout_;
-
-  QLabel *ip_adress_label_;
-  QLineEdit *ip_adress_;
-  QHBoxLayout *ip_adress_layout_;
-
-  QLabel *program_location_label_;
-  QPushButton *browse_program_location_button_;
-  QHBoxLayout *program_location_layout_;
-  QLineEdit *program_location_;
-
-  QLabel *comment_label_;
-  QLineEdit *comment_;
-  QHBoxLayout *comment_layout_;
-
-  QPushButton *generate_program_button_;
-
-  QVBoxLayout *post_processor_layout_;
+  QLineEdit* program_name_;
+  QLineEdit* comment_;
+  QCheckBox* upload_program_;
+  QLabel* ip_adress_label_;
+  QLineEdit* ip_address_;
+  QLineEdit* program_location_;
+  QPushButton* generate_program_button_;
 };
 
 } // End namespace

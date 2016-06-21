@@ -46,6 +46,7 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   tab_widget_->addTab(comparison_widget_, "Comparison");
   tab_widget_->addTab(path_planning_widget_, "Path planning");
   tab_widget_->addTab(post_processor_widget_, "Post processor");
+  tab_widget_->setTabEnabled(0, true);
   tab_widget_->setTabEnabled(1, false);
   tab_widget_->setTabEnabled(2, false);
   tab_widget_->setTabEnabled(3, false);
@@ -137,12 +138,14 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   //POST_PROCESSOR
   // Will display a status in general status label ( from post_processor widget )
   connect(post_processor_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
+  connect(post_processor_widget_, SIGNAL(sendMsgBox(QString, QString, QString)),
+                      this, SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that post_processor_widget is modified
   connect(post_processor_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
   // Enable general panel when post_processor send the SIGNAL
   connect(post_processor_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
   // Receive a signal from post processor widget in order to send robot poses data
-  connect(post_processor_widget_, SIGNAL(getRobotPosesData()), this, SLOT(setRobotPosesData()));
+  connect(post_processor_widget_, SIGNAL(getRobotTrajectoryData()), this, SLOT(setRobotTrajectoryData()));
 
   connect(this, SIGNAL(displayStatus(const QString)), this, SLOT(displayStatusHandler(const QString)));
 
@@ -213,7 +216,7 @@ void GrindingRvizPlugin::setScanDatas(const QString scan_filename, const QString
   scan_marker_name_ = scan_marker_name;
 }
 
-void GrindingRvizPlugin::setRobotPosesData()
+void GrindingRvizPlugin::setRobotTrajectoryData()
 {
   post_processor_widget_->setRobotPoses(path_planning_widget_->getRobotPoses());
   post_processor_widget_->setPointColorViz(path_planning_widget_->getPointColorViz());

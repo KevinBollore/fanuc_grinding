@@ -16,7 +16,6 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
-  <exec_depend>fanuc_r1000ia_sls_2_grinding_moveit_config</exec_depend>
   <exec_depend>fanuc_post_processor_library</exec_depend>
 
 </package>
