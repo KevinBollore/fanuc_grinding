@@ -74,8 +74,7 @@
   <node name="path_planning" pkg="path_planning" type="path_planning" output="screen"/>
   <node name="post_processor" pkg="post_processor" type="post_processor" output="screen"/>
 
-  <!-- <node name="grinding_rviz_plugin" pkg="grinding_rviz_plugin" type="grinding_rviz_plugin" output="screen" required="true" /> -->
   <include file="$(find fanuc_r1000ia_sls_2_grinding_support)/launch/load_r1000ia_grinding.launch" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grinding_rviz_plugin)/config/robot_state_visualize.rviz" required="true" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grinding_rviz_plugin)/config/robot_state_visualize.rviz" output="screen" required="true" />
 
 </launch>
