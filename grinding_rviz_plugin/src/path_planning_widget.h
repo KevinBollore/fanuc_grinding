@@ -84,7 +84,6 @@ protected:
   ros::Subscriber status_sub_;
 
   // GUI
-  QLabel *surfacing_mode_label_;
   QCheckBox *surfacing_mode_;
 
   QLabel* depth_of_pass_label_;
@@ -96,7 +95,6 @@ protected:
 
   QSpinBox *extrication_coefficient_;
 
-  QLabel *grind_diameter_label_;
   QDoubleSpinBox *grind_diameter_;
 
   QRadioButton *lean_angle_axis_x_;

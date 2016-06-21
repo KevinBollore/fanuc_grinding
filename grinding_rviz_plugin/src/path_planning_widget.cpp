@@ -17,12 +17,11 @@
 grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
 {
   this->setObjectName("PathPlanningWidget_");
-  surfacing_mode_label_ = new QLabel;
-  surfacing_mode_label_->setText("Surfacing mode ");
+  QLabel* surfacing_mode_label = new QLabel("Surfacing mode ");
   surfacing_mode_ = new QCheckBox;
   surfacing_mode_->setChecked(false);
   QHBoxLayout* surfacing_mode_layout = new QHBoxLayout;
-  surfacing_mode_layout->addWidget(surfacing_mode_label_);
+  surfacing_mode_layout->addWidget(surfacing_mode_label);
   surfacing_mode_layout->addWidget(surfacing_mode_);
 
   depth_of_pass_label_ = new QLabel("Depth of pass");
