@@ -14,7 +14,7 @@
 
 grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) : QWidget(parent)
 {
-  this->setObjectName("ComparisonWidget_");
+  setObjectName("ComparisonWidget_");
   comparison_button_ = new QPushButton;
   comparison_button_->setText("Start Comparison");
 

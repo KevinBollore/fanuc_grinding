@@ -16,7 +16,7 @@
 
 grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
 {
-  this->setObjectName("PathPlanningWidget_");
+  setObjectName("PathPlanningWidget_");
   QLabel* surfacing_mode_label = new QLabel("Surfacing mode ");
   surfacing_mode_ = new QCheckBox;
   surfacing_mode_->setChecked(false);
@@ -450,16 +450,16 @@ void grinding_rviz_plugin::PathPlanningWidget::triggerSave()
 void grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
-  config.mapSetValue(this->objectName() + "surfacing_mode", surfacing_mode_->isChecked());
-  config.mapSetValue(this->objectName() + "covering_percentage", covering_percentage_->value());
-  config.mapSetValue(this->objectName() + "extrication_frequency", extrication_frequency_->value());
-  config.mapSetValue(this->objectName() + "extrication_coefficient", extrication_coefficient_->value());
-  config.mapSetValue(this->objectName() + "grind_diameter", grind_diameter_->value());
-  config.mapSetValue(this->objectName() + "depth_of_path", depth_of_pass_->value());
-  config.mapSetValue(this->objectName() + "radio_x", lean_angle_axis_x_->isChecked());
-  config.mapSetValue(this->objectName() + "radio_y", lean_angle_axis_y_->isChecked());
-  config.mapSetValue(this->objectName() + "radio_z", lean_angle_axis_z_->isChecked());
-  config.mapSetValue(this->objectName() + "angle_value", angle_value_->value());
+  config.mapSetValue(objectName() + "surfacing_mode", surfacing_mode_->isChecked());
+  config.mapSetValue(objectName() + "covering_percentage", covering_percentage_->value());
+  config.mapSetValue(objectName() + "extrication_frequency", extrication_frequency_->value());
+  config.mapSetValue(objectName() + "extrication_coefficient", extrication_coefficient_->value());
+  config.mapSetValue(objectName() + "grind_diameter", grind_diameter_->value());
+  config.mapSetValue(objectName() + "depth_of_path", depth_of_pass_->value());
+  config.mapSetValue(objectName() + "radio_x", lean_angle_axis_x_->isChecked());
+  config.mapSetValue(objectName() + "radio_y", lean_angle_axis_y_->isChecked());
+  config.mapSetValue(objectName() + "radio_z", lean_angle_axis_z_->isChecked());
+  config.mapSetValue(objectName() + "angle_value", angle_value_->value());
 }
 
 // Load all configuration data for this panel from the given Config object.
@@ -470,47 +470,47 @@ void grinding_rviz_plugin::PathPlanningWidget::load(const rviz::Config& config)
   float tmp_float;
   QString tmp_string;
   // Load offset value from config file (if it exists)
-  if (config.mapGetBool(this->objectName() + "surfacing_mode", &tmp_bool))
+  if (config.mapGetBool(objectName() + "surfacing_mode", &tmp_bool))
     surfacing_mode_->setChecked(tmp_bool);
   else
     surfacing_mode_->setChecked(false);
-  if (config.mapGetInt(this->objectName() + "covering_percentage", &tmp_int))
+  if (config.mapGetInt(objectName() + "covering_percentage", &tmp_int))
     covering_percentage_->setValue(tmp_int);
   else
     covering_percentage_->setValue(40);
 
-  if (config.mapGetInt(this->objectName() + "extrication_frequency", &tmp_int))
+  if (config.mapGetInt(objectName() + "extrication_frequency", &tmp_int))
     extrication_frequency_->setValue(tmp_int);
   else
     extrication_coefficient_->setValue(3);
 
-  if (config.mapGetInt(this->objectName() + "extrication_coefficient", &tmp_int))
+  if (config.mapGetInt(objectName() + "extrication_coefficient", &tmp_int))
     extrication_coefficient_->setValue(tmp_int);
   else
     extrication_coefficient_->setValue(3);
 
-  if (config.mapGetInt(this->objectName() + "grind_diameter", &tmp_int))
+  if (config.mapGetInt(objectName() + "grind_diameter", &tmp_int))
     grind_diameter_->setValue(tmp_int);
   else
     grind_diameter_->setValue(120);
 
-  if (config.mapGetInt(this->objectName() + "depth_of_path", &tmp_int))
+  if (config.mapGetInt(objectName() + "depth_of_path", &tmp_int))
     depth_of_pass_->setValue(tmp_int);
   else
     depth_of_pass_->setValue(1.0);
 
-  if (config.mapGetBool(this->objectName() + "radio_x", &tmp_bool))
+  if (config.mapGetBool(objectName() + "radio_x", &tmp_bool))
     lean_angle_axis_x_->setChecked(tmp_bool);
-  if (config.mapGetBool(this->objectName() + "radio_y", &tmp_bool))
+  if (config.mapGetBool(objectName() + "radio_y", &tmp_bool))
     lean_angle_axis_y_->setChecked(tmp_bool);
-  if (config.mapGetBool(this->objectName() + "radio_z", &tmp_bool))
+  if (config.mapGetBool(objectName() + "radio_z", &tmp_bool))
     lean_angle_axis_z_->setChecked(tmp_bool);
   if (!lean_angle_axis_x_->isChecked() && !lean_angle_axis_y_->isChecked() && !lean_angle_axis_z_->isChecked())
   {
     lean_angle_axis_z_->setChecked(true);
   }
 
-  if (config.mapGetFloat(this->objectName() + "angle_value", &tmp_float))
+  if (config.mapGetFloat(objectName() + "angle_value", &tmp_float))
     angle_value_->setValue(tmp_float);
   else
     angle_value_->setValue(10);

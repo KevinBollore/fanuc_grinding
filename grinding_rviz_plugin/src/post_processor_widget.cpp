@@ -12,7 +12,7 @@
 
 grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* parent) : QWidget(parent)
 {
-  this->setObjectName("PostProcessorWidget_");
+  setObjectName("PostProcessorWidget_");
 
   QLabel* program_name_label = new QLabel("Program name:");
   program_name_ = new QLineEdit;
@@ -250,10 +250,10 @@ void grinding_rviz_plugin::PostProcessorWidget::connectToServices()
 void grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
-  config.mapSetValue(this->objectName() + "program_name", program_name_->text());
-  config.mapSetValue(this->objectName() + "comment", comment_->text());
-  config.mapSetValue(this->objectName() + "upload_program", upload_program_->isChecked());
-  config.mapSetValue(this->objectName() + "ip_adress", ip_address_->text());
+  config.mapSetValue(objectName() + "program_name", program_name_->text());
+  config.mapSetValue(objectName() + "comment", comment_->text());
+  config.mapSetValue(objectName() + "upload_program", upload_program_->isChecked());
+  config.mapSetValue(objectName() + "ip_adress", ip_address_->text());
 }
 
 // Load all configuration data for this panel from the given Config object.
@@ -261,17 +261,17 @@ void grinding_rviz_plugin::PostProcessorWidget::load(const rviz::Config& config)
 {
   QString tmp;
   // Load offset value from config file (if it exists)
-  if (config.mapGetString(this->objectName() + "program_name", &tmp))
+  if (config.mapGetString(objectName() + "program_name", &tmp))
     program_name_->setText(tmp);
-  if (config.mapGetString(this->objectName() + "comment", &tmp))
+  if (config.mapGetString(objectName() + "comment", &tmp))
     comment_->setText(tmp);
 
   bool state_tmp;
-  if (config.mapGetBool(this->objectName() + "upload_program", &state_tmp))
+  if (config.mapGetBool(objectName() + "upload_program", &state_tmp))
       upload_program_->setChecked(state_tmp);
   setIpAddressEnable(upload_program_->isChecked());
 
-  if (config.mapGetString(this->objectName() + "ip_adress", &tmp))
+  if (config.mapGetString(objectName() + "ip_adress", &tmp))
     ip_address_->setText(tmp);
 
   updateInternalValues();

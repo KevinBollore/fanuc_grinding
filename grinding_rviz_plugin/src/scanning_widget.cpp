@@ -17,7 +17,7 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
     QWidget(parent),
     package_name_("scanning")
 {
-  this->setObjectName("ScanningWidget_");
+  setObjectName("ScanningWidget_");
   QLabel* cad_meshname_label = new QLabel("CAD mesh file:");
   cad_meshname_ = new QLineEdit;
   cad_meshname_->setReadOnly(true);
@@ -296,7 +296,7 @@ void grinding_rviz_plugin::ScanningWidget::importCADFileButtonHandler()
   }
 
   // Fill in the request
-  srv_publish_meshfile_.request = this->getPublishParams();
+  srv_publish_meshfile_.request = getPublishParams();
   srv_publish_meshfile_.request.MeshName = cad_meshname_->text().toStdString();
   srv_publish_meshfile_.request.MarkerName = cad_marker_name_line_->text().toStdString();
   srv_publish_meshfile_.request.PosX = 1.4;
@@ -336,7 +336,7 @@ void grinding_rviz_plugin::ScanningWidget::importScanFileButtonHandler()
   else
   {
     // Fill in the request
-    srv_publish_meshfile_.request = this->getPublishParams();
+    srv_publish_meshfile_.request = getPublishParams();
     srv_publish_meshfile_.request.MeshName = scan_file_->text().toStdString();
     srv_publish_meshfile_.request.MarkerName = scan_marker_name_line_->text().toStdString();
     srv_publish_meshfile_.request.PosX = 0.0;
@@ -444,7 +444,7 @@ void grinding_rviz_plugin::ScanningWidget::scanningButtonHandler()
   }
 
   // Fill in the request
-  srv_scanning_.request = this->getScanningParams();
+  srv_scanning_.request = getScanningParams();
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::scanning);
 }
@@ -531,15 +531,15 @@ void grinding_rviz_plugin::ScanningWidget::triggerSave()
 void grinding_rviz_plugin::ScanningWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
-  config.mapSetValue(this->objectName() + "traj_yaml_file", traj_yaml_file_->text());
-  config.mapSetValue(this->objectName() + "sls_2_server_name", sls_2_server_name_->text());
-  config.mapSetValue(this->objectName() + "sls_2_ip_address", sls_2_ip_address_->text());
-  config.mapSetValue(this->objectName() + "cad_file", cad_meshname_->text());
-  config.mapSetValue(this->objectName() + "cad_marker_name", cad_marker_name_line_->text());
-  config.mapSetValue(this->objectName() + "scan_marker_name", scan_marker_name_line_->text());
-  config.mapSetValue(this->objectName() + "calibration_yaml_file", calibration_yaml_file_->text());
-  config.mapSetValue(this->objectName() + "scan_filename", scan_file_->text());
-  config.mapSetValue(this->objectName() + "down_sampling_leaf_size", down_sampling_leaf_size_->value());
+  config.mapSetValue(objectName() + "traj_yaml_file", traj_yaml_file_->text());
+  config.mapSetValue(objectName() + "sls_2_server_name", sls_2_server_name_->text());
+  config.mapSetValue(objectName() + "sls_2_ip_address", sls_2_ip_address_->text());
+  config.mapSetValue(objectName() + "cad_file", cad_meshname_->text());
+  config.mapSetValue(objectName() + "cad_marker_name", cad_marker_name_line_->text());
+  config.mapSetValue(objectName() + "scan_marker_name", scan_marker_name_line_->text());
+  config.mapSetValue(objectName() + "calibration_yaml_file", calibration_yaml_file_->text());
+  config.mapSetValue(objectName() + "scan_filename", scan_file_->text());
+  config.mapSetValue(objectName() + "down_sampling_leaf_size", down_sampling_leaf_size_->value());
 }
 
 // Load all configuration data for this panel from the given Config object.
@@ -548,7 +548,7 @@ void grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
   QString tmp;
   // Load offset value from config file (if it exists)
 
-  if (config.mapGetString(this->objectName() + "cad_file", &tmp))
+  if (config.mapGetString(objectName() + "cad_file", &tmp))
     cad_meshname_->setText(tmp);
   else
   {
@@ -556,12 +556,12 @@ void grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
     cad_meshname_->setText(QString::fromStdString(meshes_path+"DAC_580813_cad.stl"));
   }
 
-  if (config.mapGetString(this->objectName() + "cad_marker_name", &tmp))
+  if (config.mapGetString(objectName() + "cad_marker_name", &tmp))
     cad_marker_name_line_->setText(tmp);
   else
     cad_marker_name_line_->setText("cad");
 
-  if (config.mapGetString(this->objectName() + "traj_yaml_file", &tmp))
+  if (config.mapGetString(objectName() + "traj_yaml_file", &tmp))
     traj_yaml_file_->setText(tmp);
   else
   {
@@ -569,17 +569,17 @@ void grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
     traj_yaml_file_->setText(QString::fromStdString(meshes_path+"trajectory_DaC.yaml"));
   }
 
-  if (config.mapGetString(this->objectName() + "sls_2_server_name", &tmp))
+  if (config.mapGetString(objectName() + "sls_2_server_name", &tmp))
     sls_2_server_name_->setText(tmp);
   else
     sls_2_server_name_->setText("m4500");
 
-  if (config.mapGetString(this->objectName() + "sls_2_ip_address", &tmp))
+  if (config.mapGetString(objectName() + "sls_2_ip_address", &tmp))
     sls_2_ip_address_->setText(tmp);
   else
     sls_2_ip_address_->setText("192.168.100.50");
 
-  if (config.mapGetString(this->objectName() + "calibration_yaml_file", &tmp))
+  if (config.mapGetString(objectName() + "calibration_yaml_file", &tmp))
     calibration_yaml_file_->setText(tmp);
   else
   {
@@ -587,7 +587,7 @@ void grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
     calibration_yaml_file_->setText(QString::fromStdString(yaml_path+"camera_calibration.yaml"));
   }
 
-  if (config.mapGetString(this->objectName() + "scan_file", &tmp))
+  if (config.mapGetString(objectName() + "scan_file", &tmp))
     scan_file_->setText(tmp);
   else
   {
@@ -595,13 +595,13 @@ void grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config)
     scan_file_->setText(QString::fromStdString(yaml_path+"DAC_580813_scan.ply"));
   }
 
-  if (config.mapGetString(this->objectName() + "scan_marker_name", &tmp))
+  if (config.mapGetString(objectName() + "scan_marker_name", &tmp))
     scan_marker_name_line_->setText(tmp);
   else
     scan_marker_name_line_->setText("scan");
 
   float tmp_float;
-  if (config.mapGetFloat(this->objectName() + "down_sampling_leaf_size", &tmp_float))
+  if (config.mapGetFloat(objectName() + "down_sampling_leaf_size", &tmp_float))
       down_sampling_leaf_size_->setValue(tmp_float);
     else
       down_sampling_leaf_size_->setValue(0.03);
