@@ -22,10 +22,10 @@ Directories in the project
 `documentation` | Contains explication about this package usage
 `execute_joint_state` | Description/implementation of a service to move the robot to a specific joint defined pose
 `fanuc_grinding` | Contains the meta-package files
-`grinding_rviz_plugin` | Contains the definition and implementation of the grinding RViz plugin
 `path_planning` | Description/implementation of the path planning service. This makes use of the `bezier` package
 `post_processor` | Description/implementation of the post processor service to create a Fanuc TP program. This makes use of the `fanuc_post_processor` package
 `publish_meshfile` | Description/implementation of a service that publishes meshes/point clouds on markers
+`rviz_plugin` | Contains the definition and implementation of the grinding RViz plugin
 `scanning`| Description/implementation of the scanning service, the RViz plugin also allows to load a mesh/point cloud.
 
 Dependencies
