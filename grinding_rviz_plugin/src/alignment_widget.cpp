@@ -108,19 +108,19 @@ void grinding_rviz_plugin::AlignmentWidget::connectToServices()
   {
     if (alignment_service_.waitForExistence(ros::Duration(2)))
     {
-      ROS_INFO_STREAM("RViz panel connected to the service " << alignment_service_.getService());
+      ROS_INFO_STREAM(objectName().toStdString() + " RViz panel connected to the service " << alignment_service_.getService());
       Q_EMIT sendStatus(QString::fromStdString("RViz panel connected to the service: " + alignment_service_.getService()));
       break;
     }
     else
     {
-      ROS_ERROR_STREAM("RViz panel could not connect to ROS service:\n\t" << alignment_service_.getService());
+      ROS_WARN_STREAM(objectName().toStdString() + " RViz panel could not connect to ROS service:\n\t" << alignment_service_.getService());
       Q_EMIT sendStatus(QString::fromStdString("RViz panel could not connect to ROS service: " + alignment_service_.getService()));
       sleep(1);
     }
   }
 
-  ROS_WARN_STREAM("Service connection have been made");
+  ROS_INFO_STREAM(objectName().toStdString() + " service connections have been made");
   Q_EMIT sendStatus("Ready to take commands");
   Q_EMIT enablePanel(true);
 }

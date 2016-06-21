@@ -84,7 +84,6 @@ bool moveRobotPathPlanning(path_planning::PathPlanningService::Request &req,
     lean_angle_axis = "z";
   else
   {
-    ROS_ERROR_STREAM("Please select a lean angle axis for the effector");
     res.ReturnStatus = false;
     res.ReturnMessage = "Please select a lean angle axis for the effector";
     return true;
