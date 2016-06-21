@@ -156,6 +156,8 @@ grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
   // Setup client
   scanning_service_ = nh_.serviceClient<scanning::ScanningService>("scanning_service");
   publish_meshfile_service_ = nh_.serviceClient<publish_meshfile::PublishMeshfileService>("publish_meshfile_service");
+
+  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::ScanningWidget::connectToServices);
 }
 
 void grinding_rviz_plugin::ScanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)

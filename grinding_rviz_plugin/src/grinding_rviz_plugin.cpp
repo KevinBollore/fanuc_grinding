@@ -148,9 +148,6 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   connect(post_processor_widget_, SIGNAL(getRobotTrajectoryData()), this, SLOT(setRobotTrajectoryData()));
 
   connect(this, SIGNAL(displayStatus(const QString)), this, SLOT(displayStatusHandler(const QString)));
-
-  // Check connection of client
-  QFuture<void> future = QtConcurrent::run(this, &GrindingRvizPlugin::connectToServices);
 }
 
 GrindingRvizPlugin::~GrindingRvizPlugin()
@@ -226,15 +223,6 @@ void GrindingRvizPlugin::setRobotTrajectoryData()
 void GrindingRvizPlugin::sendCADAndScanDatasSlot()
 {
   Q_EMIT sendCADAndScanDatas(cad_filename_, cad_marker_name_, scan_filename_, scan_marker_name_);
-}
-
-void GrindingRvizPlugin::connectToServices()
-{
-  scanning_widget_->connectToServices();
-  alignment_widget_->connectToServices();
-  comparison_widget_->connectToServices();
-  path_planning_widget_->connectToServices();
-  post_processor_widget_->connectToServices();
 }
 
 // Save all configuration data from this panel to the given Config object

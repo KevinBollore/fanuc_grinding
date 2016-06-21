@@ -26,6 +26,8 @@ grinding_rviz_plugin::AlignmentWidget::AlignmentWidget(QWidget* parent) : QWidge
 
   //Setup client
   alignment_service_ = nh_.serviceClient<alignment::AlignmentService>("alignment_service");
+
+  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::AlignmentWidget::connectToServices);
 }
 
 void grinding_rviz_plugin::AlignmentWidget::triggerSave()
