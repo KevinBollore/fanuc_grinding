@@ -393,7 +393,8 @@ void grinding_rviz_plugin::ScanningWidget::publishScanMeshOrCloudFile()
 
   if(srv_publish_meshfile_.response.ReturnStatus == true)
   {
-    Q_EMIT enableScanWidget();
+    //Q_EMIT enablePanelAlignment();
+    Q_EMIT enablePanelPathPlanning();
     Q_EMIT sendScanDatas(QString::fromStdString(srv_publish_meshfile_.request.MeshName),
                          QString::fromStdString(srv_publish_meshfile_.request.MarkerName));
   }
@@ -403,9 +404,6 @@ void grinding_rviz_plugin::ScanningWidget::publishScanMeshOrCloudFile()
                       QString::fromStdString(srv_publish_meshfile_.response.ReturnMessage),
                       QString::fromStdString(srv_publish_meshfile_.request.MeshName));
   }
-
-  //Q_EMIT enablePanelAlignment();
-  Q_EMIT enablePanelPathPlanning();
 
   // Re-enable UI
   Q_EMIT enablePanel(true); // Enable UI
@@ -473,9 +471,6 @@ void grinding_rviz_plugin::ScanningWidget::scanning()
                       QString::fromStdString(srv_scanning_.response.ReturnMessage),
                       "");
   }
-
-  //Q_EMIT enablePanelAlignment();
-  Q_EMIT enablePanelPathPlanning();
 
   // Re-enable UI
   Q_EMIT enablePanel(true); // Enable UI
