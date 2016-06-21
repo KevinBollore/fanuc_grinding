@@ -145,6 +145,8 @@ grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : 
 
   // Setup client
   path_planning_service_ = nh_.serviceClient<path_planning::PathPlanningService>("path_planning_service");
+
+  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::PathPlanningWidget::connectToServices);
 }
 
 void grinding_rviz_plugin::PathPlanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)

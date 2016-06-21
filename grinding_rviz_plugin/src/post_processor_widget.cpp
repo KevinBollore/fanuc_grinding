@@ -75,6 +75,8 @@ grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* parent) 
 
   //Setup client
   post_processor_service_ = post_processor_node_.serviceClient<post_processor::PostProcessorService>("post_processor_service");
+
+  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::PostProcessorWidget::connectToServices);
 }
 
 void grinding_rviz_plugin::PostProcessorWidget::triggerSave()

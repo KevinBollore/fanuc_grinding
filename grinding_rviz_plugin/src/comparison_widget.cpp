@@ -27,6 +27,7 @@ grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) : QWid
   //Setup client
   comparison_service_ = comparison_node_.serviceClient<comparison::ComparisonService>("comparison_service");
 
+  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::ComparisonWidget::connectToServices);
 }
 
 void grinding_rviz_plugin::ComparisonWidget::triggerSave()

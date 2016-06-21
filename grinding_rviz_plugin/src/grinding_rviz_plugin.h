@@ -41,8 +41,6 @@ public:
   GrindingRvizPlugin(QWidget* parent = 0);
   virtual ~GrindingRvizPlugin();
 
-  void connectToServices();
-
   Q_SIGNALS:
   void enableWidget(bool);
   void displayStatus(const QString);
