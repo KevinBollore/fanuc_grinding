@@ -176,12 +176,12 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
 
   // Connect to the SLS_2
   davidsdk_ptr.reset(new pcl::DavidSDKGrabber);
-  ROS_INFO_STREAM("Trying to connect to DavidSDK IP \"" << davidSDK_ip << "\" and server name \"" << davidSDK_server_name << "\"");
+  ROS_INFO_STREAM("scanning: Trying to connect to DavidSDK IP \"" << davidSDK_ip << "\" and server name \"" << davidSDK_server_name << "\"");
   davidsdk_ptr->connect(davidSDK_ip);
   if (!davidsdk_ptr->isConnected())
   {
-    ROS_ERROR_STREAM("Cannot connect to the David SLS-2 scanner (IP: " << davidSDK_ip << ")");
-    ROS_ERROR_STREAM("Server name: " << davidSDK_server_name);
+    ROS_ERROR_STREAM("scanning: Cannot connect to the David SLS-2 scanner (IP: " << davidSDK_ip << ")");
+    ROS_ERROR_STREAM("scanning: Server name: " << davidSDK_server_name);
     res.ReturnStatus = false;
     res.ReturnMessage = "Cannot connect to the David SLS-2 scanner";
     return true;

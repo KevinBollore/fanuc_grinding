@@ -52,7 +52,7 @@ bool publishMeshFile(publish_meshfile::PublishMeshfileService::Request &req,
   {
     if (pcl::io::loadPLYFile(req.MeshName, mesh))
     {
-      ROS_ERROR_STREAM("Could not read PLY file");
+      ROS_ERROR_STREAM("publishMeshFile: Could not read PLY file");
       return true;
     }
   }
@@ -64,7 +64,7 @@ bool publishMeshFile(publish_meshfile::PublishMeshfileService::Request &req,
   visualization_msgs::Marker marker;
   if(mesh.polygons.size() == 0)
   {
-    ROS_WARN_STREAM("There is no polygon in file, publishing a point cloud");
+    ROS_WARN_STREAM("publishMeshFile: There is no polygon in file, publishing a point cloud");
     *pub = node->advertise<sensor_msgs::PointCloud2>(req.MarkerName, 1, true);
     mesh.cloud.header.frame_id = "base_link";
     pub->publish(mesh.cloud);
@@ -101,7 +101,7 @@ bool publishMeshFile(publish_meshfile::PublishMeshfileService::Request &req,
 
   while (pub->getNumSubscribers() < 1)
   {
-    ROS_WARN_STREAM("No subscriber to the marker: " + req.MarkerName);
+    ROS_WARN_STREAM("publishMeshFile: No subscriber to the marker: " + req.MarkerName);
     sleep(1);
   }
 
