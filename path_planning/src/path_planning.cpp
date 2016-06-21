@@ -21,7 +21,7 @@ one node of the entire demonstrator
 #include <visualization_msgs/MarkerArray.h>
 #include <std_msgs/String.h>
 
-#include <path_planning/PathPlanningService.h> // Description of the Service we will use
+#include <fanuc_grinding_path_planning/PathPlanningService.h> // Description of the Service we will use
 
 #include "bezier_library/bezier_library.hpp"
 
@@ -42,15 +42,15 @@ const std::string tcp_name("/grinding_disk_tcp");
  * @param res[out]
  * @return Always true
  */
-bool moveRobotPathPlanning(path_planning::PathPlanningService::Request &req,
-                           path_planning::PathPlanningService::Response &res)
+bool moveRobotPathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &req,
+                           fanuc_grinding_path_planning::PathPlanningService::Response &res)
 {
   ROS_WARN_STREAM(std::endl << req);
   std_msgs::String status;
   status.data = "Loading mesh/cloud files";
   status_pub->publish(status);
 
-  std::string package = "path_planning";
+  std::string package = "fanuc_grinding_path_planning";
   //Get package path
   std::string package_path = ros::package::getPath(package);
   std::string meshes_path = package_path + "/meshes/";

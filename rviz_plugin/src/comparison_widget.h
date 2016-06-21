@@ -15,9 +15,9 @@ class QVBoxLayout;
 class QLineEdit;
 class QPushButton;
 
-#include <comparison/ComparisonService.h>
+#include <fanuc_grinding_comparison/ComparisonService.h>
 
-namespace grinding_rviz_plugin
+namespace fanuc_grinding_rviz_plugin
 {
 class ComparisonWidget : public QWidget
 {
@@ -26,8 +26,8 @@ class ComparisonWidget : public QWidget
 public:
   ComparisonWidget(QWidget* parent =  NULL);
 
-  comparison::ComparisonService::Request getComparisonParams();
-  void setComparisonParams(comparison::ComparisonService::Request params);
+  fanuc_grinding_comparison::ComparisonService::Request getComparisonParams();
+  void setComparisonParams(fanuc_grinding_comparison::ComparisonService::Request params);
 
   void connectToServices();
 
@@ -59,9 +59,9 @@ protected:
   //ROS
   ros::NodeHandle comparison_node_;
   ros::ServiceClient comparison_service_;
-  comparison::ComparisonService srv_comparison_;
+  fanuc_grinding_comparison::ComparisonService srv_comparison_;
 
-  comparison::ComparisonService::Request comparison_params_;
+  fanuc_grinding_comparison::ComparisonService::Request comparison_params_;
 
   QPushButton *comparison_button_;
   QVBoxLayout *comparison_layout_;

@@ -1,5 +1,5 @@
 <package format="2">
-  <name>publish_meshfile</name>
+  <name>fanuc_grinding_publish_meshfile</name>
   <version>0.0.0</version>
   <description>Node which publish meshfile as marker in grinding demonstrator</description>
   <author>Kévin Bolloré, Victor Lamoine</author>

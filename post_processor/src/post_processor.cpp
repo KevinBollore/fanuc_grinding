@@ -14,7 +14,7 @@ one node of the entire demonstrator
 #include <ros/package.h>
 #include <ros/service.h>
 
-#include <post_processor/PostProcessorService.h> // Description of the Service we will use
+#include <fanuc_grinding_post_processor/PostProcessorService.h> // Description of the Service we will use
 #include "fanuc_post_processor_library/fanuc_post_processor_library.hpp"
 
 boost::shared_ptr<ros::NodeHandle> node;
@@ -25,8 +25,8 @@ boost::shared_ptr<ros::NodeHandle> node;
  * @param res[out]
  * @return Always true
  */
-bool postProcessor(post_processor::PostProcessorService::Request &req,
-                   post_processor::PostProcessorService::Response &res)
+bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request &req,
+                   fanuc_grinding_post_processor::PostProcessorService::Response &res)
 {
   // Get parameters from the message and print them
   ROS_WARN_STREAM(std::endl << req);

@@ -1,5 +1,5 @@
-#ifndef GRINDING_RVIZ_PLUGIN_H
-#define GRINDING_RVIZ_PLUGIN_H
+#ifndef FANUC_GRINDING_RVIZ_PLUGIN_H
+#define FANUC_GRINDING_RVIZ_PLUGIN_H
 
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
@@ -7,12 +7,12 @@
 #include <rviz/panel.h>
 #endif
 
-#include <scanning/ScanningService.h>
-#include <alignment/AlignmentService.h>
-#include <comparison/ComparisonService.h>
-#include <path_planning/PathPlanningService.h>
-#include <publish_meshfile/PublishMeshfileService.h>
-#include <post_processor/PostProcessorService.h>
+#include <fanuc_grinding_scanning/ScanningService.h>
+#include <fanuc_grinding_alignment/AlignmentService.h>
+#include <fanuc_grinding_comparison/ComparisonService.h>
+#include <fanuc_grinding_path_planning/PathPlanningService.h>
+#include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h>
+#include <fanuc_grinding_post_processor/PostProcessorService.h>
 
 #include "scanning_widget.h"
 #include "alignment_widget.h"
@@ -32,14 +32,14 @@ class QRadioButton;
 class QLineEdit;
 class QFileDialog;
 
-namespace grinding_rviz_plugin
+namespace fanuc_grinding_rviz_plugin
 {
-class GrindingRvizPlugin : public rviz::Panel
+class FanucGrindingRvizPlugin : public rviz::Panel
 {
   Q_OBJECT
 public:
-  GrindingRvizPlugin(QWidget* parent = 0);
-  virtual ~GrindingRvizPlugin();
+  FanucGrindingRvizPlugin(QWidget* parent = 0);
+  virtual ~FanucGrindingRvizPlugin();
 
   Q_SIGNALS:
   void enableWidget(bool);
@@ -77,7 +77,6 @@ protected:
   PathPlanningWidget *path_planning_widget_;
   PostProcessorWidget *post_processor_widget_;
 
-
   // Status Layout
   QVBoxLayout *status_layout_;
   QLabel *status_label_;
@@ -90,9 +89,8 @@ private:
   QString cad_marker_name_;
   QString scan_filename_;
   QString scan_marker_name_;
-
 };
 
 }  // end namespace
 
-#endif // GRINDING_RVIZ_PLUGIN_H
+#endif // FANUC_GRINDING_RVIZ_PLUGIN_H

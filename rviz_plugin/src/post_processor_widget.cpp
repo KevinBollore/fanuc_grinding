@@ -10,7 +10,7 @@
 
 #include "post_processor_widget.h"
 
-grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* parent) : QWidget(parent)
+fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* parent) : QWidget(parent)
 {
   setObjectName("PostProcessorWidget_");
 
@@ -73,21 +73,21 @@ grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* parent) 
   tweakProgramName();
 
   // Program location is hard-coded
-  setProgramLocation(ros::package::getPath("grinding_rviz_plugin")+"/tp_programs/");
+  setProgramLocation(ros::package::getPath("fanuc_grinding_rviz_plugin")+"/tp_programs/");
 
   //Setup client
-  post_processor_service_ = post_processor_node_.serviceClient<post_processor::PostProcessorService>("post_processor_service");
+  post_processor_service_ = post_processor_node_.serviceClient<fanuc_grinding_post_processor::PostProcessorService>("post_processor_service");
 
-  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::PostProcessorWidget::connectToServices);
+  QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::PostProcessorWidget::connectToServices);
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::triggerSave()
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::triggerSave()
 {
   Q_EMIT GUIChanged();
   updateInternalValues();
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(const post_processor::PostProcessorService::Request &params)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(const fanuc_grinding_post_processor::PostProcessorService::Request &params)
 {
   // Copy all BUT trajectory data
   srv_post_processor_.request.ProgramLocation = params.ProgramLocation;
@@ -102,7 +102,7 @@ void grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(const pos
   updateGUI();
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::updateGUI()
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateGUI()
 {
   program_name_->setText(QString::fromStdString(srv_post_processor_.request.ProgramName));
   comment_->setText(QString::fromStdString(srv_post_processor_.request.Comment));
@@ -111,7 +111,7 @@ void grinding_rviz_plugin::PostProcessorWidget::updateGUI()
   program_location_->setText(QString::fromStdString(srv_post_processor_.request.ProgramLocation));
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::updateInternalValues()
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateInternalValues()
 {
   srv_post_processor_.request.ProgramName = program_name_->text().toStdString();
   srv_post_processor_.request.Comment = comment_->text().toStdString();
@@ -120,7 +120,7 @@ void grinding_rviz_plugin::PostProcessorWidget::updateInternalValues()
   // program_location_ is read only
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::tweakProgramName()
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::tweakProgramName()
 {
   if (program_name_->text().size() == 0)
     return;
@@ -135,19 +135,19 @@ void grinding_rviz_plugin::PostProcessorWidget::tweakProgramName()
     program_name_->setText(program_name_->text().append(".ls"));
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setIpAddressEnable(const int state)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::setIpAddressEnable(const int state)
 {
   ip_address_->setEnabled(state);
   ip_adress_label_->setEnabled(state);
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setProgramLocation(const std::string &location)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::setProgramLocation(const std::string &location)
 {
   srv_post_processor_.request.ProgramLocation = location;
   updateGUI();
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setRobotPoses(const std::vector<geometry_msgs::Pose> &robot_poses)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::setRobotPoses(const std::vector<geometry_msgs::Pose> &robot_poses)
 {
   srv_post_processor_.request.RobotPoses.clear();
   for(std::vector<geometry_msgs::Pose>::const_iterator iter (robot_poses.begin());
@@ -158,7 +158,7 @@ void grinding_rviz_plugin::PostProcessorWidget::setRobotPoses(const std::vector<
   }
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setPointColorViz(const std::vector<bool> &point_color_viz)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::setPointColorViz(const std::vector<bool> &point_color_viz)
 {
   srv_post_processor_.request.PointColorViz.clear();
   for(std::vector<bool>::const_iterator iter (point_color_viz.begin());
@@ -169,7 +169,7 @@ void grinding_rviz_plugin::PostProcessorWidget::setPointColorViz(const std::vect
   }
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::setIndexVector(const std::vector<int> &index_vector)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::setIndexVector(const std::vector<int> &index_vector)
 {
   srv_post_processor_.request.IndexVector.clear();
   for(std::vector<int>::const_iterator iter (index_vector.begin());
@@ -180,7 +180,7 @@ void grinding_rviz_plugin::PostProcessorWidget::setIndexVector(const std::vector
   }
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::generateProgramButtonHandler()
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::generateProgramButtonHandler()
 {
   updateInternalValues();
   Q_EMIT getRobotTrajectoryData();
@@ -198,7 +198,7 @@ void grinding_rviz_plugin::PostProcessorWidget::generateProgramButtonHandler()
   QFuture<void> future = QtConcurrent::run(this, &PostProcessorWidget::generateProgram);
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::generateProgram()
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::generateProgram()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -221,7 +221,7 @@ void grinding_rviz_plugin::PostProcessorWidget::generateProgram()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::PostProcessorWidget::connectToServices()
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::connectToServices()
 {
   Q_EMIT enablePanel(false);
 
@@ -249,7 +249,7 @@ void grinding_rviz_plugin::PostProcessorWidget::connectToServices()
 }
 
 // Save all configuration data from this panel to the given Config object
-void grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
 {
   // Save offset value into the config file
   config.mapSetValue(objectName() + "program_name", program_name_->text());
@@ -259,7 +259,7 @@ void grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
 }
 
 // Load all configuration data for this panel from the given Config object.
-void grinding_rviz_plugin::PostProcessorWidget::load(const rviz::Config& config)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::load(const rviz::Config& config)
 {
   QString tmp;
   // Load offset value from config file (if it exists)

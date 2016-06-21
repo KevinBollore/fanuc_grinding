@@ -18,9 +18,9 @@ one node of the entire demonstrator
 #include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/mark.h>
 
-#include <scanning/ScanningService.h> // Description of the Service we will use
-#include <execute_joint_state/ExecuteJointStateService.h> // We will call this service
-#include <publish_meshfile/PublishMeshfileService.h>
+#include <fanuc_grinding_scanning/ScanningService.h> // Description of the Service we will use
+#include <fanuc_grinding_execute_joint_state/ExecuteJointStateService.h> // We will call this service
+#include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h>
 
 #include "yaml_utils.h"
 
@@ -49,7 +49,8 @@ boost::shared_ptr<ros::Publisher> status_pub;
  * @param res[out]
  * @return Always true
  */
-bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningService::Response &res)
+bool moveRobotScan(fanuc_grinding_scanning::ScanningService::Request &req,
+                   fanuc_grinding_scanning::ScanningService::Response &res)
 {
   std_msgs::String status;
   status.data = "Parsing YAML trajectory file";
@@ -196,9 +197,9 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   PointCloudXYZ::Ptr stacked_point_cloud (new PointCloudXYZ());
 
   // For each joint state, we call a service which execute this joint state
-  execute_joint_state::ExecuteJointStateService srv_execute_joint_state;
+  fanuc_grinding_execute_joint_state::ExecuteJointStateService srv_execute_joint_state;
   ros::ServiceClient execute_joint_state_service =
-      node->serviceClient<execute_joint_state::ExecuteJointStateService>("execute_joint_state_service");
+      node->serviceClient<fanuc_grinding_execute_joint_state::ExecuteJointStateService>("execute_joint_state_service");
 
   for(unsigned k = 0; k < joint_list.size(); ++k)
   {
@@ -270,9 +271,9 @@ bool moveRobotScan(scanning::ScanningService::Request &req, scanning::ScanningSe
   pcl::io::savePLYFileBinary(res.NumerizedMeshName, *stacked_point_cloud);
 
   // Call publish_meshfile service
-  publish_meshfile::PublishMeshfileService srv_publish_meshfile;
+  fanuc_grinding_publish_meshfile::PublishMeshfileService srv_publish_meshfile;
   ros::ServiceClient publish_meshfile_service =
-        node->serviceClient<publish_meshfile::PublishMeshfileService>("publish_meshfile_service");
+        node->serviceClient<fanuc_grinding_publish_meshfile::PublishMeshfileService>("publish_meshfile_service");
 
   // Publish final point cloud
   status.data = "Publishing final point cloud";

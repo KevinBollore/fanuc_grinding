@@ -15,9 +15,9 @@ class QLineEdit;
 class QPushButton;
 class QCheckBox;
 
-#include <post_processor/PostProcessorService.h>
+#include <fanuc_grinding_post_processor/PostProcessorService.h>
 
-namespace grinding_rviz_plugin
+namespace fanuc_grinding_rviz_plugin
 {
 class PostProcessorWidget : public QWidget
 {
@@ -26,7 +26,7 @@ class PostProcessorWidget : public QWidget
 public:
   PostProcessorWidget(QWidget* parent =  NULL);
 
-  void setPostProcessorParams(const post_processor::PostProcessorService::Request &params);
+  void setPostProcessorParams(const fanuc_grinding_post_processor::PostProcessorService::Request &params);
   void setProgramLocation(const std::string &location);
   void setRobotPoses(const std::vector<geometry_msgs::Pose> &robot_poses);
   void setPointColorViz(const std::vector<bool> &point_color_viz);
@@ -59,7 +59,7 @@ protected:
   // ROS
   ros::NodeHandle post_processor_node_;
   ros::ServiceClient post_processor_service_;
-  post_processor::PostProcessorService srv_post_processor_;
+  fanuc_grinding_post_processor::PostProcessorService srv_post_processor_;
 
   // GUI
   QLineEdit* program_name_;

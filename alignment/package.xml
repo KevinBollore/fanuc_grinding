@@ -1,5 +1,5 @@
 <package format="2">
-  <name>alignment</name>
+  <name>fanuc_grinding_alignment</name>
   <version>0.0.0</version>
   <description>Alignment part of grinding demonstrator</description>
   <author>Kévin Bolloré, Victor Lamoine</author>

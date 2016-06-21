@@ -12,7 +12,7 @@
 
 #include "comparison_widget.h"
 
-grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) : QWidget(parent)
+fanuc_grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) : QWidget(parent)
 {
   setObjectName("ComparisonWidget_");
   comparison_button_ = new QPushButton;
@@ -25,39 +25,39 @@ grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) : QWid
   connect(comparison_button_, SIGNAL(released()), this, SLOT(ComparisonButtonHandler()));
 
   //Setup client
-  comparison_service_ = comparison_node_.serviceClient<comparison::ComparisonService>("comparison_service");
+  comparison_service_ = comparison_node_.serviceClient<fanuc_grinding_comparison::ComparisonService>("comparison_service");
 
-  QFuture<void> future = QtConcurrent::run(this, &grinding_rviz_plugin::ComparisonWidget::connectToServices);
+  QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::ComparisonWidget::connectToServices);
 }
 
-void grinding_rviz_plugin::ComparisonWidget::triggerSave()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::triggerSave()
 {
   Q_EMIT GUIChanged();
   updateInternalValues();
   updateGUI();
 }
 
-comparison::ComparisonService::Request grinding_rviz_plugin::ComparisonWidget::getComparisonParams()
+fanuc_grinding_comparison::ComparisonService::Request fanuc_grinding_rviz_plugin::ComparisonWidget::getComparisonParams()
 {
   return comparison_params_;
 }
 
-void grinding_rviz_plugin::ComparisonWidget::setComparisonParams(comparison::ComparisonService::Request params)
+void fanuc_grinding_rviz_plugin::ComparisonWidget::setComparisonParams(fanuc_grinding_comparison::ComparisonService::Request params)
 {
   updateGUI();
 }
 
-void grinding_rviz_plugin::ComparisonWidget::updateGUI()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::updateGUI()
 {
   // Not implemented yet
 }
 
-void grinding_rviz_plugin::ComparisonWidget::updateInternalValues()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::updateInternalValues()
 {
   // Not implemented yet
 }
 
-void grinding_rviz_plugin::ComparisonWidget::setCADAndScanParams(const QString cad_filename,
+void fanuc_grinding_rviz_plugin::ComparisonWidget::setCADAndScanParams(const QString cad_filename,
                                                                 const QString cad_marker_name,
                                                                 const QString scan_filename,
                                                                 const QString scan_marker_name)
@@ -68,7 +68,7 @@ void grinding_rviz_plugin::ComparisonWidget::setCADAndScanParams(const QString c
   comparison_params_.ScanMarkerName = scan_marker_name.toStdString();
 }
 
-void grinding_rviz_plugin::ComparisonWidget::ComparisonButtonHandler()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::ComparisonButtonHandler()
 {
   // get CAD and Scan params which are stored in grinding rviz plugin
   Q_EMIT getCADAndScanParams();
@@ -79,7 +79,7 @@ void grinding_rviz_plugin::ComparisonWidget::ComparisonButtonHandler()
   QFuture<void> future = QtConcurrent::run(this, &ComparisonWidget::Comparison);
 }
 
-void grinding_rviz_plugin::ComparisonWidget::Comparison()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::Comparison()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
@@ -95,7 +95,7 @@ void grinding_rviz_plugin::ComparisonWidget::Comparison()
   Q_EMIT enablePanel(true); // Enable UI
 }
 
-void grinding_rviz_plugin::ComparisonWidget::connectToServices()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::connectToServices()
 {
   Q_EMIT enablePanel(false);
 
@@ -123,13 +123,13 @@ void grinding_rviz_plugin::ComparisonWidget::connectToServices()
 }
 
 // Save all configuration data from this panel to the given Config object
-void grinding_rviz_plugin::ComparisonWidget::save(rviz::Config config)
+void fanuc_grinding_rviz_plugin::ComparisonWidget::save(rviz::Config config)
 {
   // NOT IMPLEMENTED YET
 }
 
 // Load all configuration data for this panel from the given Config object.
-void grinding_rviz_plugin::ComparisonWidget::load(const rviz::Config& config)
+void fanuc_grinding_rviz_plugin::ComparisonWidget::load(const rviz::Config& config)
 {
   // NOT IMPLEMENTED YET
 }

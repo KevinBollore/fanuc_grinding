@@ -18,18 +18,11 @@
 #include <string>
 #include <iostream>
 
-#include "grinding_rviz_plugin.h"
+#include "fanuc_grinding_rviz_plugin.h"
 
-#include <scanning/ScanningService.h>
-#include <alignment/AlignmentService.h>
-#include <comparison/ComparisonService.h>
-#include <path_planning/PathPlanningService.h>
-#include <publish_meshfile/PublishMeshfileService.h>
-#include <post_processor/PostProcessorService.h>
-
-namespace grinding_rviz_plugin
+namespace fanuc_grinding_rviz_plugin
 {
-GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
+FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
     rviz::Panel(parent)
 {
   // Create Tabs
@@ -150,40 +143,40 @@ GrindingRvizPlugin::GrindingRvizPlugin(QWidget* parent) :
   connect(this, SIGNAL(displayStatus(const QString)), this, SLOT(displayStatusHandler(const QString)));
 }
 
-GrindingRvizPlugin::~GrindingRvizPlugin()
+FanucGrindingRvizPlugin::~FanucGrindingRvizPlugin()
 {}
 
-void GrindingRvizPlugin::enablePanelAlignmentHandler()
+void FanucGrindingRvizPlugin::enablePanelAlignmentHandler()
 {
   tab_widget_->setTabEnabled(1, true);
 }
 
-void GrindingRvizPlugin::enablePanelComparisonHandler()
+void FanucGrindingRvizPlugin::enablePanelComparisonHandler()
 {
   tab_widget_->setTabEnabled(2, true);
 }
 
-void GrindingRvizPlugin::enablePanelPathPlanningHandler()
+void FanucGrindingRvizPlugin::enablePanelPathPlanningHandler()
 {
   tab_widget_->setTabEnabled(3, true);
 }
 
-void GrindingRvizPlugin::enablePanelPostProcessorHandler()
+void FanucGrindingRvizPlugin::enablePanelPostProcessorHandler()
 {
   tab_widget_->setTabEnabled(4, true);
 }
 
-void GrindingRvizPlugin::enablePanelHandler(bool status)
+void FanucGrindingRvizPlugin::enablePanelHandler(bool status)
 {
   setEnabled(status);
 }
 
-void GrindingRvizPlugin::displayStatusHandler(const QString message)
+void FanucGrindingRvizPlugin::displayStatusHandler(const QString message)
 {
   status_label_->setText(message);
 }
 
-void GrindingRvizPlugin::displayMsgBoxHandler(const QString title, const QString msg, const QString info_msg)
+void FanucGrindingRvizPlugin::displayMsgBoxHandler(const QString title, const QString msg, const QString info_msg)
 {
   enablePanelHandler(false);
   QMessageBox msg_box;
@@ -196,37 +189,37 @@ void GrindingRvizPlugin::displayMsgBoxHandler(const QString title, const QString
   enablePanelHandler(true);
 }
 
-void GrindingRvizPlugin::triggerSave()
+void FanucGrindingRvizPlugin::triggerSave()
 {
   Q_EMIT configChanged();
 }
 
-void GrindingRvizPlugin::setCADDatas(const QString cad_filename, const QString cad_marker_name)
+void FanucGrindingRvizPlugin::setCADDatas(const QString cad_filename, const QString cad_marker_name)
 {
   cad_filename_ = cad_filename;
   cad_marker_name_ = cad_marker_name;
 }
 
-void GrindingRvizPlugin::setScanDatas(const QString scan_filename, const QString scan_marker_name)
+void FanucGrindingRvizPlugin::setScanDatas(const QString scan_filename, const QString scan_marker_name)
 {
   scan_filename_ = scan_filename;
   scan_marker_name_ = scan_marker_name;
 }
 
-void GrindingRvizPlugin::setRobotTrajectoryData()
+void FanucGrindingRvizPlugin::setRobotTrajectoryData()
 {
   post_processor_widget_->setRobotPoses(path_planning_widget_->getRobotPoses());
   post_processor_widget_->setPointColorViz(path_planning_widget_->getPointColorViz());
   post_processor_widget_->setIndexVector(path_planning_widget_->getIndexVector());
 }
 
-void GrindingRvizPlugin::sendCADAndScanDatasSlot()
+void FanucGrindingRvizPlugin::sendCADAndScanDatasSlot()
 {
   Q_EMIT sendCADAndScanDatas(cad_filename_, cad_marker_name_, scan_filename_, scan_marker_name_);
 }
 
 // Save all configuration data from this panel to the given Config object
-void GrindingRvizPlugin::save(rviz::Config config) const
+void FanucGrindingRvizPlugin::save(rviz::Config config) const
 {
   rviz::Panel::save(config);
 
@@ -238,7 +231,7 @@ void GrindingRvizPlugin::save(rviz::Config config) const
 }
 
 // Load all configuration data for this panel from the given Config object.
-void GrindingRvizPlugin::load(const rviz::Config& config)
+void FanucGrindingRvizPlugin::load(const rviz::Config& config)
 {
   rviz::Panel::load(config);
 
@@ -252,4 +245,4 @@ void GrindingRvizPlugin::load(const rviz::Config& config)
 }  // end namespace
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(grinding_rviz_plugin::GrindingRvizPlugin, rviz::Panel)
+PLUGINLIB_EXPORT_CLASS(fanuc_grinding_rviz_plugin::FanucGrindingRvizPlugin, rviz::Panel)

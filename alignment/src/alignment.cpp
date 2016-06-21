@@ -8,7 +8,7 @@ demonstrator
 // ROS headers
 #include <ros/ros.h>
 #include <ros/service.h>
-#include <alignment/AlignmentService.h> // Description of the Service we will use
+#include <fanuc_grinding_alignment/AlignmentService.h> // Description of the Service we will use
 
 boost::shared_ptr<ros::NodeHandle> node;
 
@@ -18,7 +18,8 @@ boost::shared_ptr<ros::NodeHandle> node;
  * @param res[out]
  * @return Alway true
  */
-bool align(alignment::AlignmentService::Request &req, alignment::AlignmentService::Response &res)
+bool align(fanuc_grinding_alignment::AlignmentService::Request &req,
+           fanuc_grinding_alignment::AlignmentService::Response &res)
 {
   // Get parameters from the message and print them
   ROS_WARN_STREAM(std::endl << req);
