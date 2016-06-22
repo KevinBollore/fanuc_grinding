@@ -42,8 +42,8 @@ const std::string tcp_name("/grinding_disk_tcp");
  * @param res[out]
  * @return Always true
  */
-bool moveRobotPathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &req,
-                           fanuc_grinding_path_planning::PathPlanningService::Response &res)
+bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &req,
+                  fanuc_grinding_path_planning::PathPlanningService::Response &res)
 {
   ROS_WARN_STREAM(std::endl << req);
   std_msgs::String status;
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
   group->setPlanningTime(2);
 
   // Create service server and wait for incoming requests
-  ros::ServiceServer service = node->advertiseService("path_planning_service", moveRobotPathPlanning);
+  ros::ServiceServer service = node->advertiseService("path_planning_service", pathPlanning);
   ros::AsyncSpinner spinner(1);
   spinner.start();
 

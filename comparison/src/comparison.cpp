@@ -29,8 +29,8 @@ boost::shared_ptr<ros::NodeHandle> node;
  * @param res[out]
  * @return Alway true
  */
-bool moveRobotComparison(fanuc_grinding_comparison::ComparisonService::Request &req,
-                         fanuc_grinding_comparison::ComparisonService::Response &res)
+bool comparison(fanuc_grinding_comparison::ComparisonService::Request &req,
+                fanuc_grinding_comparison::ComparisonService::Response &res)
 {
   // Get parameters from the message and print them
   ROS_WARN_STREAM(std::endl << req);
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
   group->setPlanningTime(2);
 
   // Create service server and wait for incoming requests
-  ros::ServiceServer service = node->advertiseService("comparison_service", moveRobotComparison);
+  ros::ServiceServer service = node->advertiseService("comparison_service", comparison);
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
