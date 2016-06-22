@@ -15,12 +15,9 @@ demonstrator
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
-#include <moveit/move_group_interface/move_group.h>
-#include <moveit_msgs/ExecuteKnownTrajectory.h>
 
 #include <fanuc_grinding_comparison/ComparisonService.h> // Description of the Service we will use
 
-boost::shared_ptr<move_group_interface::MoveGroup> group;
 boost::shared_ptr<ros::NodeHandle> node;
 
 /**
@@ -62,11 +59,6 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "comparison");
   node.reset(new ros::NodeHandle);
-
-  // Initialize move group
-  group.reset(new move_group_interface::MoveGroup("manipulator"));
-  group->setPoseReferenceFrame("/base");
-  group->setPlanningTime(2);
 
   // Create service server and wait for incoming requests
   ros::ServiceServer service = node->advertiseService("comparison_service", moveRobotComparison);

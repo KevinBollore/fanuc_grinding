@@ -2,17 +2,21 @@ cmake_minimum_required(VERSION 2.8.3)
 project(fanuc_grinding_post_processor)
 
 find_package(catkin REQUIRED COMPONENTS
+             fanuc_post_processor_library
+             genmsg
+             geometry_msgs
 			 roscpp
 			 std_msgs
-			 genmsg
-			 tf_conversions
-			 geometry_msgs
-			 fanuc_post_processor_library)
+			 tf_conversions)
 
 add_service_files(FILES PostProcessorService.srv)
-generate_messages(DEPENDENCIES std_msgs geometry_msgs)
+generate_messages(DEPENDENCIES geometry_msgs std_msgs)
 
-catkin_package(CATKIN_DEPENDS fanuc_post_processor_library)
+catkin_package(CATKIN_DEPENDS
+               fanuc_post_processor_library
+               geometry_msgs
+               message_runtime
+               std_msgs)
 
 include_directories(${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
