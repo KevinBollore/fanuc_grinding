@@ -36,7 +36,7 @@ fanuc_grinding_alignment::AlignmentService::Request fanuc_grinding_rviz_plugin::
   return alignment_params_;
 }
 
-void fanuc_grinding_rviz_plugin::AlignmentWidget::setAlignmentParams(fanuc_grinding_alignment::AlignmentService::Request params)
+void fanuc_grinding_rviz_plugin::AlignmentWidget::setAlignmentParams(const fanuc_grinding_alignment::AlignmentService::Request &params)
 {
   updateGUI();
 }

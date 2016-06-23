@@ -34,7 +34,7 @@ fanuc_grinding_comparison::ComparisonService::Request fanuc_grinding_rviz_plugin
   return comparison_params_;
 }
 
-void fanuc_grinding_rviz_plugin::ComparisonWidget::setComparisonParams(fanuc_grinding_comparison::ComparisonService::Request params)
+void fanuc_grinding_rviz_plugin::ComparisonWidget::setComparisonParams(const fanuc_grinding_comparison::ComparisonService::Request &params)
 {
   updateGUI();
 }

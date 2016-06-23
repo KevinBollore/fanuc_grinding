@@ -147,7 +147,7 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::PathPlanningWidget::connectToServices);
 }
 
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::newStatusMessage(const std_msgs::String::ConstPtr &msg)
 {
   Q_EMIT sendStatus(QString::fromStdString(msg->data));
 }
@@ -162,7 +162,7 @@ fanuc_grinding_path_planning::PathPlanningService::Request fanuc_grinding_rviz_p
   return path_planning_params_;
 }
 
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request params)
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request &params)
 {
   path_planning_params_.SurfacingMode = params.SurfacingMode;
   path_planning_params_.CoveringPercentage = params.CoveringPercentage;

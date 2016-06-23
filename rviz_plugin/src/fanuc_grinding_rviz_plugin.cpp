@@ -154,7 +154,7 @@ void FanucGrindingRvizPlugin::enablePanelPostProcessorHandler()
   tab_widget_->setTabEnabled(4, true);
 }
 
-void FanucGrindingRvizPlugin::enablePanelHandler(bool status)
+void FanucGrindingRvizPlugin::enablePanelHandler(const bool status)
 {
   setEnabled(status);
 }

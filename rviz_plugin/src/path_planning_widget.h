@@ -27,7 +27,7 @@ public:
   void load(const rviz::Config& config);
   void save(rviz::Config config);
   fanuc_grinding_path_planning::PathPlanningService::Request getPathPlanningParams();
-  void setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request params);
+  void setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request &params);
   std::vector<geometry_msgs::Pose> getRobotPoses();
   std::vector<bool> getPointColorViz();
   std::vector<int> getIndexVector();
@@ -47,7 +47,7 @@ protected Q_SLOTS:
   void triggerSave();
   void updateGUI();
   void updateInternalValues();
-  void newStatusMessage(const std_msgs::String::ConstPtr& msg);
+  void newStatusMessage(const std_msgs::String::ConstPtr &msg);
   void computeTrajectoryButtonHandler();
   void visualizeTrajectoryButtonHandler();
   void executeTrajectoryButtonHandler();

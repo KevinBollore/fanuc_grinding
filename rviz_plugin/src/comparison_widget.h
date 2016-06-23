@@ -22,12 +22,12 @@ public:
   void load(const rviz::Config& config);
   void save(rviz::Config config);
   fanuc_grinding_comparison::ComparisonService::Request getComparisonParams();
-  void setComparisonParams(fanuc_grinding_comparison::ComparisonService::Request params);
+  void setComparisonParams(const fanuc_grinding_comparison::ComparisonService::Request &params);
 
 Q_SIGNALS:
   void guiChanged();
-  void sendStatus(QString status);
-  void sendMsgBox(QString title, QString msg, QString info_msg);
+  void sendStatus(const QString status);
+  void sendMsgBox(const QString title, const QString msg, const QString info_msg);
   void enablePanel(bool);
   void enablePanelPathPlanning();
   void getCADAndScanParams();
