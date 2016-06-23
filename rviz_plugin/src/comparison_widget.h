@@ -16,35 +16,29 @@ namespace fanuc_grinding_rviz_plugin
 {
 class ComparisonWidget : public QWidget
 {
-
   Q_OBJECT
 public:
   ComparisonWidget(QWidget* parent =  NULL);
-
+  void load(const rviz::Config& config);
+  void save(rviz::Config config);
   fanuc_grinding_comparison::ComparisonService::Request getComparisonParams();
   void setComparisonParams(fanuc_grinding_comparison::ComparisonService::Request params);
 
-  void connectToServices();
-
-  void load(const rviz::Config& config);
-  void save(rviz::Config config);
-
 Q_SIGNALS:
   void guiChanged();
-  void enablePanelPathPlanning();
   void sendStatus(QString status);
   void sendMsgBox(QString title, QString msg, QString info_msg);
   void enablePanel(bool);
+  void enablePanelPathPlanning();
   void getCADAndScanParams();
 
-public Q_SLOTS:
-  virtual void comparison();
-
 protected Q_SLOTS:
-  virtual void triggerSave();
+  void connectToServices();
+  void triggerSave();
   void updateGUI();
   void updateInternalValues();
   void comparisonButtonHandler();
+  void comparison();
   void enablePanelPathPlanningHandler();
   void setCADAndScanParams(const QString cad_filename,
                            const QString cad_marker_name,
@@ -52,18 +46,14 @@ protected Q_SLOTS:
                            const QString scan_marker_name);
 
 protected:
-  //ROS
-  ros::NodeHandle comparison_node_;
+  ros::NodeHandle nh_;
   ros::ServiceClient comparison_service_;
   fanuc_grinding_comparison::ComparisonService srv_comparison_;
-
   fanuc_grinding_comparison::ComparisonService::Request comparison_params_;
 
-  QPushButton *comparison_button_;
-  QVBoxLayout *comparison_layout_;
+  QPushButton* comparison_button_;
 };
 
 } // End namespace
-
 
 #endif // COMPARISON_WIDGET_H

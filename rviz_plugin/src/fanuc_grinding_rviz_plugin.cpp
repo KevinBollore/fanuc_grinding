@@ -34,16 +34,16 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   tab_widget_->setTabEnabled(4, false);
 
   // Bottom status layout
-  QVBoxLayout *status_layout_ = new QVBoxLayout;
-  status_layout_->addWidget(new QLabel("Status:"));
+  QVBoxLayout* status_layout = new QVBoxLayout;
+  status_layout->addWidget(new QLabel("Status:"));
 
   // Global Layout
-  QVBoxLayout *global_layout_ = new QVBoxLayout;
-  global_layout_->addWidget(tab_widget_);
-  global_layout_->addLayout(status_layout_);
+  QVBoxLayout* global_layout = new QVBoxLayout;
+  global_layout->addWidget(tab_widget_);
+  global_layout->addLayout(status_layout);
   status_label_ = new QLabel;
-  global_layout_->addWidget(status_label_);
-  setLayout(global_layout_);
+  global_layout->addWidget(status_label_);
+  setLayout(global_layout);
 
   // Connect handlers
   // SCANNING

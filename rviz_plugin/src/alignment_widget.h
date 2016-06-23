@@ -16,35 +16,29 @@ namespace fanuc_grinding_rviz_plugin
 {
 class AlignmentWidget : public QWidget
 {
-
   Q_OBJECT
 public:
   AlignmentWidget(QWidget* parent =  NULL);
-
+  void load(const rviz::Config& config);
+  void save(rviz::Config config);
   fanuc_grinding_alignment::AlignmentService::Request getAlignmentParams();
   void setAlignmentParams(fanuc_grinding_alignment::AlignmentService::Request params);
 
-  void connectToServices();
-
-  void load(const rviz::Config& config);
-  void save(rviz::Config config);
-
 Q_SIGNALS:
   void guiChanged();
-  void enablePanel(bool);
   void sendStatus(QString status);
   void sendMsgBox(QString title, QString msg, QString info_msg);
+  void enablePanel(bool);
   void enablePanelComparison();
   void getCADAndScanParams();
 
-public Q_SLOTS:
-  virtual void alignment();
-
 protected Q_SLOTS:
-  virtual void triggerSave();
+  void connectToServices();
+  void triggerSave();
   void updateGUI();
   void updateInternalValues();
   void alignmentButtonHandler();
+  void alignment();
   void enablePanelComparisonHandler();
   void setCADAndScanParams(const QString cad_filename,
                            const QString cad_marker_name,
@@ -52,18 +46,14 @@ protected Q_SLOTS:
                            const QString scan_marker_name);
 
 protected:
-  //ROS
   ros::NodeHandle nh_;
   ros::ServiceClient alignment_service_;
   fanuc_grinding_alignment::AlignmentService srv_alignment_;
-
   fanuc_grinding_alignment::AlignmentService::Request alignment_params_;
 
-  QPushButton *alignment_button_;
-
+  QPushButton* alignment_button_;
 };
 
 } // End namespace
-
 
 #endif // ALIGNMENT_WIDGET_H
