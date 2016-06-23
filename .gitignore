@@ -1,2 +1,3 @@
 ./scanning/meshes/dilatedMeshes/*
 grinding_rviz_plugin/tp_programs/*.ls
+rviz_plugin/tp_programs/*.ls

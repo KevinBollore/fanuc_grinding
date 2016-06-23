@@ -8,6 +8,9 @@ one node of the entire demonstrator
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <ros/service.h>
+#include <tf_conversions/tf_eigen.h>
+#include <eigen_conversions/eigen_msg.h>
+#include <geometry_msgs/Transform.h>
 #include "fanuc_post_processor_library/fanuc_post_processor_library.hpp"
 
 #include <fanuc_grinding_post_processor/PostProcessorService.h> // Description of the Service we will use
@@ -24,25 +27,48 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
                    fanuc_grinding_post_processor::PostProcessorService::Response &res)
 {
   // Get parameters from the message and print them
-  ROS_WARN_STREAM(std::endl << req);
+  //ROS_WARN_STREAM(std::endl << req);
+  std::vector<Eigen::Isometry3d> robot_poses_eigen(req.RobotPoses.size());
+  for (unsigned i = 0; i < req.RobotPoses.size(); ++i)
+  {
+    tf::poseMsgToEigen(req.RobotPoses[i], robot_poses_eigen[i]);
+  }
 
   FanucPostProcessor fanuc_pp;
   fanuc_pp.setProgramName(req.ProgramName);
   fanuc_pp.setProgramComment(req.Comment);
-  //fanuc_pp.appendDigitalOutput(5, true); // Switch on DO for grinding disk.
-  //TODO: Take a look for grinder number... Or create one
 
-  for(unsigned i = 0; i < req.RobotPoses.size(); ++i)
+  unsigned int speed;
+  const double grinding_disk_DO(513);
+
+  // First pose is a machining pose, we have to switch on the DO
+  fanuc_pp.appendDigitalOutput(grinding_disk_DO, true);
+  fanuc_pp.appendWait(1);
+  speed = req.MachiningSpeed * 100;
+  fanuc_pp.appendPoseCNT(FanucPostProcessor::LINEAR, robot_poses_eigen[0], 1, speed, FanucPostProcessor::CM_MIN, 100);
+
+  for (unsigned i = 1; i < robot_poses_eigen.size(); ++i)
   {
-    // TODO: Fix this. We have to know which function of fanuc_post_processor we have to use
-    //fanuc_pp.appendPoseCNT(FanucPostProcessor::JOINT, req.RobotPoses[i], 2, 20, FanucPostProcessor::PERCENTAGE, 100);
+    // if the new point is an extrication point and the old one was a machining point, we have to switch off the DO
+    if (req.PointColorViz[i] == 0 && req.PointColorViz[i - 1] == 1)
+    {
+      fanuc_pp.appendDigitalOutput(grinding_disk_DO, false);
+      fanuc_pp.appendWait(1);
+      speed = req.ExtricationSpeed * 100;
+    }
+    // if the new point is an machining point and the old one was a extrication point, we have to switch on the DO
+    else if (req.PointColorViz[i] == 1 && req.PointColorViz[i - 1] == 0)
+    {
+      fanuc_pp.appendDigitalOutput(grinding_disk_DO, true);
+      fanuc_pp.appendWait(1);
+      speed = req.MachiningSpeed * 100;
+    }
+    fanuc_pp.appendPoseCNT(FanucPostProcessor::LINEAR, robot_poses_eigen[i], i + 1, speed, FanucPostProcessor::CM_MIN, 100);
   }
-
-  //fanuc_pp.appendDigitalOutput(5, false); // Switch off DO for grinding disk.
 
   std::string program;
   fanuc_pp.generateProgram(program);
-  ROS_WARN_STREAM("This is the generated program:\n\n" << program);
+  ROS_INFO_STREAM("This is the generated program:\n\n" << program);
 
   // TODO: Check if writing in a .ls file works
   std::ofstream tp_program_file;
@@ -51,7 +77,7 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
 
   tp_program_file.open(file_location.c_str(), std::ios::out);
   // We check if file have been opened correctly
-  if(tp_program_file.bad())
+  if (tp_program_file.bad())
   {
     res.ReturnStatus = false;
     res.ReturnMessage = "Cannot open/create TP program file";
@@ -69,6 +95,14 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   }
 
   // TODO: Try to upload
+  ROS_INFO_STREAM("Try to upload program on IP address: " << req.IpAdress);
+  if (!fanuc_pp.uploadToFtp(req.IpAdress))
+  {
+    res.ReturnStatus = false;
+    res.ReturnMessage = "Cannot upload the program on IP address: " + req.IpAdress;
+    return true;
+  }
+
   res.ReturnStatus = true;
   res.ReturnMessage = "Program generated and uploaded";
   return true;
