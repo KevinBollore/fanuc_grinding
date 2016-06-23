@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QFuture>
 #include <QtConcurrentRun>
+#include <QSpinBox>
 
 #include "post_processor_widget.h"
 
@@ -24,6 +25,20 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
   QHBoxLayout* comment_layout_ = new QHBoxLayout();
   comment_layout_->addWidget(comment_label);
   comment_layout_->addWidget(comment_);
+
+  QLabel* machining_speed_label = new QLabel("Machining speed (cm/min): ");
+  machining_speed_ = new QSpinBox;
+  machining_speed_->setRange(1, 1000);
+  QHBoxLayout* machining_speed_layout_ = new QHBoxLayout();
+  machining_speed_layout_->addWidget(machining_speed_label);
+  machining_speed_layout_->addWidget(machining_speed_);
+
+  QLabel* extrication_speed_label = new QLabel("Extrication speed (cm/min): ");
+  extrication_speed_ = new QSpinBox;
+  extrication_speed_->setRange(1, 1000);
+  QHBoxLayout* extrication_speed_layout_ = new QHBoxLayout();
+  extrication_speed_layout_->addWidget(extrication_speed_label);
+  extrication_speed_layout_->addWidget(extrication_speed_);
 
   QLabel* upload_label = new QLabel("Upload program:");
   upload_program_ = new QCheckBox;
@@ -54,6 +69,8 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
   QVBoxLayout* post_processor_layout = new QVBoxLayout(this);
   post_processor_layout->addLayout(program_name_layout);
   post_processor_layout->addLayout(comment_layout_);
+  post_processor_layout->addLayout(machining_speed_layout_);
+  post_processor_layout->addLayout(extrication_speed_layout_);
   post_processor_layout->addLayout(upload_layout_);
   post_processor_layout->addLayout(ip_adress_layout);
   post_processor_layout->addLayout(program_location_layout);
@@ -64,6 +81,8 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
   // Connect Handlers
   connect(program_name_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(comment_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
+  connect(machining_speed_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
+  connect(extrication_speed_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
   connect(upload_program_, SIGNAL(stateChanged(int)), this, SLOT(setIpAddressEnable(int)));
   connect(upload_program_, SIGNAL(stateChanged(int)), this, SLOT(triggerSave()));
   connect(ip_address_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
@@ -92,6 +111,8 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(con
   srv_post_processor_.request.ProgramLocation = params.ProgramLocation;
   srv_post_processor_.request.ProgramName = params.ProgramName;
   srv_post_processor_.request.Comment = params.Comment;
+  srv_post_processor_.request.MachiningSpeed = params.MachiningSpeed;
+  srv_post_processor_.request.ExtricationSpeed = params.ExtricationSpeed;
   srv_post_processor_.request.Upload = params.Upload;
   srv_post_processor_.request.IpAdress = params.IpAdress;
   // Probably not filled
@@ -105,6 +126,8 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateGUI()
 {
   program_name_->setText(QString::fromStdString(srv_post_processor_.request.ProgramName));
   comment_->setText(QString::fromStdString(srv_post_processor_.request.Comment));
+  machining_speed_->setValue(srv_post_processor_.request.MachiningSpeed);
+  extrication_speed_->setValue(srv_post_processor_.request.ExtricationSpeed);
   upload_program_->setChecked(srv_post_processor_.request.Upload);
   ip_address_->setText(QString::fromStdString(srv_post_processor_.request.IpAdress));
   program_location_->setText(QString::fromStdString(srv_post_processor_.request.ProgramLocation));
@@ -114,6 +137,8 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateInternalValues()
 {
   srv_post_processor_.request.ProgramName = program_name_->text().toStdString();
   srv_post_processor_.request.Comment = comment_->text().toStdString();
+  srv_post_processor_.request.MachiningSpeed = machining_speed_->value();
+  srv_post_processor_.request.ExtricationSpeed = extrication_speed_->value();
   srv_post_processor_.request.Upload = upload_program_->isChecked();
   srv_post_processor_.request.IpAdress = ip_address_->text().toStdString();
   // program_location_ is read only
@@ -253,6 +278,8 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
   // Save offset value into the config file
   config.mapSetValue(objectName() + "program_name", program_name_->text());
   config.mapSetValue(objectName() + "comment", comment_->text());
+  config.mapSetValue(objectName() + "machining_speed", machining_speed_->value());
+  config.mapSetValue(objectName() + "extrication_speed", extrication_speed_->value());
   config.mapSetValue(objectName() + "upload_program", upload_program_->isChecked());
   config.mapSetValue(objectName() + "ip_adress", ip_address_->text());
 }
@@ -261,11 +288,22 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
 void fanuc_grinding_rviz_plugin::PostProcessorWidget::load(const rviz::Config& config)
 {
   QString tmp;
+  float int_tmp;
   // Load offset value from config file (if it exists)
   if (config.mapGetString(objectName() + "program_name", &tmp))
     program_name_->setText(tmp);
   if (config.mapGetString(objectName() + "comment", &tmp))
     comment_->setText(tmp);
+
+  if (config.mapGetFloat(objectName() + "machining_speed", &int_tmp))
+    machining_speed_->setValue(int_tmp);
+  else
+    machining_speed_->setValue(200);
+
+  if (config.mapGetFloat(objectName() + "extrication_speed", &int_tmp))
+    extrication_speed_->setValue(int_tmp);
+  else
+    extrication_speed_->setValue(500);
 
   bool state_tmp;
   if (config.mapGetBool(objectName() + "upload_program", &state_tmp))

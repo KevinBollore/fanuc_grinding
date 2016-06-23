@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 2.8.3)
 project(fanuc_grinding_post_processor)
 
 find_package(catkin REQUIRED COMPONENTS
+             eigen_conversions
              fanuc_post_processor_library
              genmsg
              geometry_msgs
 			 roscpp
 			 std_msgs
+			 tf
 			 tf_conversions)
 
 add_service_files(FILES PostProcessorService.srv)

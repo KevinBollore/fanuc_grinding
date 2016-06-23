@@ -13,6 +13,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QCheckBox;
+class QSpinBox;
 
 namespace fanuc_grinding_rviz_plugin
 {
@@ -60,6 +61,8 @@ protected:
   // GUI
   QLineEdit* program_name_;
   QLineEdit* comment_;
+  QSpinBox* machining_speed_;
+  QSpinBox* extrication_speed_;
   QCheckBox* upload_program_;
   QLabel* ip_adress_label_;
   QLineEdit* ip_address_;

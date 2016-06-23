@@ -1,6 +1,8 @@
 string ProgramLocation
 string ProgramName
 string Comment
+int32 MachiningSpeed
+int32 ExtricationSpeed
 bool Upload
 string IpAdress
 geometry_msgs/Pose[] RobotPoses
