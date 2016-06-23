@@ -39,7 +39,7 @@ public:
   void save(rviz::Config config);
 
 Q_SIGNALS:
-  void GUIChanged();
+  void guiChanged();
   void sendStatus(QString status);
   void sendMsgBox(QString title, QString msg, QString info_msg);
   void enablePanel(bool);

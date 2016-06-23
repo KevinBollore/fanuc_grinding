@@ -417,7 +417,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::connectToServices()
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::triggerSave()
 {
-  Q_EMIT GUIChanged();
+  Q_EMIT guiChanged();
   updateInternalValues();
   updateGUI();
   Q_EMIT enableComputeTrajectoryButton(true);
