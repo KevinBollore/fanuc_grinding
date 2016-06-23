@@ -5,17 +5,12 @@
 #include <ros/ros.h>
 #include <ros/service.h>
 #include <rviz/panel.h>
+#include <fanuc_grinding_comparison/ComparisonService.h>
 #endif
 
-class QDoubleSpinBox;
 class QLabel;
-class QWidget;
-class QHBoxLayout;
 class QVBoxLayout;
-class QLineEdit;
 class QPushButton;
-
-#include <fanuc_grinding_comparison/ComparisonService.h>
 
 namespace fanuc_grinding_rviz_plugin
 {

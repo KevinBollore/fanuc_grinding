@@ -12,7 +12,6 @@
 #endif
 
 class QDoubleSpinBox;
-class QWidget;
 class QLineEdit;
 class QPushButton;
 class QTabWidget;

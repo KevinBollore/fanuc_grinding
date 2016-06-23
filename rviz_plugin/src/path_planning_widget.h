@@ -9,15 +9,13 @@
 #include <fanuc_grinding_path_planning/PathPlanningService.h>
 #endif
 
-class QDoubleSpinBox;
-class QSpinBox;
 class QLabel;
-class QWidget;
-class QLineEdit;
 class QRadioButton;
 class QPushButton;
 class QMessageBox;
 class QCheckBox;
+class QSpinBox;
+class QDoubleSpinBox;
 
 namespace fanuc_grinding_rviz_plugin
 {

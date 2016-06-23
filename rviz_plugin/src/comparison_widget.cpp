@@ -1,12 +1,6 @@
-
-#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>
-#include <QRadioButton>
-#include <QDoubleSpinBox>
-#include <QFileDialog>
-#include <QLineEdit>
 #include <QFuture>
 #include <QtConcurrentRun>
 

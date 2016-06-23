@@ -6,22 +6,18 @@
 #include <ros/package.h>
 #include <ros/service.h>
 #include <rviz/panel.h>
+#include <fanuc_grinding_post_processor/PostProcessorService.h>
 #endif
 
 class QLabel;
-class QHBoxLayout;
-class QVBoxLayout;
 class QLineEdit;
 class QPushButton;
 class QCheckBox;
-
-#include <fanuc_grinding_post_processor/PostProcessorService.h>
 
 namespace fanuc_grinding_rviz_plugin
 {
 class PostProcessorWidget : public QWidget
 {
-
   Q_OBJECT
 public:
   PostProcessorWidget(QWidget* parent =  NULL);

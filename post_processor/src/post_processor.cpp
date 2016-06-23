@@ -4,18 +4,13 @@ This file which operate post processor represents
 one node of the entire demonstrator
 ************************************************/
 
-// Standard headers
-#include <string>
-#include <iostream>
-#include <fstream>
-
 // ROS headers
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <ros/service.h>
+#include "fanuc_post_processor_library/fanuc_post_processor_library.hpp"
 
 #include <fanuc_grinding_post_processor/PostProcessorService.h> // Description of the Service we will use
-#include "fanuc_post_processor_library/fanuc_post_processor_library.hpp"
 
 boost::shared_ptr<ros::NodeHandle> node;
 
