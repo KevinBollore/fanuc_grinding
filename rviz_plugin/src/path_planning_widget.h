@@ -51,18 +51,16 @@ Q_SIGNALS:
   void getCADAndScanParams();
 
 public Q_SLOTS:
-  virtual void ComputeTrajectory();
-  virtual void VisualizeTrajectory();
-  virtual void SimulateTrajectory();
+  virtual void pathPlanningService();
   void newStatusMessage(const std_msgs::String::ConstPtr& msg);
 
 protected Q_SLOTS:
   virtual void triggerSave();
   void updateGUI();
   void updateInternalValues();
-  void ComputeTrajectoryButtonHandler();
-  void VisualizeTrajectoryButtonHandler();
-  void SimulateTrajectoryButtonHandler();
+  void computeTrajectoryButtonHandler();
+  void visualizeTrajectoryButtonHandler();
+  void executeTrajectoryButtonHandler();
   void enableComputeTrajectoryButtonHandler(bool);
   void enableVizSimButtonHandler();
   void generateTrajectoryButtonHandler();

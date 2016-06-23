@@ -135,9 +135,9 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   connect(this, SIGNAL(enableComputeTrajectoryButton(bool)), this, SLOT(enableComputeTrajectoryButtonHandler(bool)));
 
   // connect each buttons to different functions
-  connect(compute_trajectory_, SIGNAL(released()), this, SLOT(ComputeTrajectoryButtonHandler()));
-  connect(visualize_trajectory_, SIGNAL(released()), this, SLOT(VisualizeTrajectoryButtonHandler()));
-  connect(execute_trajectory_, SIGNAL(released()), this, SLOT(SimulateTrajectoryButtonHandler()));
+  connect(compute_trajectory_, SIGNAL(released()), this, SLOT(computeTrajectoryButtonHandler()));
+  connect(visualize_trajectory_, SIGNAL(released()), this, SLOT(visualizeTrajectoryButtonHandler()));
+  connect(execute_trajectory_, SIGNAL(released()), this, SLOT(executeTrajectoryButtonHandler()));
   connect(this, SIGNAL(enableVizSimButton()), this, SLOT(enableVizSimButtonHandler()));
 
   // Subscriber to receive messages from the exterior
@@ -248,7 +248,7 @@ std::vector<int> fanuc_grinding_rviz_plugin::PathPlanningWidget::getIndexVector(
   return srv_path_planning_.response.IndexVectorOutput;
 }
 
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectoryButtonHandler()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::computeTrajectoryButtonHandler()
 {
   // Fill service parameters with GUI values
   updateInternalValues();
@@ -261,33 +261,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectoryButtonHand
   srv_path_planning_.request.Visualization = false;
   srv_path_planning_.request.Simulation = false;
 
-  QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::ComputeTrajectory);
-}
-
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::ComputeTrajectory()
-{
-  // Disable UI
-  Q_EMIT enablePanel(false);
-  Q_EMIT enableComputeTrajectoryButton(false);
-
-  // Call client service
-  path_planning_service_.call(srv_path_planning_);
-  Q_EMIT sendStatus(QString::fromStdString(srv_path_planning_.response.ReturnMessage));
-
-  if(srv_path_planning_.response.ReturnStatus == true)
-  {
-    // If visualization and simulation buttons are disabled, we put them to an enable state
-    Q_EMIT enableVizSimButton();
-    Q_EMIT enablePanelPostProcessor();
-  }
-  else
-  {
-    Q_EMIT sendMsgBox("Error importing mesh/point cloud file",
-                      QString::fromStdString(srv_path_planning_.response.ReturnMessage), "");
-  }
-
-  // Re-enable UI
-  Q_EMIT enablePanel(true); // Enable UI
+  QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::pathPlanningService);
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
@@ -302,7 +276,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
   }
 }
 
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectoryButtonHandler()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::visualizeTrajectoryButtonHandler()
 {
   // If GUI has been changed, compute_trajectory_button_ is enabled.
   // So the pose is not up-to-date with GUI values
@@ -320,7 +294,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectoryButtonHa
         return;
   }
 
-  // get CAD and Scan params which are stored in grinding rviz plugin
+  // Get CAD and Scan params which are stored in grinding rviz plugin
   Q_EMIT getCADAndScanParams();
 
   // Fill in the request
@@ -338,27 +312,13 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectoryButtonHa
   {
     srv_path_planning_.request.IndexVectorInput.push_back(srv_path_planning_.response.IndexVectorOutput[j]);
   }
-  //srv_.request.*request* = *value*;
+
   // Start client service call in an other thread
-  QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::VisualizeTrajectory);
+  QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::pathPlanningService);
 
 }
 
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::VisualizeTrajectory()
-{
-  // Disable UI
-  Q_EMIT enablePanel(false);
-  Q_EMIT sendStatus("Visualization of trajectories...");
-  // Call client service
-  path_planning_service_.call(srv_path_planning_);
-  // Display return message in Qt panel
-  Q_EMIT sendStatus(QString::fromStdString(srv_path_planning_.response.ReturnMessage));
-
-  // Re-enable UI
-  Q_EMIT enablePanel(true); // Enable UI
-}
-
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectoryButtonHandler()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::executeTrajectoryButtonHandler()
 {
   // If GUI has been changed, compute_trajectory_button_ is enable.
   // So, the pose is not up-to-date with GUI values
@@ -396,18 +356,35 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectoryButtonHan
   }
   //srv_.request.*request* = *value*;
   // Start client service call in an other thread
-  QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::SimulateTrajectory);
+  QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::pathPlanningService);
 }
 
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::SimulateTrajectory()
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::pathPlanningService()
 {
+  if(srv_path_planning_.request.Compute)
+    Q_EMIT enableComputeTrajectoryButton(false);
+
   // Disable UI
   Q_EMIT enablePanel(false);
-  Q_EMIT sendStatus("Simulation of trajectories...");
+
   // Call client service
   path_planning_service_.call(srv_path_planning_);
-  // Display return message in Qt panel
   Q_EMIT sendStatus(QString::fromStdString(srv_path_planning_.response.ReturnMessage));
+
+  if(srv_path_planning_.response.ReturnStatus == true)
+  {
+    if (srv_path_planning_.request.Compute)
+    {
+      // If visualization and simulation buttons are disabled, we put them to an enable state
+      Q_EMIT enableVizSimButton();
+      Q_EMIT enablePanelPostProcessor();
+    }
+  }
+  else
+  {
+    Q_EMIT sendMsgBox("Error in path planning service",
+                      QString::fromStdString(srv_path_planning_.response.ReturnMessage), "");
+  }
 
   // Re-enable UI
   Q_EMIT enablePanel(true); // Enable UI
