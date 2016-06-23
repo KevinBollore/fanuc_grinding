@@ -3,6 +3,7 @@ project(fanuc_grinding_publish_meshfile)
 
 find_package(catkin REQUIRED COMPONENTS
              genmsg
+             pcl_ros
              roscpp
              std_msgs
              visualization_msgs)
