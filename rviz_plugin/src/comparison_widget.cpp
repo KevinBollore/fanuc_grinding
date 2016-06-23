@@ -9,17 +9,15 @@
 fanuc_grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) : QWidget(parent)
 {
   setObjectName("ComparisonWidget_");
-  comparison_button_ = new QPushButton;
-  comparison_button_->setText("Start Comparison");
-
-  comparison_layout_ = new QVBoxLayout(this);
-  comparison_layout_->addWidget(comparison_button_);
+  comparison_button_ = new QPushButton("Start comparison");
+  QVBoxLayout* comparison_layout = new QVBoxLayout(this);
+  comparison_layout->addWidget(comparison_button_);
 
   // Connect handlers
   connect(comparison_button_, SIGNAL(released()), this, SLOT(comparisonButtonHandler()));
 
   //Setup client
-  comparison_service_ = comparison_node_.serviceClient<fanuc_grinding_comparison::ComparisonService>("comparison_service");
+  comparison_service_ = nh_.serviceClient<fanuc_grinding_comparison::ComparisonService>("comparison_service");
 
   QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::ComparisonWidget::connectToServices);
 }

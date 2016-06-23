@@ -22,17 +22,13 @@ class PostProcessorWidget : public QWidget
   Q_OBJECT
 public:
   PostProcessorWidget(QWidget* parent =  NULL);
-
+  void load(const rviz::Config& config);
+  void save(rviz::Config config);
   void setPostProcessorParams(const fanuc_grinding_post_processor::PostProcessorService::Request &params);
   void setProgramLocation(const std::string &location);
   void setRobotPoses(const std::vector<geometry_msgs::Pose> &robot_poses);
   void setPointColorViz(const std::vector<bool> &point_color_viz);
   void setIndexVector(const std::vector<int> &index_vector);
-
-  void connectToServices();
-
-  void load(const rviz::Config& config);
-  void save(rviz::Config config);
 
 Q_SIGNALS:
   void guiChanged();
@@ -41,24 +37,21 @@ Q_SIGNALS:
   void enablePanel(bool);
   void getRobotTrajectoryData();
 
-public Q_SLOTS:
-  void generateProgram();
-
 protected Q_SLOTS:
-  virtual void triggerSave();
+  void connectToServices();
+  void triggerSave();
   void updateGUI();
   void updateInternalValues();
   void generateProgramButtonHandler();
+  void generateProgram();
   void tweakProgramName();
   void setIpAddressEnable(const int state);
 
 protected:
-  // ROS
-  ros::NodeHandle post_processor_node_;
+  ros::NodeHandle nh_;
   ros::ServiceClient post_processor_service_;
   fanuc_grinding_post_processor::PostProcessorService srv_post_processor_;
 
-  // GUI
   QLineEdit* program_name_;
   QLineEdit* comment_;
   QSpinBox* machining_speed_;
@@ -71,6 +64,5 @@ protected:
 };
 
 } // End namespace
-
 
 #endif // POST_PROCESSOR_WIDGET_H

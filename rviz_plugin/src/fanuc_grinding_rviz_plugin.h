@@ -30,8 +30,9 @@ public:
   void sendCADAndScanDatas(const QString, const QString, const QString, const QString);
 
 protected Q_SLOTS:
-  virtual void
-  triggerSave();
+  virtual void triggerSave();
+  virtual void load(const rviz::Config& config);
+  virtual void save(rviz::Config config) const;
 
   void displayStatusHandler(const QString message);
   void displayMsgBoxHandler(const QString title, const QString msg, const QString info_msg);
@@ -46,32 +47,20 @@ protected Q_SLOTS:
   void sendCADAndScanDatasSlot();
   void setRobotTrajectoryData();
 
-  virtual void load(const rviz::Config& config);
-  virtual void save(rviz::Config config) const;
-
 protected:
-
-  // Qt Interface
-  // Tabs
-  QTabWidget *tab_widget_;
-  ScanningWidget *scanning_widget_;
-  AlignmentWidget *alignment_widget_;
-  ComparisonWidget *comparison_widget_;
-  PathPlanningWidget *path_planning_widget_;
-  PostProcessorWidget *post_processor_widget_;
-
-  // Status Layout
-  QVBoxLayout *status_layout_;
-  QLabel *status_label_;
-
-  // Global Layout
-  QVBoxLayout *global_layout_;
-
-private:
   QString cad_filename_;
   QString cad_marker_name_;
   QString scan_filename_;
   QString scan_marker_name_;
+
+  QTabWidget* tab_widget_;
+  ScanningWidget* scanning_widget_;
+  AlignmentWidget* alignment_widget_;
+  ComparisonWidget* comparison_widget_;
+  PathPlanningWidget* path_planning_widget_;
+  PostProcessorWidget* post_processor_widget_;
+
+  QLabel* status_label_;
 };
 
 }  // end namespace

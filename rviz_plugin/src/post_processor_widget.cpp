@@ -94,7 +94,7 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
   setProgramLocation(ros::package::getPath("fanuc_grinding_rviz_plugin")+"/tp_programs/");
 
   //Setup client
-  post_processor_service_ = post_processor_node_.serviceClient<fanuc_grinding_post_processor::PostProcessorService>("post_processor_service");
+  post_processor_service_ = nh_.serviceClient<fanuc_grinding_post_processor::PostProcessorService>("post_processor_service");
 
   QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::PostProcessorWidget::connectToServices);
 }

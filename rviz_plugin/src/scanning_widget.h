@@ -20,20 +20,15 @@ namespace fanuc_grinding_rviz_plugin
 {
 class ScanningWidget : public QWidget
 {
-
   Q_OBJECT
 public:
   ScanningWidget(QWidget* parent =  NULL);
-
+  void load(const rviz::Config& config);
+  void save(rviz::Config config);
   fanuc_grinding_scanning::ScanningService::Request getScanningParams();
   fanuc_grinding_publish_meshfile::PublishMeshfileService::Request getPublishParams();
   void setScanningParams(fanuc_grinding_scanning::ScanningService::Request params);
   void setPublishParams(fanuc_grinding_publish_meshfile::PublishMeshfileService::Request params);
-
-  void connectToServices();
-
-  void load(const rviz::Config& config);
-  void save(rviz::Config config);
 
 Q_SIGNALS:
   void guiChanged();
@@ -47,14 +42,9 @@ Q_SIGNALS:
   void sendCADDatas(QString cad_path, QString cad_marker_name);
   void sendScanDatas(QString scan_path, QString scan_marker_name);
 
-public Q_SLOTS:
-  virtual void publishCADMeshOrCloudFile();
-  virtual void publishScanMeshOrCloudFile();
-  virtual void scanning();
-  void newStatusMessage(const std_msgs::String::ConstPtr& msg);
-
 protected Q_SLOTS:
-  virtual void triggerSave();
+  void connectToServices();
+  void triggerSave();
   void updateGUI();
   void updateInternalValues();
   void browseCADFiles();
@@ -66,65 +56,60 @@ protected Q_SLOTS:
   void scanningButtonHandler();
   void enableScanningButtonHandler();
   void enableScanWidgetHandler();
+  void publishCADMeshOrCloudFile();
+  void publishScanMeshOrCloudFile();
+  void scanning();
+  void newStatusMessage(const std_msgs::String::ConstPtr& msg);
 
 protected:
   const std::string package_name_;
 
-  // ROS
   ros::NodeHandle nh_;
-
   ros::ServiceClient scanning_service_;
   fanuc_grinding_scanning::ScanningService srv_scanning_;
-
   ros::ServiceClient publish_meshfile_service_;
   fanuc_grinding_publish_meshfile::PublishMeshfileService srv_publish_meshfile_;
-
   fanuc_grinding_scanning::ScanningService::Request scanning_params_;
   fanuc_grinding_publish_meshfile::PublishMeshfileService::Request publish_meshfile_params_;
-
-  // Status subscriber, allows to receive status messages from the exterior
   ros::Subscriber status_sub_;
 
-  // GUI
   // Import CAD
-  QLineEdit *cad_meshname_;
-  QPushButton *cad_meshname_browse_button_;
-  QPushButton *import_cad_button_;
+  QLineEdit* cad_meshname_;
+  QPushButton* cad_meshname_browse_button_;
+  QPushButton* import_cad_button_;
 
   // Give a marker name for CAD file
-  QLineEdit *cad_marker_name_line_;
+  QLineEdit* cad_marker_name_line_;
 
   // Container for all the scan import widgets
   QWidget* scan_choice_container_;
-  // Create a QTabWidget for the choice between make a scan or import a point cloud
   QTabWidget *scan_choice_widget_;
   QWidget *start_scan_tab_;
   QWidget *import_scan_tab_;
 
   // Widget for scan
   // YAML part in order to parse joint values
-  QLineEdit *traj_yaml_file_;
-  QPushButton *traj_yaml_browse_button_;
+  QLineEdit* traj_yaml_file_;
+  QPushButton* traj_yaml_browse_button_;
   //Parameters for SLS-2
-  QLineEdit *sls_2_server_name_;
-  QLineEdit *sls_2_ip_address_;
+  QLineEdit* sls_2_server_name_;
+  QLineEdit* sls_2_ip_address_;
   //YAML part in order to parse calibration sls2 matrix value
-  QLineEdit *calibration_yaml_file_;
+  QLineEdit* calibration_yaml_file_;
   QDoubleSpinBox* down_sampling_leaf_size_;
-  QPushButton *calibration_yaml_browse_button_;
+  QPushButton* calibration_yaml_browse_button_;
 
   //Widget for point cloud
-  QLineEdit *scan_file_;
-  QPushButton *scan_file_browse_button_;
-  QPushButton *import_scan_;
+  QLineEdit* scan_file_;
+  QPushButton* scan_file_browse_button_;
+  QPushButton* import_scan_;
 
   // Widget for scan file
-  QLineEdit *scan_marker_name_line_;
+  QLineEdit* scan_marker_name_line_;
 
-  QPushButton *start_scan_;
+  QPushButton* start_scan_;
 };
 
 } // End namespace
-
 
 #endif // SCANNING_WIDGET_H

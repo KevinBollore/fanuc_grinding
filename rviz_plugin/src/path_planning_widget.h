@@ -21,22 +21,16 @@ namespace fanuc_grinding_rviz_plugin
 {
 class PathPlanningWidget : public QWidget
 {
-
   Q_OBJECT
 public:
   PathPlanningWidget(QWidget* parent =  NULL);
-
+  void load(const rviz::Config& config);
+  void save(rviz::Config config);
   fanuc_grinding_path_planning::PathPlanningService::Request getPathPlanningParams();
   void setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request params);
-
   std::vector<geometry_msgs::Pose> getRobotPoses();
   std::vector<bool> getPointColorViz();
   std::vector<int> getIndexVector();
-
-  void connectToServices();
-
-  void load(const rviz::Config& config);
-  void save(rviz::Config config);
 
 Q_SIGNALS:
   void guiChanged();
@@ -48,17 +42,16 @@ Q_SIGNALS:
   void enablePanelPostProcessor();
   void getCADAndScanParams();
 
-public Q_SLOTS:
-  virtual void pathPlanningService();
-  void newStatusMessage(const std_msgs::String::ConstPtr& msg);
-
 protected Q_SLOTS:
-  virtual void triggerSave();
+  void connectToServices();
+  void triggerSave();
   void updateGUI();
   void updateInternalValues();
+  void newStatusMessage(const std_msgs::String::ConstPtr& msg);
   void computeTrajectoryButtonHandler();
   void visualizeTrajectoryButtonHandler();
   void executeTrajectoryButtonHandler();
+  void pathPlanningService();
   void enableComputeTrajectoryButtonHandler(bool);
   void enableVizSimButtonHandler();
   void generateTrajectoryButtonHandler();
@@ -69,42 +62,28 @@ protected Q_SLOTS:
                            const QString scan_marker_name);
 
 protected:
-  // ROS
   ros::NodeHandle nh_;
   ros::ServiceClient path_planning_service_;
   fanuc_grinding_path_planning::PathPlanningService srv_path_planning_;
-
   fanuc_grinding_path_planning::PathPlanningService::Request path_planning_params_;
-
-  // Status subscriber, allows to receive status messages from the exterior
   ros::Subscriber status_sub_;
 
-  // GUI
-  QCheckBox *surfacing_mode_;
-
+  QCheckBox* surfacing_mode_;
   QLabel* depth_of_pass_label_;
-  QDoubleSpinBox *depth_of_pass_;
-
-  QSpinBox *covering_percentage_;
-
-  QSpinBox *extrication_frequency_;
-
-  QSpinBox *extrication_coefficient_;
-
-  QDoubleSpinBox *grind_diameter_;
-
-  QRadioButton *lean_angle_axis_x_;
-  QRadioButton *lean_angle_axis_y_;
-  QRadioButton *lean_angle_axis_z_;
-
-  QDoubleSpinBox *angle_value_;
-
-  QPushButton *compute_trajectory_;
-  QPushButton *execute_trajectory_;
-  QPushButton *visualize_trajectory_;
+  QDoubleSpinBox* depth_of_pass_;
+  QSpinBox* covering_percentage_;
+  QSpinBox* extrication_frequency_;
+  QSpinBox* extrication_coefficient_;
+  QDoubleSpinBox* grind_diameter_;
+  QRadioButton* lean_angle_axis_x_;
+  QRadioButton* lean_angle_axis_y_;
+  QRadioButton* lean_angle_axis_z_;
+  QDoubleSpinBox* angle_value_;
+  QPushButton* compute_trajectory_;
+  QPushButton* execute_trajectory_;
+  QPushButton* visualize_trajectory_;
 };
 
 } // End namespace
-
 
 #endif // PATH_PLANNING_WIDGET_H
