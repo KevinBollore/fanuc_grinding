@@ -1,15 +1,14 @@
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTabWidget>
 #include <QPushButton>
 #include <QLabel>
 #include <QDoubleSpinBox>
-#include <QFileDialog>
 #include <QLineEdit>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QFuture>
 #include <QtConcurrentRun>
-#include <QFileInfo>
 
 #include "scanning_widget.h"
 

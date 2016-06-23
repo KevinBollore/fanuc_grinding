@@ -5,10 +5,6 @@
  demonstrator
  ************************************************/
 
-// Standard headers
-#include <string>
-#include <iostream>
-
 // ROS headers
 #include <ros/ros.h>
 #include <ros/service.h>

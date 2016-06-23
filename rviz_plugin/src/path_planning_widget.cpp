@@ -1,16 +1,14 @@
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>
 #include <QRadioButton>
+#include <QSpinBox>
 #include <QDoubleSpinBox>
-#include <QFileDialog>
-#include <QLineEdit>
-#include <QFuture>
-#include <QtConcurrentRun>
 #include <QMessageBox>
 #include <QCheckBox>
+#include <QFuture>
+#include <QtConcurrentRun>
 
 #include "path_planning_widget.h"
 

@@ -3,34 +3,17 @@
 
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
-#include <ros/service.h>
 #include <rviz/panel.h>
-#endif
-
-#include <fanuc_grinding_scanning/ScanningService.h>
-#include <fanuc_grinding_alignment/AlignmentService.h>
-#include <fanuc_grinding_comparison/ComparisonService.h>
-#include <fanuc_grinding_path_planning/PathPlanningService.h>
-#include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h>
-#include <fanuc_grinding_post_processor/PostProcessorService.h>
-
 #include "scanning_widget.h"
 #include "alignment_widget.h"
 #include "comparison_widget.h"
 #include "path_planning_widget.h"
 #include "post_processor_widget.h"
+#endif
 
 class QTabWidget;
-class QWidget;
 class QLabel;
-class QPushButton;
 class QVBoxLayout;
-class QHBoxLayout;
-class QDoubleSpinBox;
-class QSpinBox;
-class QRadioButton;
-class QLineEdit;
-class QFileDialog;
 
 namespace fanuc_grinding_rviz_plugin
 {

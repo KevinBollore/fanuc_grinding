@@ -5,23 +5,19 @@ represents one node of the entire
 demonstrator
 ************************************************/
 
-// Standard headers
-#include <string>
-#include <iostream>
-
 // ROS headers
 #include <ros/ros.h>
 #include <ros/service.h>
 #include <visualization_msgs/Marker.h>
 #include <pcl_ros/point_cloud.h>
 
+#include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h> // Description of the Service we will use
+
 // PCL headers
 #include <pcl/point_cloud.h>
 #include <pcl/io/ply_io.h>
 #include <pcl/io/vtk_lib_io.h>
 #include <pcl/PolygonMesh.h>
-
-#include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h> // Description of the Service we will use
 
 boost::shared_ptr<ros::NodeHandle> node;
 

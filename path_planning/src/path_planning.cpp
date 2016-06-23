@@ -4,10 +4,6 @@ This file which operate path planning represents
 one node of the entire demonstrator
 ************************************************/
 
-// Standard headers
-#include <string>
-#include <iostream>
-
 // ROS headers
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -20,10 +16,9 @@ one node of the entire demonstrator
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <std_msgs/String.h>
+#include "bezier_library/bezier_library.hpp"
 
 #include <fanuc_grinding_path_planning/PathPlanningService.h> // Description of the Service we will use
-
-#include "bezier_library/bezier_library.hpp"
 
 boost::shared_ptr<move_group_interface::MoveGroup> group;
 boost::shared_ptr<ros::NodeHandle> node;

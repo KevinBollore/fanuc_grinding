@@ -1,22 +1,10 @@
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QLabel>
-#include <QDoubleSpinBox>
-#include <QSpinBox>
-#include <QPushButton>
 #include <QMessageBox>
 #include <QFuture>
 #include <QtConcurrentRun>
 #include <QWidget>
 #include <QTabWidget>
-#include <QDebug>
-#include <QLabel>
-#include <QRadioButton>
-#include <QLineEdit>
-#include <QFileDialog>
-
-#include <string>
-#include <iostream>
 
 #include "fanuc_grinding_rviz_plugin.h"
 

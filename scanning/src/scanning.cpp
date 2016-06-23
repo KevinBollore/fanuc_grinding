@@ -4,10 +4,6 @@ This file which operate scanning represents
 one node of the entire demonstrator
 ************************************************/
 
-// Standard headers
-#include <string>
-#include <iostream>
-
 // ROS headers
 #include <ros/ros.h>
 #include <ros/service.h>
@@ -17,12 +13,10 @@ one node of the entire demonstrator
 #include <std_msgs/String.h>
 #include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/mark.h>
-
+#include "yaml_utils.h"
 #include <fanuc_grinding_scanning/ScanningService.h> // Description of the Service we will use
 #include <fanuc_grinding_execute_joint_state/ExecuteJointStateService.h> // We will call this service
 #include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h>
-
-#include "yaml_utils.h"
 
 // PCL headers
 #include <pcl/point_cloud.h>
