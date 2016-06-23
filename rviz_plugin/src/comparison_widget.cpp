@@ -86,10 +86,15 @@ void fanuc_grinding_rviz_plugin::ComparisonWidget::Comparison()
 
   // Call client service
   comparison_service_.call(srv_comparison_);
-  // Display return message in Qt panel
   Q_EMIT sendStatus(QString::fromStdString(srv_comparison_.response.ReturnMessage));
 
-  Q_EMIT enablePanelPathPlanning();
+  if(srv_comparison_.response.ReturnStatus == true)
+    Q_EMIT enablePanelPathPlanning();
+  else
+  {
+    Q_EMIT sendMsgBox("Error comparing meshes",
+                      QString::fromStdString(srv_comparison_.response.ReturnMessage), "");
+  }
 
   // Re-enable UI
   Q_EMIT enablePanel(true); // Enable UI
