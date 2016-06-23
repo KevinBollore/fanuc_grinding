@@ -13,7 +13,7 @@ sudo mkdir /usr/local/share/applications/ -p
 sudo echo "[Desktop Entry]
 Name=Fanuc grinding
 Comment=ROS - Fanuc grinding
-Exec=bash -c \"source /opt/ros/indigo/setup.bash && source $HOME/MEGAsync/catkin_workspace/devel/setup.bash && roslaunch grinding_rviz_plugin grinding_application_r1000ia.launch\"
+Exec=bash -c \"source /opt/ros/indigo/setup.bash && source $HOME/MEGAsync/catkin_workspace/devel/setup.bash && roslaunch fanuc_grinding_rviz_plugin r1000ia_sls_2.launch\"
 Icon=/usr/local/share/icons/fanuc_grinding.png
 Type=Application
 Categories=ROS;
