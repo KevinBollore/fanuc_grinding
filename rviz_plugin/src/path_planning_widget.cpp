@@ -157,53 +157,49 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableComputeTrajectoryButt
   compute_trajectory_->setEnabled(state);
 }
 
-fanuc_grinding_path_planning::PathPlanningService::Request fanuc_grinding_rviz_plugin::PathPlanningWidget::getPathPlanningParams()
-{
-  return path_planning_params_;
-}
-
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request &params)
 {
-  path_planning_params_.SurfacingMode = params.SurfacingMode;
-  path_planning_params_.CoveringPercentage = params.CoveringPercentage;
-  path_planning_params_.ExtricationFrequency = params.ExtricationFrequency;
-  path_planning_params_.ExtricationCoefficient = params.ExtricationCoefficient;
-  path_planning_params_.GrindDiameter = params.GrindDiameter;
-  path_planning_params_.DepthOfPath = params.DepthOfPath;
-  path_planning_params_.AngleX = params.AngleX;
-  path_planning_params_.AngleY = params.AngleY;
-  path_planning_params_.AngleZ = params.AngleZ;
-  path_planning_params_.AngleValue = params.AngleValue;
+  srv_path_planning_.request.SurfacingMode = params.SurfacingMode;
+  srv_path_planning_.request.CoveringPercentage = params.CoveringPercentage;
+  srv_path_planning_.request.ExtricationFrequency = params.ExtricationFrequency;
+  srv_path_planning_.request.ExtricationCoefficient = params.ExtricationCoefficient;
+  srv_path_planning_.request.GrindDiameter = params.GrindDiameter;
+  srv_path_planning_.request.DepthOfPath = params.DepthOfPath;
+  srv_path_planning_.request.AngleX = params.AngleX;
+  srv_path_planning_.request.AngleY = params.AngleY;
+  srv_path_planning_.request.AngleZ = params.AngleZ;
+  srv_path_planning_.request.AngleValue = params.AngleValue;
   updateGUI();
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 {
-  surfacing_mode_->setChecked(path_planning_params_.SurfacingMode);
-  covering_percentage_->setValue(path_planning_params_.CoveringPercentage);
-  extrication_frequency_->setValue(path_planning_params_.ExtricationFrequency);
-  extrication_coefficient_->setValue(path_planning_params_.ExtricationCoefficient);
-  grind_diameter_->setValue(path_planning_params_.GrindDiameter * 1000.0); // meters to millimeters
-  depth_of_pass_->setValue(path_planning_params_.DepthOfPath * 1000.0); // meters to millimeters
-  lean_angle_axis_x_->setChecked(path_planning_params_.AngleX);
-  lean_angle_axis_y_->setChecked(path_planning_params_.AngleY);
-  lean_angle_axis_z_->setChecked(path_planning_params_.AngleZ);
-  angle_value_->setValue(path_planning_params_.AngleValue * 360.0 / M_PI); // radians to degrees
+  surfacing_mode_->setChecked(srv_path_planning_.request.SurfacingMode);
+  covering_percentage_->setValue(srv_path_planning_.request.CoveringPercentage);
+  extrication_frequency_->setValue(srv_path_planning_.request.ExtricationFrequency);
+  extrication_coefficient_->setValue(srv_path_planning_.request.ExtricationCoefficient);
+  grind_diameter_->setValue(srv_path_planning_.request.GrindDiameter * 1000.0); // meters to millimeters
+  depth_of_pass_->setValue(srv_path_planning_.request.DepthOfPath * 1000.0); // meters to millimeters
+  lean_angle_axis_x_->setChecked(srv_path_planning_.request.AngleX);
+  lean_angle_axis_y_->setChecked(srv_path_planning_.request.AngleY);
+  lean_angle_axis_z_->setChecked(srv_path_planning_.request.AngleZ);
+  angle_value_->setValue(srv_path_planning_.request.AngleValue * 360.0 / M_PI); // radians to degrees
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
 {
-  path_planning_params_.SurfacingMode = surfacing_mode_->isChecked();
-  path_planning_params_.CoveringPercentage = covering_percentage_->value();
-  path_planning_params_.ExtricationFrequency = extrication_frequency_->value();
-  path_planning_params_.ExtricationCoefficient = extrication_coefficient_->value();
-  path_planning_params_.GrindDiameter = grind_diameter_->value() / 1000.0; // millimeters to meters
-  path_planning_params_.DepthOfPath = depth_of_pass_->value() / 1000.0; // millimeters to meters
-  path_planning_params_.AngleX = lean_angle_axis_x_->isChecked();
-  path_planning_params_.AngleY = lean_angle_axis_y_->isChecked();
-  path_planning_params_.AngleZ = lean_angle_axis_z_->isChecked();
-  path_planning_params_.AngleValue = angle_value_->value() / 360.0 * M_PI; // degrees to radians
+  srv_path_planning_.request.SurfacingMode = surfacing_mode_->isChecked();
+  srv_path_planning_.request.CoveringPercentage = covering_percentage_->value();
+  srv_path_planning_.request.ExtricationFrequency = extrication_frequency_->value();
+  srv_path_planning_.request.ExtricationCoefficient = extrication_coefficient_->value();
+  srv_path_planning_.request.GrindDiameter = grind_diameter_->value() / 1000.0; // millimeters to meters
+  srv_path_planning_.request.DepthOfPath = depth_of_pass_->value() / 1000.0; // millimeters to meters
+  srv_path_planning_.request.AngleX = lean_angle_axis_x_->isChecked();
+  srv_path_planning_.request.AngleY = lean_angle_axis_y_->isChecked();
+  srv_path_planning_.request.AngleZ = lean_angle_axis_z_->isChecked();
+  srv_path_planning_.request.AngleValue = angle_value_->value() / 360.0 * M_PI; // degrees to radians
 }
+
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const int state)
 {
@@ -212,14 +208,14 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const 
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString cad_filename,
-                                                                const QString cad_marker_name,
-                                                                const QString scan_filename,
-                                                                const QString scan_marker_name)
+                                                                         const QString cad_marker_name,
+                                                                         const QString scan_filename,
+                                                                         const QString scan_marker_name)
 {
-  path_planning_params_.CADFileName = cad_filename.toStdString();
-  path_planning_params_.CADMarkerName = cad_marker_name.toStdString();
-  path_planning_params_.ScanFileName = scan_filename.toStdString();
-  path_planning_params_.ScanMarkerName = scan_marker_name.toStdString();
+  srv_path_planning_.request.CADFileName = cad_filename.toStdString();
+  srv_path_planning_.request.CADMarkerName = cad_marker_name.toStdString();
+  srv_path_planning_.request.ScanFileName = scan_filename.toStdString();
+  srv_path_planning_.request.ScanMarkerName = scan_marker_name.toStdString();
 }
 
 std::vector<geometry_msgs::Pose> fanuc_grinding_rviz_plugin::PathPlanningWidget::getRobotPoses()
@@ -254,7 +250,6 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::computeTrajectoryButtonHand
   Q_EMIT getCADAndScanParams();
 
   // Fill in the request
-  srv_path_planning_.request = getPathPlanningParams();
   srv_path_planning_.request.Compute = true;
   srv_path_planning_.request.Visualization = false;
   srv_path_planning_.request.Simulation = false;
@@ -296,7 +291,6 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::visualizeTrajectoryButtonHa
   Q_EMIT getCADAndScanParams();
 
   // Fill in the request
-  srv_path_planning_.request = getPathPlanningParams();
   srv_path_planning_.request.Compute = false;
   srv_path_planning_.request.Visualization = true;
   srv_path_planning_.request.Simulation = false;
@@ -338,7 +332,6 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::executeTrajectoryButtonHand
   Q_EMIT getCADAndScanParams();
 
   // Fill in the request
-  srv_path_planning_.request = getPathPlanningParams();
   srv_path_planning_.request.Compute = false;
   srv_path_planning_.request.Visualization = false;
   srv_path_planning_.request.Simulation = true;

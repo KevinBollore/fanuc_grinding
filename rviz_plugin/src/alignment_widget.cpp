@@ -31,13 +31,9 @@ void fanuc_grinding_rviz_plugin::AlignmentWidget::triggerSave()
   updateGUI();
 }
 
-fanuc_grinding_alignment::AlignmentService::Request fanuc_grinding_rviz_plugin::AlignmentWidget::getAlignmentParams()
-{
-  return alignment_params_;
-}
-
 void fanuc_grinding_rviz_plugin::AlignmentWidget::setAlignmentParams(const fanuc_grinding_alignment::AlignmentService::Request &params)
 {
+  srv_alignment_.request = params;
   updateGUI();
 }
 
@@ -52,23 +48,21 @@ void fanuc_grinding_rviz_plugin::AlignmentWidget::updateInternalValues()
 }
 
 void fanuc_grinding_rviz_plugin::AlignmentWidget::setCADAndScanParams(const QString cad_filename,
-                                                                const QString cad_marker_name,
-                                                                const QString scan_filename,
-                                                                const QString scan_marker_name)
+                                                                      const QString cad_marker_name,
+                                                                      const QString scan_filename,
+                                                                      const QString scan_marker_name)
 {
-  alignment_params_.CADFileName = cad_filename.toStdString();
-  alignment_params_.CADMarkerName = cad_marker_name.toStdString();
-  alignment_params_.ScanFileName = scan_filename.toStdString();
-  alignment_params_.ScanMarkerName = scan_marker_name.toStdString();
+  srv_alignment_.request.CADFileName = cad_filename.toStdString();
+  srv_alignment_.request.CADMarkerName = cad_marker_name.toStdString();
+  srv_alignment_.request.ScanFileName = scan_filename.toStdString();
+  srv_alignment_.request.ScanMarkerName = scan_marker_name.toStdString();
 }
 
 void fanuc_grinding_rviz_plugin::AlignmentWidget::alignmentButtonHandler()
 {
   // get CAD and Scan params which are stored in grinding rviz plugin
   Q_EMIT getCADAndScanParams();
-  // Fill in the request
-  srv_alignment_.request = getAlignmentParams();
-  //srv_.request.*request* = *value*;
+
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &AlignmentWidget::alignment);
 }

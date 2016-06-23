@@ -21,7 +21,6 @@ public:
   AlignmentWidget(QWidget* parent =  NULL);
   void load(const rviz::Config& config);
   void save(rviz::Config config);
-  fanuc_grinding_alignment::AlignmentService::Request getAlignmentParams();
   void setAlignmentParams(const fanuc_grinding_alignment::AlignmentService::Request &params);
 
 Q_SIGNALS:
@@ -49,7 +48,6 @@ protected:
   ros::NodeHandle nh_;
   ros::ServiceClient alignment_service_;
   fanuc_grinding_alignment::AlignmentService srv_alignment_;
-  fanuc_grinding_alignment::AlignmentService::Request alignment_params_;
 
   QPushButton* alignment_button_;
 };
