@@ -13,7 +13,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>ros_industrial</exec_depend>
+  <exec_depend>industrial_core</exec_depend>
   <exec_depend>fanuc</exec_depend>
   <exec_depend>fanuc_experimental</exec_depend>
   <exec_depend>institut_maupertuis_robots_descriptions</exec_depend>

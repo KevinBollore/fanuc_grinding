@@ -12,11 +12,6 @@ demonstrator
 // ROS headers
 #include <ros/ros.h>
 #include <ros/service.h>
-#include <tf/transform_listener.h>
-#include <tf_conversions/tf_eigen.h>
-#include <eigen_conversions/eigen_msg.h>
-#include <moveit/move_group_interface/move_group.h>
-#include <moveit_msgs/ExecuteKnownTrajectory.h>
 #include <visualization_msgs/Marker.h>
 #include <pcl_ros/point_cloud.h>
 
