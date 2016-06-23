@@ -99,6 +99,8 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   //COMPARISON
   // Will display a status in general status label ( from comparison widget )
   connect(comparison_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
+  connect(comparison_widget_, SIGNAL(sendMsgBox(QString, QString , QString)),
+                      this, SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that comparison_widget_ is modified
   connect(comparison_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
   // Enable path_planning_widget when comparison_widget_ will send the SIGNAL
