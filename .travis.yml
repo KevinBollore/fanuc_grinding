@@ -27,6 +27,7 @@ install:
   - git clone https://github.com/InstitutMaupertuis/institut_maupertuis_robots_descriptions.git
   - git clone https://github.com/InstitutMaupertuis/bezier.git
   - git clone https://github.com/InstitutMaupertuis/fanuc_post_processor.git
+  - git clone https://github.com/davetcoleman/rviz_visual_tools.git
   - git clone https://github.com/InstitutMaupertuis/advanced_industrial_ci.git .advanced_ci_config
   - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
 
