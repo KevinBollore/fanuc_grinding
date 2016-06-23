@@ -61,8 +61,8 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   // SCANNING
   // Will display a status in general status label ( from scanning widget )
   connect(scanning_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
-  connect(scanning_widget_, SIGNAL(sendMsgBox(QString, QString , QString)),
-                      this, SLOT(displayMsgBoxHandler(QString, QString, QString)));
+  connect(scanning_widget_, SIGNAL(sendMsgBox(QString, QString , QString)), this,
+          SLOT(displayMsgBoxHandler(QString, QString, QString)));
 
   // Call configChanged at each time that scanning_widget_ is modified
   connect(scanning_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
@@ -72,52 +72,50 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   connect(scanning_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
 
   // Will send information about cad and scan in the other widgets
-  connect(scanning_widget_, SIGNAL(sendCADDatas(QString, QString)),
-                      this, SLOT(setCADDatas(QString, QString)));
-  connect(scanning_widget_, SIGNAL(sendScanDatas(QString, QString)),
-                      this, SLOT(setScanDatas(QString, QString)));
+  connect(scanning_widget_, SIGNAL(sendCADDatas(QString, QString)), this, SLOT(setCADDatas(QString, QString)));
+  connect(scanning_widget_, SIGNAL(sendScanDatas(QString, QString)), this, SLOT(setScanDatas(QString, QString)));
   // For the demonstrator, we will skip alignment and comparison parts for the moment
   connect(scanning_widget_, SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
 
   //ALIGNMENT
   // Will display a status in general status label ( from alignment widget )
   connect(alignment_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
-  connect(alignment_widget_, SIGNAL(sendMsgBox(QString, QString , QString)),
-                       this, SLOT(displayMsgBoxHandler(QString, QString, QString)));
+  connect(alignment_widget_, SIGNAL(sendMsgBox(QString, QString , QString)), this,
+          SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that alignment_widget_ is modified
   connect(alignment_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
   // Enable compoarison_panel when alignment_widget_ will send the SIGNAL
-  connect(alignment_widget_,SIGNAL(enablePanelComparison()), this, SLOT(enablePanelComparisonHandler()));
+  connect(alignment_widget_, SIGNAL(enablePanelComparison()), this, SLOT(enablePanelComparisonHandler()));
   // Enable general panel when alignment_widget_ send the SIGNAL
   connect(alignment_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
   // Received a signal from alignment widget in order to get CAD and scan params
   connect(alignment_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
   // Send a signal to alignment widget in order to give CAD and scan params
-  connect(this             , SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
+  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
           alignment_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
 
   //COMPARISON
   // Will display a status in general status label ( from comparison widget )
   connect(comparison_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
-  connect(comparison_widget_, SIGNAL(sendMsgBox(QString, QString , QString)),
-                      this, SLOT(displayMsgBoxHandler(QString, QString, QString)));
+  connect(comparison_widget_, SIGNAL(sendMsgBox(QString, QString , QString)), this,
+          SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that comparison_widget_ is modified
   connect(comparison_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
   // Enable path_planning_widget when comparison_widget_ will send the SIGNAL
-  connect(comparison_widget_,SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
+  connect(comparison_widget_, SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
   // Enable general panel when comparison_widget_ send the SIGNAL
   connect(comparison_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
   // Received a signal from comparison widget in order to get CAD and scan params
   connect(comparison_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
   // Send a signal to comparison widget in order to give CAD and scan params
-  connect(this             , SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
+  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
           comparison_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
 
   //PATH PLANNING
   // Will display a status in general status label ( from path_planning widget )
   connect(path_planning_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
-  connect(path_planning_widget_, SIGNAL(sendMsgBox(QString, QString , QString)),
-                           this, SLOT(displayMsgBoxHandler(QString, QString, QString)));
+  connect(path_planning_widget_, SIGNAL(sendMsgBox(QString, QString , QString)), this,
+          SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that path_planning_widget is modified
   connect(path_planning_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
   // Enable path_planning_widget when comparison_widget_ will send the SIGNAL
@@ -127,14 +125,14 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   // Received a signal from comparison widget in order to get CAD and scan params
   connect(path_planning_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
   // Send a signal to comparison widget in order to give CAD and scan params
-  connect(this             , SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
+  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
           path_planning_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
 
   //POST_PROCESSOR
   // Will display a status in general status label ( from post_processor widget )
   connect(post_processor_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
-  connect(post_processor_widget_, SIGNAL(sendMsgBox(QString, QString, QString)),
-                      this, SLOT(displayMsgBoxHandler(QString, QString, QString)));
+  connect(post_processor_widget_, SIGNAL(sendMsgBox(QString, QString, QString)), this,
+          SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that post_processor_widget is modified
   connect(post_processor_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
   // Enable general panel when post_processor send the SIGNAL
