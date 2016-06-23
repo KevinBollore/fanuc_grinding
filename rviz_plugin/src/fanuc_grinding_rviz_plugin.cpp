@@ -53,7 +53,7 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
           SLOT(displayMsgBoxHandler(QString, QString, QString)));
 
   // Call configChanged at each time that scanning_widget_ is modified
-  connect(scanning_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
+  connect(scanning_widget_, SIGNAL(guiChanged()), this, SLOT(triggerSave()));
   // Enable AlignementPanel when scanning_widget_ will send the SIGNAL
   connect(scanning_widget_, SIGNAL(enablePanelAlignment()), this, SLOT(enablePanelAlignmentHandler()));
   // Enable general panel when scanning_widget_ send the SIGNAL
@@ -71,7 +71,7 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   connect(alignment_widget_, SIGNAL(sendMsgBox(QString, QString , QString)), this,
           SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that alignment_widget_ is modified
-  connect(alignment_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
+  connect(alignment_widget_, SIGNAL(guiChanged()), this, SLOT(triggerSave()));
   // Enable compoarison_panel when alignment_widget_ will send the SIGNAL
   connect(alignment_widget_, SIGNAL(enablePanelComparison()), this, SLOT(enablePanelComparisonHandler()));
   // Enable general panel when alignment_widget_ send the SIGNAL
@@ -88,7 +88,7 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   connect(comparison_widget_, SIGNAL(sendMsgBox(QString, QString , QString)), this,
           SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that comparison_widget_ is modified
-  connect(comparison_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
+  connect(comparison_widget_, SIGNAL(guiChanged()), this, SLOT(triggerSave()));
   // Enable path_planning_widget when comparison_widget_ will send the SIGNAL
   connect(comparison_widget_, SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
   // Enable general panel when comparison_widget_ send the SIGNAL
@@ -105,7 +105,7 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   connect(path_planning_widget_, SIGNAL(sendMsgBox(QString, QString , QString)), this,
           SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that path_planning_widget is modified
-  connect(path_planning_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
+  connect(path_planning_widget_, SIGNAL(guiChanged()), this, SLOT(triggerSave()));
   // Enable path_planning_widget when comparison_widget_ will send the SIGNAL
   connect(path_planning_widget_, SIGNAL(enablePanelPostProcessor()), this, SLOT(enablePanelPostProcessorHandler()));
   // Enable general panel when path_planning send the SIGNAL
@@ -122,7 +122,7 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   connect(post_processor_widget_, SIGNAL(sendMsgBox(QString, QString, QString)), this,
           SLOT(displayMsgBoxHandler(QString, QString, QString)));
   // Call configChanged at each time that post_processor_widget is modified
-  connect(post_processor_widget_, SIGNAL(GUIChanged()), this, SLOT(triggerSave()));
+  connect(post_processor_widget_, SIGNAL(guiChanged()), this, SLOT(triggerSave()));
   // Enable general panel when post_processor send the SIGNAL
   connect(post_processor_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
   // Receive a signal from post processor widget in order to send robot poses data

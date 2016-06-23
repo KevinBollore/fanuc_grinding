@@ -16,7 +16,7 @@ fanuc_grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) 
   comparison_layout_->addWidget(comparison_button_);
 
   // Connect handlers
-  connect(comparison_button_, SIGNAL(released()), this, SLOT(ComparisonButtonHandler()));
+  connect(comparison_button_, SIGNAL(released()), this, SLOT(comparisonButtonHandler()));
 
   //Setup client
   comparison_service_ = comparison_node_.serviceClient<fanuc_grinding_comparison::ComparisonService>("comparison_service");
@@ -26,7 +26,7 @@ fanuc_grinding_rviz_plugin::ComparisonWidget::ComparisonWidget(QWidget* parent) 
 
 void fanuc_grinding_rviz_plugin::ComparisonWidget::triggerSave()
 {
-  Q_EMIT GUIChanged();
+  Q_EMIT guiChanged();
   updateInternalValues();
   updateGUI();
 }
@@ -62,7 +62,7 @@ void fanuc_grinding_rviz_plugin::ComparisonWidget::setCADAndScanParams(const QSt
   comparison_params_.ScanMarkerName = scan_marker_name.toStdString();
 }
 
-void fanuc_grinding_rviz_plugin::ComparisonWidget::ComparisonButtonHandler()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::comparisonButtonHandler()
 {
   // get CAD and Scan params which are stored in grinding rviz plugin
   Q_EMIT getCADAndScanParams();
@@ -70,10 +70,10 @@ void fanuc_grinding_rviz_plugin::ComparisonWidget::ComparisonButtonHandler()
   srv_comparison_.request = getComparisonParams();
   //srv_.request.*request* = *value*;
   // Start client service call in an other thread
-  QFuture<void> future = QtConcurrent::run(this, &ComparisonWidget::Comparison);
+  QFuture<void> future = QtConcurrent::run(this, &ComparisonWidget::comparison);
 }
 
-void fanuc_grinding_rviz_plugin::ComparisonWidget::Comparison()
+void fanuc_grinding_rviz_plugin::ComparisonWidget::comparison()
 {
   // Disable UI
   Q_EMIT enablePanel(false);

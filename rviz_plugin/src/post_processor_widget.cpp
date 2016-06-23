@@ -101,7 +101,7 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
 
 void fanuc_grinding_rviz_plugin::PostProcessorWidget::triggerSave()
 {
-  Q_EMIT GUIChanged();
+  Q_EMIT guiChanged();
   updateInternalValues();
 }
 

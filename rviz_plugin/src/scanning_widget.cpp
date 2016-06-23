@@ -523,7 +523,7 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::connectToServices()
 
 void fanuc_grinding_rviz_plugin::ScanningWidget::triggerSave()
 {
-  Q_EMIT GUIChanged();
+  Q_EMIT guiChanged();
   updateInternalValues();
   updateGUI();
 }

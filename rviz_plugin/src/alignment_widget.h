@@ -30,7 +30,7 @@ public:
   void save(rviz::Config config);
 
 Q_SIGNALS:
-  void GUIChanged();
+  void guiChanged();
   void enablePanel(bool);
   void sendStatus(QString status);
   void sendMsgBox(QString title, QString msg, QString info_msg);
@@ -38,13 +38,13 @@ Q_SIGNALS:
   void getCADAndScanParams();
 
 public Q_SLOTS:
-  virtual void Alignment();
+  virtual void alignment();
 
 protected Q_SLOTS:
   virtual void triggerSave();
   void updateGUI();
   void updateInternalValues();
-  void AlignmentButtonHandler();
+  void alignmentButtonHandler();
   void enablePanelComparisonHandler();
   void setCADAndScanParams(const QString cad_filename,
                            const QString cad_marker_name,

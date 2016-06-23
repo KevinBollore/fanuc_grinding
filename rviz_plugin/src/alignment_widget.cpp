@@ -16,7 +16,7 @@ fanuc_grinding_rviz_plugin::AlignmentWidget::AlignmentWidget(QWidget* parent) : 
   alignment_layout->addWidget(alignment_button_);
 
   // Connect handlers
-  connect(alignment_button_, SIGNAL(released()), this, SLOT(AlignmentButtonHandler()));
+  connect(alignment_button_, SIGNAL(released()), this, SLOT(alignmentButtonHandler()));
 
   //Setup client
   alignment_service_ = nh_.serviceClient<fanuc_grinding_alignment::AlignmentService>("alignment_service");
@@ -26,7 +26,7 @@ fanuc_grinding_rviz_plugin::AlignmentWidget::AlignmentWidget(QWidget* parent) : 
 
 void fanuc_grinding_rviz_plugin::AlignmentWidget::triggerSave()
 {
-  Q_EMIT GUIChanged();
+  Q_EMIT guiChanged();
   updateInternalValues();
   updateGUI();
 }
@@ -62,7 +62,7 @@ void fanuc_grinding_rviz_plugin::AlignmentWidget::setCADAndScanParams(const QStr
   alignment_params_.ScanMarkerName = scan_marker_name.toStdString();
 }
 
-void fanuc_grinding_rviz_plugin::AlignmentWidget::AlignmentButtonHandler()
+void fanuc_grinding_rviz_plugin::AlignmentWidget::alignmentButtonHandler()
 {
   // get CAD and Scan params which are stored in grinding rviz plugin
   Q_EMIT getCADAndScanParams();
@@ -70,10 +70,10 @@ void fanuc_grinding_rviz_plugin::AlignmentWidget::AlignmentButtonHandler()
   srv_alignment_.request = getAlignmentParams();
   //srv_.request.*request* = *value*;
   // Start client service call in an other thread
-  QFuture<void> future = QtConcurrent::run(this, &AlignmentWidget::Alignment);
+  QFuture<void> future = QtConcurrent::run(this, &AlignmentWidget::alignment);
 }
 
-void fanuc_grinding_rviz_plugin::AlignmentWidget::Alignment()
+void fanuc_grinding_rviz_plugin::AlignmentWidget::alignment()
 {
   // Disable UI
   Q_EMIT enablePanel(false);
