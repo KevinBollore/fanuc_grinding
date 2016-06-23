@@ -21,7 +21,6 @@ public:
   ComparisonWidget(QWidget* parent =  NULL);
   void load(const rviz::Config& config);
   void save(rviz::Config config);
-  fanuc_grinding_comparison::ComparisonService::Request getComparisonParams();
   void setComparisonParams(const fanuc_grinding_comparison::ComparisonService::Request &params);
 
 Q_SIGNALS:
@@ -49,7 +48,6 @@ protected:
   ros::NodeHandle nh_;
   ros::ServiceClient comparison_service_;
   fanuc_grinding_comparison::ComparisonService srv_comparison_;
-  fanuc_grinding_comparison::ComparisonService::Request comparison_params_;
 
   QPushButton* comparison_button_;
 };

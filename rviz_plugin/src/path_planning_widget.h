@@ -26,7 +26,6 @@ public:
   PathPlanningWidget(QWidget* parent =  NULL);
   void load(const rviz::Config& config);
   void save(rviz::Config config);
-  fanuc_grinding_path_planning::PathPlanningService::Request getPathPlanningParams();
   void setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request &params);
   std::vector<geometry_msgs::Pose> getRobotPoses();
   std::vector<bool> getPointColorViz();
@@ -65,7 +64,6 @@ protected:
   ros::NodeHandle nh_;
   ros::ServiceClient path_planning_service_;
   fanuc_grinding_path_planning::PathPlanningService srv_path_planning_;
-  fanuc_grinding_path_planning::PathPlanningService::Request path_planning_params_;
   ros::Subscriber status_sub_;
 
   QCheckBox* surfacing_mode_;

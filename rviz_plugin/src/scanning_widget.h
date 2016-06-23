@@ -25,8 +25,6 @@ public:
   ScanningWidget(QWidget* parent =  NULL);
   void load(const rviz::Config& config);
   void save(rviz::Config config);
-  fanuc_grinding_scanning::ScanningService::Request getScanningParams();
-  fanuc_grinding_publish_meshfile::PublishMeshfileService::Request getPublishParams();
   void setScanningParams(const fanuc_grinding_scanning::ScanningService::Request &params);
   void setPublishParams(const fanuc_grinding_publish_meshfile::PublishMeshfileService::Request &params);
 
@@ -69,8 +67,6 @@ protected:
   fanuc_grinding_scanning::ScanningService srv_scanning_;
   ros::ServiceClient publish_meshfile_service_;
   fanuc_grinding_publish_meshfile::PublishMeshfileService srv_publish_meshfile_;
-  fanuc_grinding_scanning::ScanningService::Request scanning_params_;
-  fanuc_grinding_publish_meshfile::PublishMeshfileService::Request publish_meshfile_params_;
   ros::Subscriber status_sub_;
 
   // Import CAD

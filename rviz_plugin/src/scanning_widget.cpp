@@ -164,68 +164,58 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::newStatusMessage(const std_msgs
   Q_EMIT sendStatus(QString::fromStdString(msg->data));
 }
 
-fanuc_grinding_scanning::ScanningService::Request fanuc_grinding_rviz_plugin::ScanningWidget::getScanningParams()
-{
-  return scanning_params_;
-}
-
 void fanuc_grinding_rviz_plugin::ScanningWidget::setScanningParams(const fanuc_grinding_scanning::ScanningService::Request &params)
 {
-  scanning_params_.YamlFileName = params.YamlFileName;
-  scanning_params_.SLS2ServerName = params.SLS2ServerName;
-  scanning_params_.SLS2IpAddress = params.SLS2IpAddress;
-  scanning_params_.YamlCalibrationFileName = params.YamlCalibrationFileName;
-  scanning_params_.CADName = params.CADName;
-  scanning_params_.MarkerName = params.MarkerName;
+  srv_scanning_.request.YamlFileName = params.YamlFileName;
+  srv_scanning_.request.SLS2ServerName = params.SLS2ServerName;
+  srv_scanning_.request.SLS2IpAddress = params.SLS2IpAddress;
+  srv_scanning_.request.YamlCalibrationFileName = params.YamlCalibrationFileName;
+  srv_scanning_.request.CADName = params.CADName;
+  srv_scanning_.request.MarkerName = params.MarkerName;
   updateGUI();
-}
-
-fanuc_grinding_publish_meshfile::PublishMeshfileService::Request fanuc_grinding_rviz_plugin::ScanningWidget::getPublishParams()
-{
-  return publish_meshfile_params_;
 }
 
 void fanuc_grinding_rviz_plugin::ScanningWidget::setPublishParams(const fanuc_grinding_publish_meshfile::PublishMeshfileService::Request &params)
 {
-  publish_meshfile_params_.MeshName = params.MeshName;
-  publish_meshfile_params_.MarkerName = params.MarkerName;
-  publish_meshfile_params_.PosX = params.PosX;
-  publish_meshfile_params_.PosY = params.PosY;
-  publish_meshfile_params_.PosZ = params.PosZ;
-  publish_meshfile_params_.RotX = params.RotX;
-  publish_meshfile_params_.RotY = params.RotY;
-  publish_meshfile_params_.RotZ = params.RotZ;
-  publish_meshfile_params_.RotW = params.RotW;
-  publish_meshfile_params_.color_r = params.color_r;
-  publish_meshfile_params_.color_g = params.color_g;
-  publish_meshfile_params_.color_b = params.color_b;
-  publish_meshfile_params_.color_a = params.color_a;
+  srv_publish_meshfile_.request.MeshName = params.MeshName;
+  srv_publish_meshfile_.request.MarkerName = params.MarkerName;
+  srv_publish_meshfile_.request.PosX = params.PosX;
+  srv_publish_meshfile_.request.PosY = params.PosY;
+  srv_publish_meshfile_.request.PosZ = params.PosZ;
+  srv_publish_meshfile_.request.RotX = params.RotX;
+  srv_publish_meshfile_.request.RotY = params.RotY;
+  srv_publish_meshfile_.request.RotZ = params.RotZ;
+  srv_publish_meshfile_.request.RotW = params.RotW;
+  srv_publish_meshfile_.request.color_r = params.color_r;
+  srv_publish_meshfile_.request.color_g = params.color_g;
+  srv_publish_meshfile_.request.color_b = params.color_b;
+  srv_publish_meshfile_.request.color_a = params.color_a;
   updateGUI();
 }
 
 void fanuc_grinding_rviz_plugin::ScanningWidget::updateGUI()
 {
-  traj_yaml_file_->setText(QString::fromStdString(scanning_params_.YamlFileName));
-  sls_2_server_name_->setText(QString::fromStdString(scanning_params_.SLS2ServerName));
-  sls_2_ip_address_->setText(QString::fromStdString(scanning_params_.SLS2IpAddress));
-  calibration_yaml_file_->setText(QString::fromStdString(scanning_params_.YamlCalibrationFileName));
-  cad_meshname_->setText(QString::fromStdString(publish_meshfile_params_.MeshName));
-  cad_marker_name_line_->setText(QString::fromStdString(publish_meshfile_params_.MarkerName));
-  scan_marker_name_line_->setText(QString::fromStdString(scanning_params_.MarkerName));
-  down_sampling_leaf_size_->setValue(scanning_params_.VoxelGridLeafSize);
+  traj_yaml_file_->setText(QString::fromStdString(srv_scanning_.request.YamlFileName));
+  sls_2_server_name_->setText(QString::fromStdString(srv_scanning_.request.SLS2ServerName));
+  sls_2_ip_address_->setText(QString::fromStdString(srv_scanning_.request.SLS2IpAddress));
+  calibration_yaml_file_->setText(QString::fromStdString(srv_scanning_.request.YamlCalibrationFileName));
+  cad_meshname_->setText(QString::fromStdString(srv_publish_meshfile_.request.MeshName));
+  cad_marker_name_line_->setText(QString::fromStdString(srv_publish_meshfile_.request.MarkerName));
+  scan_marker_name_line_->setText(QString::fromStdString(srv_scanning_.request.MarkerName));
+  down_sampling_leaf_size_->setValue(srv_scanning_.request.VoxelGridLeafSize);
 }
 
 void fanuc_grinding_rviz_plugin::ScanningWidget::updateInternalValues()
 {
-  scanning_params_.YamlFileName = traj_yaml_file_->text().toStdString();
-  scanning_params_.SLS2ServerName = sls_2_server_name_->text().toStdString();
-  scanning_params_.SLS2IpAddress = sls_2_ip_address_->text().toStdString();
-  scanning_params_.YamlCalibrationFileName = calibration_yaml_file_->text().toStdString();
-  scanning_params_.MarkerName = scan_marker_name_line_->text().toStdString();
-  scanning_params_.CADName = cad_meshname_->text().toStdString();
-  scanning_params_.VoxelGridLeafSize = down_sampling_leaf_size_->value();
-  publish_meshfile_params_.MeshName = cad_meshname_->text().toStdString();
-  publish_meshfile_params_.MarkerName = cad_marker_name_line_->text().toStdString();
+  srv_scanning_.request.YamlFileName = traj_yaml_file_->text().toStdString();
+  srv_scanning_.request.SLS2ServerName = sls_2_server_name_->text().toStdString();
+  srv_scanning_.request.SLS2IpAddress = sls_2_ip_address_->text().toStdString();
+  srv_scanning_.request.YamlCalibrationFileName = calibration_yaml_file_->text().toStdString();
+  srv_scanning_.request.MarkerName = scan_marker_name_line_->text().toStdString();
+  srv_scanning_.request.CADName = cad_meshname_->text().toStdString();
+  srv_scanning_.request.VoxelGridLeafSize = down_sampling_leaf_size_->value();
+  srv_publish_meshfile_.request.MeshName = cad_meshname_->text().toStdString();
+  srv_publish_meshfile_.request.MarkerName = cad_marker_name_line_->text().toStdString();
 }
 
 void fanuc_grinding_rviz_plugin::ScanningWidget::browseCADFiles()
@@ -297,7 +287,6 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::importCADFileButtonHandler()
   }
 
   // Fill in the request
-  srv_publish_meshfile_.request = getPublishParams();
   srv_publish_meshfile_.request.MeshName = cad_meshname_->text().toStdString();
   srv_publish_meshfile_.request.MarkerName = cad_marker_name_line_->text().toStdString();
   srv_publish_meshfile_.request.PosX = 1.4;
@@ -337,7 +326,6 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::importScanFileButtonHandler()
   else
   {
     // Fill in the request
-    srv_publish_meshfile_.request = getPublishParams();
     srv_publish_meshfile_.request.MeshName = scan_file_->text().toStdString();
     srv_publish_meshfile_.request.MarkerName = scan_marker_name_line_->text().toStdString();
     srv_publish_meshfile_.request.PosX = 0.0;
@@ -444,8 +432,6 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::scanningButtonHandler()
     return;
   }
 
-  // Fill in the request
-  srv_scanning_.request = getScanningParams();
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::scanning);
 }
