@@ -38,6 +38,7 @@ Q_SIGNALS:
   void GUIChanged();
   void enablePanelPathPlanning();
   void sendStatus(QString status);
+  void sendMsgBox(QString title, QString msg, QString info_msg);
   void enablePanel(bool);
   void getCADAndScanParams();
 
