@@ -124,14 +124,12 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::tweakProgramName()
   if (program_name_->text().size() == 0)
     return;
 
-  if (program_name_->text().endsWith("."))
-    program_name_->setText(program_name_->text().append("ls"));
-
-  if (program_name_->text().endsWith(".l"))
-    program_name_->setText(program_name_->text().append("s"));
-
-  if (!program_name_->text().contains(".ls"))
-    program_name_->setText(program_name_->text().append(".ls"));
+  // Remove .ls extension
+  QString program_name(program_name_->text());
+  program_name = program_name.remove(".ls", Qt::CaseInsensitive);
+  program_name = program_name.remove(".l", Qt::CaseInsensitive);
+  program_name = program_name.remove(".", Qt::CaseInsensitive);
+  program_name_->setText(program_name);
 }
 
 void fanuc_grinding_rviz_plugin::PostProcessorWidget::setIpAddressEnable(const int state)
@@ -276,4 +274,5 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::load(const rviz::Config& c
     ip_address_->setText(tmp);
 
   updateInternalValues();
+  tweakProgramName();
 }
