@@ -32,9 +32,9 @@ public:
 
 Q_SIGNALS:
   void guiChanged();
-  void sendStatus(QString status);
-  void sendMsgBox(QString title, QString msg, QString info_msg);
-  void enablePanel(bool);
+  void sendStatus(const QString status);
+  void sendMsgBox(const QString title, const QString msg, const QString info_msg);
+  void enablePanel(const bool);
   void getRobotTrajectoryData();
 
 protected Q_SLOTS:

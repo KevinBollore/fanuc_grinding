@@ -159,7 +159,7 @@ fanuc_grinding_rviz_plugin::ScanningWidget::ScanningWidget(QWidget* parent) :
   QFuture<void> future = QtConcurrent::run(this, &fanuc_grinding_rviz_plugin::ScanningWidget::connectToServices);
 }
 
-void fanuc_grinding_rviz_plugin::ScanningWidget::newStatusMessage(const std_msgs::String::ConstPtr& msg)
+void fanuc_grinding_rviz_plugin::ScanningWidget::newStatusMessage(const std_msgs::String::ConstPtr &msg)
 {
   Q_EMIT sendStatus(QString::fromStdString(msg->data));
 }
@@ -169,7 +169,7 @@ fanuc_grinding_scanning::ScanningService::Request fanuc_grinding_rviz_plugin::Sc
   return scanning_params_;
 }
 
-void fanuc_grinding_rviz_plugin::ScanningWidget::setScanningParams(fanuc_grinding_scanning::ScanningService::Request params)
+void fanuc_grinding_rviz_plugin::ScanningWidget::setScanningParams(const fanuc_grinding_scanning::ScanningService::Request &params)
 {
   scanning_params_.YamlFileName = params.YamlFileName;
   scanning_params_.SLS2ServerName = params.SLS2ServerName;
@@ -185,7 +185,7 @@ fanuc_grinding_publish_meshfile::PublishMeshfileService::Request fanuc_grinding_
   return publish_meshfile_params_;
 }
 
-void fanuc_grinding_rviz_plugin::ScanningWidget::setPublishParams(fanuc_grinding_publish_meshfile::PublishMeshfileService::Request params)
+void fanuc_grinding_rviz_plugin::ScanningWidget::setPublishParams(const fanuc_grinding_publish_meshfile::PublishMeshfileService::Request &params)
 {
   publish_meshfile_params_.MeshName = params.MeshName;
   publish_meshfile_params_.MarkerName = params.MarkerName;

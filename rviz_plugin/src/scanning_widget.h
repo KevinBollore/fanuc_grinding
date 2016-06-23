@@ -27,20 +27,20 @@ public:
   void save(rviz::Config config);
   fanuc_grinding_scanning::ScanningService::Request getScanningParams();
   fanuc_grinding_publish_meshfile::PublishMeshfileService::Request getPublishParams();
-  void setScanningParams(fanuc_grinding_scanning::ScanningService::Request params);
-  void setPublishParams(fanuc_grinding_publish_meshfile::PublishMeshfileService::Request params);
+  void setScanningParams(const fanuc_grinding_scanning::ScanningService::Request &params);
+  void setPublishParams(const fanuc_grinding_publish_meshfile::PublishMeshfileService::Request &params);
 
 Q_SIGNALS:
   void guiChanged();
-  void sendStatus(QString status);
-  void sendMsgBox(QString title, QString msg, QString info_msg);
-  void enablePanel(bool);
+  void sendStatus(const QString status);
+  void sendMsgBox(const QString title, const QString msg, const QString info_msg);
+  void enablePanel(const bool);
   void enableScanningButton();
   void enablePanelAlignment();
   void enablePanelPathPlanning();
   void enableScanWidget();
-  void sendCADDatas(QString cad_path, QString cad_marker_name);
-  void sendScanDatas(QString scan_path, QString scan_marker_name);
+  void sendCADDatas(const QString cad_path, const QString cad_marker_name);
+  void sendScanDatas(const QString scan_path, const QString scan_marker_name);
 
 protected Q_SLOTS:
   void connectToServices();
@@ -59,7 +59,7 @@ protected Q_SLOTS:
   void publishCADMeshOrCloudFile();
   void publishScanMeshOrCloudFile();
   void scanning();
-  void newStatusMessage(const std_msgs::String::ConstPtr& msg);
+  void newStatusMessage(const std_msgs::String::ConstPtr &msg);
 
 protected:
   const std::string package_name_;

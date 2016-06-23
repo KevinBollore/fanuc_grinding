@@ -25,7 +25,7 @@ public:
   virtual ~FanucGrindingRvizPlugin();
 
   Q_SIGNALS:
-  void enableWidget(bool);
+  void enableWidget(const bool);
   void displayStatus(const QString);
   void sendCADAndScanDatas(const QString, const QString, const QString, const QString);
 
@@ -37,7 +37,7 @@ protected Q_SLOTS:
   void displayStatusHandler(const QString message);
   void displayMsgBoxHandler(const QString title, const QString msg, const QString info_msg);
 
-  void enablePanelHandler(bool);
+  void enablePanelHandler(const bool);
   void enablePanelAlignmentHandler();
   void enablePanelComparisonHandler();
   void enablePanelPathPlanningHandler();

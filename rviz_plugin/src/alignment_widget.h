@@ -22,13 +22,13 @@ public:
   void load(const rviz::Config& config);
   void save(rviz::Config config);
   fanuc_grinding_alignment::AlignmentService::Request getAlignmentParams();
-  void setAlignmentParams(fanuc_grinding_alignment::AlignmentService::Request params);
+  void setAlignmentParams(const fanuc_grinding_alignment::AlignmentService::Request &params);
 
 Q_SIGNALS:
   void guiChanged();
-  void sendStatus(QString status);
-  void sendMsgBox(QString title, QString msg, QString info_msg);
-  void enablePanel(bool);
+  void sendStatus(const QString status);
+  void sendMsgBox(const QString title, const QString msg, const QString info_msg);
+  void enablePanel(const bool);
   void enablePanelComparison();
   void getCADAndScanParams();
 
