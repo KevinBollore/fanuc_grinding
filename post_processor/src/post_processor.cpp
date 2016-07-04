@@ -28,10 +28,19 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
 {
   // Get parameters from the message and print them
   //ROS_WARN_STREAM(std::endl << req);
-  std::vector<Eigen::Isometry3d> robot_poses_eigen(req.RobotPoses.size());
-  for (unsigned i = 0; i < req.RobotPoses.size(); ++i)
+  std::vector<Eigen::Isometry3d, Eigen::aligned_allocator<Eigen::Isometry3d> > robot_poses_eigen;
+  for (geometry_msgs::Pose tmp : req.RobotPoses)
   {
-    tf::poseMsgToEigen(req.RobotPoses[i], robot_poses_eigen[i]);
+    Eigen::Isometry3d pose;
+    tf::poseMsgToEigen(tmp, pose);
+    robot_poses_eigen.push_back(pose);
+  }
+
+  if (robot_poses_eigen.empty())
+  {
+    res.ReturnStatus = false;
+    res.ReturnMessage = "Trajectory is empty";
+    return true;
   }
 
   FanucPostProcessor fanuc_pp;
