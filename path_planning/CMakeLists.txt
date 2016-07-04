@@ -29,9 +29,9 @@ link_directories(${catkin_LIBRARY_DIRS})
 add_executable(${PROJECT_NAME} src/path_planning.cpp)
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS "-std=c++11")
 if(VTK_LIBRARIES) # May never happen because we expect VTK 7.0 minimum
-  target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${VTK_LIBRARIES} ${PCL_LIBRARIES} bezier_library)
+  target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${VTK_LIBRARIES} ${PCL_LIBRARIES} bezier_library bezier_grinding_surfacing)
 else()
-  target_link_libraries (${PROJECT_NAME} ${catkin_LIBRARIES} vtkHybrid vtkWidgets ${PCL_LIBRARIES} bezier_library)
+  target_link_libraries (${PROJECT_NAME} ${catkin_LIBRARIES} vtkHybrid vtkWidgets ${PCL_LIBRARIES} bezier_library bezier_grinding_surfacing)
 endif()
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)

@@ -360,8 +360,7 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::publishCADMeshOrCloudFile()
   if(srv_publish_meshfile_.response.ReturnStatus == true)
   {
     Q_EMIT enableScanWidget();
-    Q_EMIT sendCADDatas(QString::fromStdString(srv_publish_meshfile_.request.MeshName),
-                        QString::fromStdString(srv_publish_meshfile_.request.MarkerName));
+    Q_EMIT sendCADDatas(QString::fromStdString(srv_publish_meshfile_.request.MeshName));
   }
   else
   {
@@ -387,8 +386,7 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::publishScanMeshOrCloudFile()
   {
     //Q_EMIT enablePanelAlignment();
     Q_EMIT enablePanelPathPlanning();
-    Q_EMIT sendScanDatas(QString::fromStdString(srv_publish_meshfile_.request.MeshName),
-                         QString::fromStdString(srv_publish_meshfile_.request.MarkerName));
+    Q_EMIT sendScanDatas(QString::fromStdString(srv_publish_meshfile_.request.MeshName));
   }
   else
   {
@@ -452,8 +450,7 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::scanning()
   {
     //Q_EMIT enablePanelAlignment();
     Q_EMIT enablePanelPathPlanning();
-    Q_EMIT sendScanDatas(QString::fromStdString(srv_scanning_.response.NumerizedMeshName),
-                         QString::fromStdString(srv_scanning_.request.MarkerName));
+    Q_EMIT sendScanDatas(QString::fromStdString(srv_scanning_.response.NumerizedMeshName));
   }
   else
   {

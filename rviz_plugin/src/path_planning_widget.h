@@ -37,7 +37,6 @@ Q_SIGNALS:
   void sendMsgBox(QString title, QString msg, QString info_msg);
   void enablePanel(bool);
   void enableComputeTrajectoryButton(bool);
-  void enableVizSimButton();
   void enablePanelPostProcessor();
   void getCADAndScanParams();
 
@@ -48,7 +47,6 @@ protected Q_SLOTS:
   void updateInternalValues();
   void newStatusMessage(const std_msgs::String::ConstPtr &msg);
   void computeTrajectoryButtonHandler();
-  void visualizeTrajectoryButtonHandler();
   void executeTrajectoryButtonHandler();
   void pathPlanningService();
   void enableComputeTrajectoryButtonHandler(bool);
@@ -56,9 +54,7 @@ protected Q_SLOTS:
   void generateTrajectoryButtonHandler();
   void setDepthOfPassEnable(const int state);
   void setCADAndScanParams(const QString cad_filename,
-                           const QString cad_marker_name,
-                           const QString scan_filename,
-                           const QString scan_marker_name);
+                           const QString scan_filename);
 
 protected:
   ros::NodeHandle nh_;
@@ -70,16 +66,14 @@ protected:
   QLabel* depth_of_pass_label_;
   QDoubleSpinBox* depth_of_pass_;
   QSpinBox* covering_percentage_;
-  QSpinBox* extrication_frequency_;
-  QSpinBox* extrication_coefficient_;
-  QDoubleSpinBox* grind_diameter_;
+  QSpinBox* extrication_radius_;
+  QDoubleSpinBox* grinder_width_;
   QRadioButton* lean_angle_axis_x_;
   QRadioButton* lean_angle_axis_y_;
   QRadioButton* lean_angle_axis_z_;
   QDoubleSpinBox* angle_value_;
   QPushButton* compute_trajectory_;
   QPushButton* execute_trajectory_;
-  QPushButton* visualize_trajectory_;
 };
 
 } // End namespace

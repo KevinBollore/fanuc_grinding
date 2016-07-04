@@ -11,6 +11,7 @@
 #include <QtConcurrentRun>
 
 #include "path_planning_widget.h"
+#include <ros/package.h>
 
 fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* parent) : QWidget(parent)
 {
@@ -41,31 +42,24 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   covering_percentage_layout->addWidget(covering_percentage_label);
   covering_percentage_layout->addWidget(covering_percentage_);
 
-  QLabel* extrication_frequency_label = new QLabel("Extrication frequency:");
-  extrication_frequency_ = new QSpinBox;
-  extrication_frequency_->setValue(5);
-  extrication_frequency_->setRange(0, 50);
-  QHBoxLayout* extrication_frequency_layout = new QHBoxLayout;
-  extrication_frequency_layout->addWidget(extrication_frequency_label);
-  extrication_frequency_layout->addWidget(extrication_frequency_);
+  QLabel* extrication_radius_label = new QLabel("Extrication radius:");
+  extrication_radius_ = new QSpinBox;
+  extrication_radius_->setSuffix(" mm");
+  extrication_radius_->setValue(20);
+  extrication_radius_->setRange(1, 200);
+  QHBoxLayout* extrication_radius_layout = new QHBoxLayout;
+  extrication_radius_layout->addWidget(extrication_radius_label);
+  extrication_radius_layout->addWidget(extrication_radius_);
 
-  QLabel* extrication_coefficient_label = new QLabel("Extrication coefficient:");
-  extrication_coefficient_ = new QSpinBox;
-  extrication_coefficient_->setValue(5);
-  extrication_coefficient_->setRange(1, 20);
-  QHBoxLayout* extrication_coefficient_layout = new QHBoxLayout;
-  extrication_coefficient_layout->addWidget(extrication_coefficient_label);
-  extrication_coefficient_layout->addWidget(extrication_coefficient_);
-
-  QLabel* grind_diameter_label = new QLabel("Grinder diameter:");
-  grind_diameter_ = new QDoubleSpinBox;
-  grind_diameter_->setSuffix(" mm");
-  grind_diameter_->setValue(30);
-  grind_diameter_->setDecimals(1);
-  grind_diameter_->setRange(1.0, 200.0);
+  QLabel* grind_diameter_label = new QLabel("Grinder width:");
+  grinder_width_ = new QDoubleSpinBox;
+  grinder_width_->setSuffix(" mm");
+  grinder_width_->setValue(30);
+  grinder_width_->setDecimals(1);
+  grinder_width_->setRange(1.0, 200.0);
   QHBoxLayout* grind_diameter_layout = new QHBoxLayout;
   grind_diameter_layout->addWidget(grind_diameter_label);
-  grind_diameter_layout->addWidget(grind_diameter_);
+  grind_diameter_layout->addWidget(grinder_width_);
 
   QLabel* lean_angle_axis_label = new QLabel("Axis of rotation:");
   lean_angle_axis_x_ = new QRadioButton("x");
@@ -93,19 +87,14 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   execute_trajectory_ = new QPushButton("Execute trajectory");
   execute_trajectory_->setEnabled(false);
   execute_trajectory_->setMinimumHeight(60);
-  visualize_trajectory_ = new QPushButton("Visualize trajectory");
-  visualize_trajectory_->setEnabled(false);
-  visualize_trajectory_->setMinimumHeight(60);
   QHBoxLayout* button_path_planning_layout = new QHBoxLayout;
-  button_path_planning_layout->addWidget(visualize_trajectory_);
   button_path_planning_layout->addWidget(execute_trajectory_);
 
   QVBoxLayout* path_planning_layout = new QVBoxLayout(this);
   path_planning_layout->addLayout(surfacing_mode_layout);
   path_planning_layout->addLayout(depth_of_pass_layout);
   path_planning_layout->addLayout(covering_percentage_layout);
-  path_planning_layout->addLayout(extrication_frequency_layout);
-  path_planning_layout->addLayout(extrication_coefficient_layout);
+  path_planning_layout->addLayout(extrication_radius_layout);
   path_planning_layout->addLayout(grind_diameter_layout);
   path_planning_layout->addLayout(lean_angle_axis_layout);
   path_planning_layout->addLayout(angle_value_layout);
@@ -120,9 +109,8 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   connect(surfacing_mode_, SIGNAL(stateChanged(int)), this, SLOT(setDepthOfPassEnable(int)));
   connect(surfacing_mode_, SIGNAL(stateChanged(int)), this, SLOT(triggerSave()));
   connect(covering_percentage_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
-  connect(extrication_frequency_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
-  connect(extrication_coefficient_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
-  connect(grind_diameter_, SIGNAL(valueChanged(double)), this, SLOT(triggerSave()));
+  connect(extrication_radius_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
+  connect(grinder_width_, SIGNAL(valueChanged(double)), this, SLOT(triggerSave()));
   connect(depth_of_pass_, SIGNAL(valueChanged(double)), this, SLOT(triggerSave()));
   connect(lean_angle_axis_x_, SIGNAL(clicked()), this, SLOT(triggerSave()));
   connect(lean_angle_axis_y_, SIGNAL(clicked()), this, SLOT(triggerSave()));
@@ -134,9 +122,7 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
 
   // connect each buttons to different functions
   connect(compute_trajectory_, SIGNAL(released()), this, SLOT(computeTrajectoryButtonHandler()));
-  connect(visualize_trajectory_, SIGNAL(released()), this, SLOT(visualizeTrajectoryButtonHandler()));
   connect(execute_trajectory_, SIGNAL(released()), this, SLOT(executeTrajectoryButtonHandler()));
-  connect(this, SIGNAL(enableVizSimButton()), this, SLOT(enableVizSimButtonHandler()));
 
   // Subscriber to receive messages from the exterior
   status_sub_ = nh_.subscribe("path_planning_status", 1, &fanuc_grinding_rviz_plugin::PathPlanningWidget::newStatusMessage, this);
@@ -161,14 +147,13 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(fanuc
 {
   srv_path_planning_.request.SurfacingMode = params.SurfacingMode;
   srv_path_planning_.request.CoveringPercentage = params.CoveringPercentage;
-  srv_path_planning_.request.ExtricationFrequency = params.ExtricationFrequency;
-  srv_path_planning_.request.ExtricationCoefficient = params.ExtricationCoefficient;
-  srv_path_planning_.request.GrindDiameter = params.GrindDiameter;
-  srv_path_planning_.request.DepthOfPath = params.DepthOfPath;
+  srv_path_planning_.request.ExtricationRadius = params.ExtricationRadius;
+  srv_path_planning_.request.GrinderWidth = params.GrinderWidth;
+  srv_path_planning_.request.DepthOfPass = params.DepthOfPass;
   srv_path_planning_.request.AngleX = params.AngleX;
   srv_path_planning_.request.AngleY = params.AngleY;
   srv_path_planning_.request.AngleZ = params.AngleZ;
-  srv_path_planning_.request.AngleValue = params.AngleValue;
+  srv_path_planning_.request.LeanAngle = params.LeanAngle;
   updateGUI();
 }
 
@@ -176,28 +161,26 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateGUI()
 {
   surfacing_mode_->setChecked(srv_path_planning_.request.SurfacingMode);
   covering_percentage_->setValue(srv_path_planning_.request.CoveringPercentage);
-  extrication_frequency_->setValue(srv_path_planning_.request.ExtricationFrequency);
-  extrication_coefficient_->setValue(srv_path_planning_.request.ExtricationCoefficient);
-  grind_diameter_->setValue(srv_path_planning_.request.GrindDiameter * 1000.0); // meters to millimeters
-  depth_of_pass_->setValue(srv_path_planning_.request.DepthOfPath * 1000.0); // meters to millimeters
+  extrication_radius_->setValue(srv_path_planning_.request.ExtricationRadius * 1000.0); // meters to millimeters
+  grinder_width_->setValue(srv_path_planning_.request.GrinderWidth * 1000.0); // meters to millimeters
+  depth_of_pass_->setValue(srv_path_planning_.request.DepthOfPass * 1000.0); // meters to millimeters
   lean_angle_axis_x_->setChecked(srv_path_planning_.request.AngleX);
   lean_angle_axis_y_->setChecked(srv_path_planning_.request.AngleY);
   lean_angle_axis_z_->setChecked(srv_path_planning_.request.AngleZ);
-  angle_value_->setValue(srv_path_planning_.request.AngleValue * 360.0 / M_PI); // radians to degrees
+  angle_value_->setValue(srv_path_planning_.request.LeanAngle * 360.0 / M_PI); // radians to degrees
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
 {
   srv_path_planning_.request.SurfacingMode = surfacing_mode_->isChecked();
   srv_path_planning_.request.CoveringPercentage = covering_percentage_->value();
-  srv_path_planning_.request.ExtricationFrequency = extrication_frequency_->value();
-  srv_path_planning_.request.ExtricationCoefficient = extrication_coefficient_->value();
-  srv_path_planning_.request.GrindDiameter = grind_diameter_->value() / 1000.0; // millimeters to meters
-  srv_path_planning_.request.DepthOfPath = depth_of_pass_->value() / 1000.0; // millimeters to meters
+  srv_path_planning_.request.ExtricationRadius = extrication_radius_->value() / 1000.0; // millimeters to meters
+  srv_path_planning_.request.GrinderWidth = grinder_width_->value() / 1000.0; // millimeters to meters
+  srv_path_planning_.request.DepthOfPass = depth_of_pass_->value() / 1000.0; // millimeters to meters
   srv_path_planning_.request.AngleX = lean_angle_axis_x_->isChecked();
   srv_path_planning_.request.AngleY = lean_angle_axis_y_->isChecked();
   srv_path_planning_.request.AngleZ = lean_angle_axis_z_->isChecked();
-  srv_path_planning_.request.AngleValue = angle_value_->value() / 360.0 * M_PI; // degrees to radians
+  srv_path_planning_.request.LeanAngle = angle_value_->value() / 360.0 * M_PI; // degrees to radians
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const int state)
@@ -207,14 +190,13 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const 
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setCADAndScanParams(const QString cad_filename,
-                                                                         const QString cad_marker_name,
-                                                                         const QString scan_filename,
-                                                                         const QString scan_marker_name)
+                                                                         const QString scan_filename)
 {
-  srv_path_planning_.request.CADFileName = cad_filename.toStdString();
-  srv_path_planning_.request.CADMarkerName = cad_marker_name.toStdString();
+  std::string defect_mesh_file = ros::package::getPath("fanuc_grinding_scanning");
+  defect_mesh_file += "/meshes/DAC_580813_defect.ply";
+  srv_path_planning_.request.CADFileName = defect_mesh_file;
+  //srv_path_planning_.request.CADFileName = cad_filename.toStdString();
   srv_path_planning_.request.ScanFileName = scan_filename.toStdString();
-  srv_path_planning_.request.ScanMarkerName = scan_marker_name.toStdString();
 }
 
 std::vector<geometry_msgs::Pose> fanuc_grinding_rviz_plugin::PathPlanningWidget::getRobotPoses()
@@ -224,21 +206,14 @@ std::vector<geometry_msgs::Pose> fanuc_grinding_rviz_plugin::PathPlanningWidget:
 
 std::vector<bool> fanuc_grinding_rviz_plugin::PathPlanningWidget::getPointColorViz()
 {
-  // TODO: Can we avoid copying/duplicating?
   std::vector<bool> temp;
-  for(std::vector<uint8_t>::iterator iter (srv_path_planning_.response.PointColorVizOutput.begin());
-      iter != srv_path_planning_.response.PointColorVizOutput.end();
-      ++iter)
-  {
-    temp.push_back(*iter);
-  }
-
   return temp;
 }
 
 std::vector<int> fanuc_grinding_rviz_plugin::PathPlanningWidget::getIndexVector()
 {
-  return srv_path_planning_.response.IndexVectorOutput;
+  std::vector<int> temp;
+  return temp;
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::computeTrajectoryButtonHandler()
@@ -250,63 +225,9 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::computeTrajectoryButtonHand
 
   // Fill in the request
   srv_path_planning_.request.Compute = true;
-  srv_path_planning_.request.Visualization = false;
-  srv_path_planning_.request.Simulation = false;
+  srv_path_planning_.request.Simulate = false;
 
   QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::pathPlanningService);
-}
-
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableVizSimButtonHandler()
-{
-  if(visualize_trajectory_->isEnabled() == false)
-  {
-    visualize_trajectory_->setEnabled(true);
-  }
-  if(execute_trajectory_->isEnabled() == false)
-  {
-    execute_trajectory_->setEnabled(true);
-  }
-}
-
-void fanuc_grinding_rviz_plugin::PathPlanningWidget::visualizeTrajectoryButtonHandler()
-{
-  // If GUI has been changed, compute_trajectory_button_ is enabled.
-  // So the pose is not up-to-date with GUI values
-  // We inform the user that is an old pose
-  if(compute_trajectory_->isEnabled() == true)
-  {
-    QMessageBox msgBox;
-    msgBox.setText("Values have been modified");
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setInformativeText("If you continue, you will deal with an old trajectory");
-    msgBox.setStandardButtons(QMessageBox::Abort | QMessageBox::Ok);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-
-    if(msgBox.exec() == QMessageBox::Abort)
-        return;
-  }
-
-  // Get CAD and Scan params which are stored in grinding rviz plugin
-  Q_EMIT getCADAndScanParams();
-
-  // Fill in the request
-  srv_path_planning_.request.Compute = false;
-  srv_path_planning_.request.Visualization = true;
-  srv_path_planning_.request.Simulation = false;
-  for (unsigned int i = 0; i < srv_path_planning_.response.RobotPosesOutput.size(); ++i)
-  {
-    // NB: RobotPoses and PointColorViz have same size
-    srv_path_planning_.request.RobotPosesInput.push_back(srv_path_planning_.response.RobotPosesOutput[i]);
-    srv_path_planning_.request.PointColorVizInput.push_back(srv_path_planning_.response.PointColorVizOutput[i]);
-  }
-  for (unsigned int j = 0; j < srv_path_planning_.response.IndexVectorOutput.size(); ++j)
-  {
-    srv_path_planning_.request.IndexVectorInput.push_back(srv_path_planning_.response.IndexVectorOutput[j]);
-  }
-
-  // Start client service call in an other thread
-  QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::pathPlanningService);
-
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::executeTrajectoryButtonHandler()
@@ -332,19 +253,11 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::executeTrajectoryButtonHand
 
   // Fill in the request
   srv_path_planning_.request.Compute = false;
-  srv_path_planning_.request.Visualization = false;
-  srv_path_planning_.request.Simulation = true;
+  srv_path_planning_.request.Simulate = true;
   for (unsigned int i = 0; i < srv_path_planning_.response.RobotPosesOutput.size(); ++i)
   {
-    // NB: RobotPoses and PointColorViz have same size
     srv_path_planning_.request.RobotPosesInput.push_back(srv_path_planning_.response.RobotPosesOutput[i]);
-    srv_path_planning_.request.PointColorVizInput.push_back(srv_path_planning_.response.PointColorVizOutput[i]);
   }
-  for (unsigned int j = 0; j < srv_path_planning_.response.IndexVectorOutput.size(); ++j)
-  {
-    srv_path_planning_.request.IndexVectorInput.push_back(srv_path_planning_.response.IndexVectorOutput[j]);
-  }
-  //srv_.request.*request* = *value*;
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::pathPlanningService);
 }
@@ -365,8 +278,6 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::pathPlanningService()
   {
     if (srv_path_planning_.request.Compute)
     {
-      // If visualization and simulation buttons are disabled, we put them to an enable state
-      Q_EMIT enableVizSimButton();
       Q_EMIT enablePanelPostProcessor();
     }
   }
@@ -422,9 +333,8 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
   // Save offset value into the config file
   config.mapSetValue(objectName() + "surfacing_mode", surfacing_mode_->isChecked());
   config.mapSetValue(objectName() + "covering_percentage", covering_percentage_->value());
-  config.mapSetValue(objectName() + "extrication_frequency", extrication_frequency_->value());
-  config.mapSetValue(objectName() + "extrication_coefficient", extrication_coefficient_->value());
-  config.mapSetValue(objectName() + "grind_diameter", grind_diameter_->value());
+  config.mapSetValue(objectName() + "extrication_radius", extrication_radius_->value());
+  config.mapSetValue(objectName() + "grinder_width", grinder_width_->value());
   config.mapSetValue(objectName() + "depth_of_path", depth_of_pass_->value());
   config.mapSetValue(objectName() + "radio_x", lean_angle_axis_x_->isChecked());
   config.mapSetValue(objectName() + "radio_y", lean_angle_axis_y_->isChecked());
@@ -449,20 +359,15 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::load(const rviz::Config& co
   else
     covering_percentage_->setValue(40);
 
-  if (config.mapGetInt(objectName() + "extrication_frequency", &tmp_int))
-    extrication_frequency_->setValue(tmp_int);
+  if (config.mapGetInt(objectName() + "extrication_radius", &tmp_int))
+    extrication_radius_->setValue(tmp_int);
   else
-    extrication_coefficient_->setValue(3);
+    extrication_radius_->setValue(3);
 
-  if (config.mapGetInt(objectName() + "extrication_coefficient", &tmp_int))
-    extrication_coefficient_->setValue(tmp_int);
+  if (config.mapGetInt(objectName() + "grinder_width", &tmp_int))
+    grinder_width_->setValue(tmp_int);
   else
-    extrication_coefficient_->setValue(3);
-
-  if (config.mapGetInt(objectName() + "grind_diameter", &tmp_int))
-    grind_diameter_->setValue(tmp_int);
-  else
-    grind_diameter_->setValue(120);
+    grinder_width_->setValue(120);
 
   if (config.mapGetInt(objectName() + "depth_of_path", &tmp_int))
     depth_of_pass_->setValue(tmp_int);

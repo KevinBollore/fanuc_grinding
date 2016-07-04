@@ -27,7 +27,7 @@ public:
   Q_SIGNALS:
   void enableWidget(const bool);
   void displayStatus(const QString);
-  void sendCADAndScanDatas(const QString, const QString, const QString, const QString);
+  void sendCADAndScanDatas(const QString, const QString);
 
 protected Q_SLOTS:
   virtual void triggerSave();
@@ -42,16 +42,14 @@ protected Q_SLOTS:
   void enablePanelComparisonHandler();
   void enablePanelPathPlanningHandler();
   void enablePanelPostProcessorHandler();
-  void setCADDatas(const QString cad_path, const QString cad_marker_name);
-  void setScanDatas(const QString scan_path, const QString scan_marker_name);
+  void setCADDatas(const QString cad_path);
+  void setScanDatas(const QString scan_path);
   void sendCADAndScanDatasSlot();
   void setRobotTrajectoryData();
 
 protected:
   QString cad_filename_;
-  QString cad_marker_name_;
   QString scan_filename_;
-  QString scan_marker_name_;
 
   QTabWidget* tab_widget_;
   ScanningWidget* scanning_widget_;

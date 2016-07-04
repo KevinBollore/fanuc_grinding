@@ -46,14 +46,10 @@ void fanuc_grinding_rviz_plugin::ComparisonWidget::updateInternalValues()
 }
 
 void fanuc_grinding_rviz_plugin::ComparisonWidget::setCADAndScanParams(const QString cad_filename,
-                                                                const QString cad_marker_name,
-                                                                const QString scan_filename,
-                                                                const QString scan_marker_name)
+                                                                       const QString scan_filename)
 {
   srv_comparison_.request.CADFileName = cad_filename.toStdString();
-  srv_comparison_.request.CADMarkerName = cad_marker_name.toStdString();
   srv_comparison_.request.ScanFileName = scan_filename.toStdString();
-  srv_comparison_.request.ScanMarkerName = scan_marker_name.toStdString();
 }
 
 void fanuc_grinding_rviz_plugin::ComparisonWidget::comparisonButtonHandler()

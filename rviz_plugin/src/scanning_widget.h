@@ -37,8 +37,8 @@ Q_SIGNALS:
   void enablePanelAlignment();
   void enablePanelPathPlanning();
   void enableScanWidget();
-  void sendCADDatas(const QString cad_path, const QString cad_marker_name);
-  void sendScanDatas(const QString scan_path, const QString scan_marker_name);
+  void sendCADDatas(const QString cad_path);
+  void sendScanDatas(const QString scan_path);
 
 protected Q_SLOTS:
   void connectToServices();

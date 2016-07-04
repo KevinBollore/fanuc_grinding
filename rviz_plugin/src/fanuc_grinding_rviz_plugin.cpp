@@ -60,8 +60,8 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   connect(scanning_widget_, SIGNAL(enablePanel(bool)), this, SLOT(enablePanelHandler(bool)));
 
   // Will send information about cad and scan in the other widgets
-  connect(scanning_widget_, SIGNAL(sendCADDatas(QString, QString)), this, SLOT(setCADDatas(QString, QString)));
-  connect(scanning_widget_, SIGNAL(sendScanDatas(QString, QString)), this, SLOT(setScanDatas(QString, QString)));
+  connect(scanning_widget_, SIGNAL(sendCADDatas(QString)), this, SLOT(setCADDatas(QString)));
+  connect(scanning_widget_, SIGNAL(sendScanDatas(QString)), this, SLOT(setScanDatas(QString)));
   // For the demonstrator, we will skip alignment and comparison parts for the moment
   connect(scanning_widget_, SIGNAL(enablePanelPathPlanning()), this, SLOT(enablePanelPathPlanningHandler()));
 
@@ -79,8 +79,8 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   // Received a signal from alignment widget in order to get CAD and scan params
   connect(alignment_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
   // Send a signal to alignment widget in order to give CAD and scan params
-  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
-          alignment_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
+  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString)),
+          alignment_widget_, SLOT(setCADAndScanParams(const QString, const QString)));
 
   //COMPARISON
   // Will display a status in general status label ( from comparison widget )
@@ -96,8 +96,8 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   // Received a signal from comparison widget in order to get CAD and scan params
   connect(comparison_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
   // Send a signal to comparison widget in order to give CAD and scan params
-  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
-          comparison_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
+  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString)),
+          comparison_widget_, SLOT(setCADAndScanParams(const QString, const QString)));
 
   //PATH PLANNING
   // Will display a status in general status label ( from path_planning widget )
@@ -113,8 +113,8 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   // Received a signal from comparison widget in order to get CAD and scan params
   connect(path_planning_widget_, SIGNAL(getCADAndScanParams()), this, SLOT(sendCADAndScanDatasSlot()));
   // Send a signal to comparison widget in order to give CAD and scan params
-  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString, const QString, const QString)),
-          path_planning_widget_, SLOT(setCADAndScanParams(const QString, const QString, const QString, const QString)));
+  connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString)),
+          path_planning_widget_, SLOT(setCADAndScanParams(const QString, const QString)));
 
   //POST_PROCESSOR
   // Will display a status in general status label ( from post_processor widget )
@@ -182,16 +182,14 @@ void FanucGrindingRvizPlugin::triggerSave()
   Q_EMIT configChanged();
 }
 
-void FanucGrindingRvizPlugin::setCADDatas(const QString cad_filename, const QString cad_marker_name)
+void FanucGrindingRvizPlugin::setCADDatas(const QString cad_filename)
 {
   cad_filename_ = cad_filename;
-  cad_marker_name_ = cad_marker_name;
 }
 
-void FanucGrindingRvizPlugin::setScanDatas(const QString scan_filename, const QString scan_marker_name)
+void FanucGrindingRvizPlugin::setScanDatas(const QString scan_filename)
 {
   scan_filename_ = scan_filename;
-  scan_marker_name_ = scan_marker_name;
 }
 
 void FanucGrindingRvizPlugin::setRobotTrajectoryData()
@@ -203,7 +201,7 @@ void FanucGrindingRvizPlugin::setRobotTrajectoryData()
 
 void FanucGrindingRvizPlugin::sendCADAndScanDatasSlot()
 {
-  Q_EMIT sendCADAndScanDatas(cad_filename_, cad_marker_name_, scan_filename_, scan_marker_name_);
+  Q_EMIT sendCADAndScanDatas(cad_filename_, scan_filename_);
 }
 
 // Save all configuration data from this panel to the given Config object
