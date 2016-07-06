@@ -40,6 +40,14 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
   extrication_speed_layout_->addWidget(extrication_speed_label);
   extrication_speed_layout_->addWidget(extrication_speed_);
 
+  QLabel* trajectory_z_offset_label = new QLabel("Z offset for trajectory: ");
+  trajectory_z_offset_ = new QSpinBox;
+  trajectory_z_offset_->setRange(-1000, 1000);
+  trajectory_z_offset_->setSuffix(" mm");
+  QHBoxLayout* trajectory_z_offset_layout = new QHBoxLayout();
+  trajectory_z_offset_layout->addWidget(trajectory_z_offset_label);
+  trajectory_z_offset_layout->addWidget(trajectory_z_offset_);
+
   QLabel* upload_label = new QLabel("Upload program:");
   upload_program_ = new QCheckBox;
   QHBoxLayout* upload_layout_ = new QHBoxLayout();
@@ -71,6 +79,7 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
   post_processor_layout->addLayout(comment_layout_);
   post_processor_layout->addLayout(machining_speed_layout_);
   post_processor_layout->addLayout(extrication_speed_layout_);
+  post_processor_layout->addLayout(trajectory_z_offset_layout);
   post_processor_layout->addLayout(upload_layout_);
   post_processor_layout->addLayout(ip_adress_layout);
   post_processor_layout->addLayout(program_location_layout);
@@ -83,6 +92,7 @@ fanuc_grinding_rviz_plugin::PostProcessorWidget::PostProcessorWidget(QWidget* pa
   connect(comment_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
   connect(machining_speed_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
   connect(extrication_speed_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
+  connect(trajectory_z_offset_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
   connect(upload_program_, SIGNAL(stateChanged(int)), this, SLOT(setIpAddressEnable(int)));
   connect(upload_program_, SIGNAL(stateChanged(int)), this, SLOT(triggerSave()));
   connect(ip_address_, SIGNAL(textChanged(QString)), this, SLOT(triggerSave()));
@@ -113,6 +123,7 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(con
   srv_post_processor_.request.Comment = params.Comment;
   srv_post_processor_.request.MachiningSpeed = params.MachiningSpeed;
   srv_post_processor_.request.ExtricationSpeed = params.ExtricationSpeed;
+  srv_post_processor_.request.TrajectoryZOffset = params.TrajectoryZOffset;
   srv_post_processor_.request.Upload = params.Upload;
   srv_post_processor_.request.IpAdress = params.IpAdress;
   // Probably not filled
@@ -128,6 +139,7 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateGUI()
   comment_->setText(QString::fromStdString(srv_post_processor_.request.Comment));
   machining_speed_->setValue(srv_post_processor_.request.MachiningSpeed);
   extrication_speed_->setValue(srv_post_processor_.request.ExtricationSpeed);
+  trajectory_z_offset_->setValue(srv_post_processor_.request.TrajectoryZOffset);
   upload_program_->setChecked(srv_post_processor_.request.Upload);
   ip_address_->setText(QString::fromStdString(srv_post_processor_.request.IpAdress));
   program_location_->setText(QString::fromStdString(srv_post_processor_.request.ProgramLocation));
@@ -139,6 +151,7 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateInternalValues()
   srv_post_processor_.request.Comment = comment_->text().toStdString();
   srv_post_processor_.request.MachiningSpeed = machining_speed_->value();
   srv_post_processor_.request.ExtricationSpeed = extrication_speed_->value();
+  srv_post_processor_.request.TrajectoryZOffset = trajectory_z_offset_->value();
   srv_post_processor_.request.Upload = upload_program_->isChecked();
   srv_post_processor_.request.IpAdress = ip_address_->text().toStdString();
   // program_location_ is read only
@@ -278,6 +291,7 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::save(rviz::Config config)
   config.mapSetValue(objectName() + "comment", comment_->text());
   config.mapSetValue(objectName() + "machining_speed", machining_speed_->value());
   config.mapSetValue(objectName() + "extrication_speed", extrication_speed_->value());
+  config.mapSetValue(objectName() + "trajectory_z_offset", trajectory_z_offset_->value());
   config.mapSetValue(objectName() + "upload_program", upload_program_->isChecked());
   config.mapSetValue(objectName() + "ip_adress", ip_address_->text());
 }
@@ -302,6 +316,11 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::load(const rviz::Config& c
     extrication_speed_->setValue(int_tmp);
   else
     extrication_speed_->setValue(500);
+
+  if (config.mapGetFloat(objectName() + "trajectory_z_offset", &int_tmp))
+    trajectory_z_offset_->setValue(int_tmp);
+  else
+    trajectory_z_offset_->setValue(0);
 
   bool state_tmp;
   if (config.mapGetBool(objectName() + "upload_program", &state_tmp))
