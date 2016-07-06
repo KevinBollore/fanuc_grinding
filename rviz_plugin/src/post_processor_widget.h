@@ -56,6 +56,7 @@ protected:
   QLineEdit* comment_;
   QSpinBox* machining_speed_;
   QSpinBox* extrication_speed_;
+  QSpinBox* trajectory_z_offset_;
   QCheckBox* upload_program_;
   QLabel* ip_adress_label_;
   QLineEdit* ip_address_;

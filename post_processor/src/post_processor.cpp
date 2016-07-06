@@ -29,10 +29,12 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   // Get parameters from the message and print them
   //ROS_WARN_STREAM(std::endl << req);
   std::vector<Eigen::Isometry3d, Eigen::aligned_allocator<Eigen::Isometry3d> > robot_poses_eigen;
+
   for (geometry_msgs::Pose tmp : req.RobotPoses)
   {
     Eigen::Isometry3d pose;
     tf::poseMsgToEigen(tmp, pose);
+    pose.translate(Eigen::Vector3d(0, 0, req.TrajectoryZOffset));
     robot_poses_eigen.push_back(pose);
   }
 
@@ -48,7 +50,7 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   fanuc_pp.setProgramComment(req.Comment);
 
   unsigned int speed;
-  const double grinding_disk_DO(513);
+  const double grinding_disk_DO(3);
 
   // First pose is a machining pose, we have to switch on the DO
   fanuc_pp.appendDigitalOutput(grinding_disk_DO, true);
