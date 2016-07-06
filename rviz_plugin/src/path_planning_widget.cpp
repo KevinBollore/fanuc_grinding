@@ -200,7 +200,6 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
   srv_path_planning_.request.AngleValue = angle_value_->value() / 360.0 * M_PI; // degrees to radians
 }
 
-
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const int state)
 {
   depth_of_pass_->setEnabled(!state);
@@ -375,6 +374,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::pathPlanningService()
   {
     Q_EMIT sendMsgBox("Error in path planning service",
                       QString::fromStdString(srv_path_planning_.response.ReturnMessage), "");
+    Q_EMIT enableComputeTrajectoryButton(true);
   }
 
   // Re-enable UI
