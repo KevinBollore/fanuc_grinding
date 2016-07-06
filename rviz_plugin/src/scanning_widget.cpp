@@ -186,10 +186,11 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::setPublishParams(const fanuc_gr
   srv_publish_meshfile_.request.RotY = params.RotY;
   srv_publish_meshfile_.request.RotZ = params.RotZ;
   srv_publish_meshfile_.request.RotW = params.RotW;
-  srv_publish_meshfile_.request.color_r = params.color_r;
-  srv_publish_meshfile_.request.color_g = params.color_g;
-  srv_publish_meshfile_.request.color_b = params.color_b;
-  srv_publish_meshfile_.request.color_a = params.color_a;
+  srv_publish_meshfile_.request.ColorR = params.ColorR;
+  srv_publish_meshfile_.request.ColorG = params.ColorG;
+  srv_publish_meshfile_.request.ColorB = params.ColorB;
+  srv_publish_meshfile_.request.ColorA = params.ColorA;
+  srv_publish_meshfile_.request.WaitForSubscriber = params.WaitForSubscriber;
   updateGUI();
 }
 
@@ -296,10 +297,11 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::importCADFileButtonHandler()
   srv_publish_meshfile_.request.RotY = 0.0;
   srv_publish_meshfile_.request.RotZ = 0.0;
   srv_publish_meshfile_.request.RotW = 1.0;
-  srv_publish_meshfile_.request.color_r = 130 / 255.0;
-  srv_publish_meshfile_.request.color_g = 75 / 255.0;
-  srv_publish_meshfile_.request.color_b = 75 / 255.0;
-  srv_publish_meshfile_.request.color_a = 1.0;
+  srv_publish_meshfile_.request.ColorR = 130 / 255.0;
+  srv_publish_meshfile_.request.ColorG = 75 / 255.0;
+  srv_publish_meshfile_.request.ColorB = 75 / 255.0;
+  srv_publish_meshfile_.request.ColorA = 1.0;
+  srv_publish_meshfile_.request.WaitForSubscriber = false;
 
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::publishCADMeshOrCloudFile);
@@ -335,10 +337,11 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::importScanFileButtonHandler()
     srv_publish_meshfile_.request.RotY = 0.0;
     srv_publish_meshfile_.request.RotZ = 0.0;
     srv_publish_meshfile_.request.RotW = 1.0;
-    srv_publish_meshfile_.request.color_r = 75 / 255.0;
-    srv_publish_meshfile_.request.color_g = 75 / 255.0;
-    srv_publish_meshfile_.request.color_b = 130 / 255.0;
-    srv_publish_meshfile_.request.color_a = 1.0;
+    srv_publish_meshfile_.request.ColorR = 75 / 255.0;
+    srv_publish_meshfile_.request.ColorG = 75 / 255.0;
+    srv_publish_meshfile_.request.ColorB = 130 / 255.0;
+    srv_publish_meshfile_.request.ColorA = 1.0;
+    srv_publish_meshfile_.request.WaitForSubscriber = true;
 
     // Start client service call in an other thread
     QFuture<void> future = QtConcurrent::run(this, &ScanningWidget::publishScanMeshOrCloudFile);

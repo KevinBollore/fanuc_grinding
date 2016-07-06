@@ -35,7 +35,7 @@ typedef pcl::PointCloud<PointXYZ> PointCloudXYZ;
 bool publishMeshFile(fanuc_grinding_publish_meshfile::PublishMeshfileService::Request &req,
                      fanuc_grinding_publish_meshfile::PublishMeshfileService::Response &res)
 {
-  if (req.color_a <= 0.1)
+  if (req.ColorA <= 0.1)
     ROS_WARN_STREAM("publishMeshFile: Alpha is set to 0, mesh will be invisible!");
 
   pcl::PolygonMesh mesh;
@@ -80,10 +80,10 @@ bool publishMeshFile(fanuc_grinding_publish_meshfile::PublishMeshfileService::Re
     marker.scale.x = 1;
     marker.scale.y = 1;
     marker.scale.z = 1;
-    marker.color.a = req.color_a; // Don't forget to set the alpha!
-    marker.color.r = req.color_r;
-    marker.color.g = req.color_g;
-    marker.color.b = req.color_b;
+    marker.color.a = req.ColorA; // Don't forget to set the alpha!
+    marker.color.r = req.ColorR;
+    marker.color.g = req.ColorG;
+    marker.color.b = req.ColorB;
     marker.lifetime = ros::Duration();
     // Only if using a MESH_RESOURCE marker type:
     marker.mesh_resource = "file://" + req.MeshName;
@@ -93,6 +93,8 @@ bool publishMeshFile(fanuc_grinding_publish_meshfile::PublishMeshfileService::Re
   while (pub->getNumSubscribers() < 1)
   {
     ROS_WARN_STREAM("publishMeshFile: No subscriber to the marker: " + req.MarkerName);
+    if (!req.WaitForSubscriber)
+      break;
     sleep(1);
   }
 
