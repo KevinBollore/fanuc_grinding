@@ -7,10 +7,11 @@ float64 RotX
 float64 RotY
 float64 RotZ
 float64 RotW
-float64 color_r
-float64 color_g
-float64 color_b
-float64 color_a
+float64 ColorR
+float64 ColorG
+float64 ColorB
+float64 ColorA
+bool WaitForSubscriber
 ---
 bool ReturnStatus
 string ReturnMessage
