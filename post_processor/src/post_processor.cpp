@@ -63,8 +63,9 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   // First pose is a machining pose, we have to switch on the DO
   fanuc_pp.appendDigitalOutput(grinding_disk_DO, true);
   fanuc_pp.appendWait(1);
-  speed = req.MachiningSpeed * 100;
-  fanuc_pp.appendPoseCNT(FanucPostProcessor::LINEAR, robot_poses_eigen[0], 1, speed, FanucPostProcessor::CM_MIN, 100);
+  //speed = req.MachiningSpeed * 100;
+  speed = 30;
+  fanuc_pp.appendPoseCNT(FanucPostProcessor::JOINT, robot_poses_eigen[0], 1, speed, FanucPostProcessor::PERCENTAGE, 100);
 
   for (unsigned i = 1; i < robot_poses_eigen.size(); ++i)
   {
@@ -73,16 +74,16 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
     {
       fanuc_pp.appendDigitalOutput(grinding_disk_DO, false);
       fanuc_pp.appendWait(1);
-      speed = req.ExtricationSpeed * 100;
+      speed = 50;//req.ExtricationSpeed * 100;
     }
     // if the new point is an machining point and the old one was a extrication point, we have to switch on the DO
     else if (req.IsGrindingPose[i] == 1 && req.IsGrindingPose[i - 1] == 0)
     {
       fanuc_pp.appendDigitalOutput(grinding_disk_DO, true);
       fanuc_pp.appendWait(1);
-      speed = req.MachiningSpeed * 100;
+      speed = 30;//req.MachiningSpeed * 100;
     }
-    fanuc_pp.appendPoseCNT(FanucPostProcessor::LINEAR, robot_poses_eigen[i], i + 1, speed, FanucPostProcessor::CM_MIN, 100);
+    fanuc_pp.appendPoseCNT(FanucPostProcessor::JOINT, robot_poses_eigen[i], i + 1, speed, FanucPostProcessor::PERCENTAGE, 100);
   }
 
   std::string program;
