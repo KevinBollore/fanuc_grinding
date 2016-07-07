@@ -27,7 +27,8 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
                    fanuc_grinding_post_processor::PostProcessorService::Response &res)
 {
   // Get parameters from the message and print them
-  //ROS_WARN_STREAM(std::endl << req);
+  ROS_INFO_STREAM(std::endl << req);
+
   std::vector<Eigen::Isometry3d, Eigen::aligned_allocator<Eigen::Isometry3d> > robot_poses_eigen;
 
   for (geometry_msgs::Pose tmp : req.RobotPoses)
@@ -42,6 +43,13 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   {
     res.ReturnStatus = false;
     res.ReturnMessage = "Trajectory is empty";
+    return true;
+  }
+
+  if (robot_poses_eigen.size() != req.IsGrindingPose.size())
+  {
+    res.ReturnStatus = false;
+    res.ReturnMessage = "Trajectory is not correct";
     return true;
   }
 
@@ -61,14 +69,14 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   for (unsigned i = 1; i < robot_poses_eigen.size(); ++i)
   {
     // if the new point is an extrication point and the old one was a machining point, we have to switch off the DO
-    if (req.PointColorViz[i] == 0 && req.PointColorViz[i - 1] == 1)
+    if (req.IsGrindingPose[i] == 0 && req.IsGrindingPose[i - 1] == 1)
     {
       fanuc_pp.appendDigitalOutput(grinding_disk_DO, false);
       fanuc_pp.appendWait(1);
       speed = req.ExtricationSpeed * 100;
     }
     // if the new point is an machining point and the old one was a extrication point, we have to switch on the DO
-    else if (req.PointColorViz[i] == 1 && req.PointColorViz[i - 1] == 0)
+    else if (req.IsGrindingPose[i] == 1 && req.IsGrindingPose[i - 1] == 0)
     {
       fanuc_pp.appendDigitalOutput(grinding_disk_DO, true);
       fanuc_pp.appendWait(1);

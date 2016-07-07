@@ -28,8 +28,7 @@ public:
   void save(rviz::Config config);
   void setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request &params);
   std::vector<geometry_msgs::Pose> getRobotPoses();
-  std::vector<bool> getPointColorViz();
-  std::vector<int> getIndexVector();
+  std::vector<bool> getIsGrindingPose();
 
 Q_SIGNALS:
   void guiChanged();

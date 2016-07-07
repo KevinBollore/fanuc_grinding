@@ -195,8 +195,7 @@ void FanucGrindingRvizPlugin::setScanDatas(const QString scan_filename)
 void FanucGrindingRvizPlugin::setRobotTrajectoryData()
 {
   post_processor_widget_->setRobotPoses(path_planning_widget_->getRobotPoses());
-  post_processor_widget_->setPointColorViz(path_planning_widget_->getPointColorViz());
-  post_processor_widget_->setIndexVector(path_planning_widget_->getIndexVector());
+  post_processor_widget_->setIsGrindingPose(path_planning_widget_->getIsGrindingPose());
 }
 
 void FanucGrindingRvizPlugin::sendCADAndScanDatasSlot()
