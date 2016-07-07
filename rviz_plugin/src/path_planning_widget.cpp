@@ -119,6 +119,8 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
 
   // Enable or disable compute_trajectory_button_
   connect(this, SIGNAL(enableComputeTrajectoryButton(bool)), this, SLOT(enableComputeTrajectoryButtonHandler(bool)));
+  // Enable or disable execute_trajectory_button_
+  connect(this, SIGNAL(enableExecuteTrajectoryButton(bool)), this, SLOT(enableExecuteTrajectoryButtonHandler(bool)));
 
   // connect each buttons to different functions
   connect(compute_trajectory_, SIGNAL(released()), this, SLOT(computeTrajectoryButtonHandler()));
@@ -141,6 +143,11 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::newStatusMessage(const std_
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableComputeTrajectoryButtonHandler(bool state)
 {
   compute_trajectory_->setEnabled(state);
+}
+
+void fanuc_grinding_rviz_plugin::PathPlanningWidget::enableExecuteTrajectoryButtonHandler(bool state)
+{
+  execute_trajectory_->setEnabled(state);
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(fanuc_grinding_path_planning::PathPlanningService::Request &params)
@@ -248,16 +255,12 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::executeTrajectoryButtonHand
       return;
   }
 
-  // get CAD and Scan params which are stored in grinding rviz plugin
+  // get CAD and Scan params which are stored in grinding RViz plugin
   Q_EMIT getCADAndScanParams();
 
   // Fill in the request
   srv_path_planning_.request.Compute = false;
   srv_path_planning_.request.Simulate = true;
-  for (unsigned int i = 0; i < srv_path_planning_.response.RobotPosesOutput.size(); ++i)
-  {
-    srv_path_planning_.request.RobotPosesInput.push_back(srv_path_planning_.response.RobotPosesOutput[i]);
-  }
   // Start client service call in an other thread
   QFuture<void> future = QtConcurrent::run(this, &PathPlanningWidget::pathPlanningService);
 }
@@ -279,6 +282,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::pathPlanningService()
     if (srv_path_planning_.request.Compute)
     {
       Q_EMIT enablePanelPostProcessor();
+      Q_EMIT enableExecuteTrajectoryButton(true);
     }
   }
   else
@@ -286,6 +290,10 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::pathPlanningService()
     Q_EMIT sendMsgBox("Error in path planning service",
                       QString::fromStdString(srv_path_planning_.response.ReturnMessage), "");
     Q_EMIT enableComputeTrajectoryButton(true);
+    if (srv_path_planning_.request.Compute)
+      Q_EMIT enableExecuteTrajectoryButton(false);
+    else if (srv_path_planning_.request.Simulate)
+      Q_EMIT enableExecuteTrajectoryButton(true);
   }
 
   // Re-enable UI

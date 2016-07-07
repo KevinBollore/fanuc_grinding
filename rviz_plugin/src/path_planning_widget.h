@@ -37,6 +37,7 @@ Q_SIGNALS:
   void sendMsgBox(QString title, QString msg, QString info_msg);
   void enablePanel(bool);
   void enableComputeTrajectoryButton(bool);
+  void enableExecuteTrajectoryButton(bool);
   void enablePanelPostProcessor();
   void getCADAndScanParams();
 
@@ -50,6 +51,7 @@ protected Q_SLOTS:
   void executeTrajectoryButtonHandler();
   void pathPlanningService();
   void enableComputeTrajectoryButtonHandler(bool);
+  void enableExecuteTrajectoryButtonHandler(bool);
   void enableVizSimButtonHandler();
   void generateTrajectoryButtonHandler();
   void setDepthOfPassEnable(const int state);

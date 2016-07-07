@@ -23,6 +23,7 @@
 
 boost::shared_ptr<move_group_interface::MoveGroup> group;
 boost::shared_ptr<ros::NodeHandle> node;
+EigenSTL::vector_Affine3d way_points_vector;
 
 /** Status publisher */
 boost::shared_ptr<ros::Publisher> status_pub;
@@ -41,7 +42,7 @@ const std::string tcp_name("/grinding_disk_tcp");
 bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &req,
                   fanuc_grinding_path_planning::PathPlanningService::Response &res)
 {
-  ROS_WARN_STREAM(std::endl << req);
+  ROS_INFO_STREAM(std::endl << req);
 
   if (!req.SurfacingMode)
   {
@@ -52,44 +53,46 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
 
   std_msgs::String status;
 
-  std::string package = "fanuc_grinding_path_planning";
-  //Get package path
-  std::string mesh_ressource = "package://" + package + "/meshes/";
-  std::string mesh_ressource_file = "file://";
-
-  // Get PLY file name from command line
-  std::string input_mesh_filename = req.CADFileName;
-
-  // Determine lean angle axis
-  std::string lean_angle_axis;
-  BezierGrindingSurfacing::AXIS_OF_ROTATION lean_axis;
-  if (req.AngleX == true)
-    lean_axis = BezierGrindingSurfacing::X;
-  else if (req.AngleY == true)
-    lean_axis = BezierGrindingSurfacing::Y;
-  else if (req.AngleZ == true)
-    lean_axis = BezierGrindingSurfacing::Z;
-  else
+  if (req.Compute)
   {
-    res.ReturnStatus = false;
-    res.ReturnMessage = "Please select a lean angle axis for the effector";
-    return true;
-  }
+    std::string package = "fanuc_grinding_path_planning";
+    //Get package path
+    std::string mesh_ressource = "package://" + package + "/meshes/";
+    std::string mesh_ressource_file = "file://";
 
-  BezierGrindingSurfacing bezier(input_mesh_filename, req.GrinderWidth, req.CoveringPercentage, req.ExtricationRadius,
-                                 req.LeanAngle, lean_axis);
+    // Get PLY file name from command line
+    std::string input_mesh_filename = req.CADFileName;
 
-  status.data = "Generate Bezier trajectory";
-  status_pub->publish(status);
-  EigenSTL::vector_Affine3d way_points_vector;
-  std::string error_string;
-  error_string = bezier.generateTrajectory(way_points_vector);
+    // Determine lean angle axis
+    std::string lean_angle_axis;
+    BezierGrindingSurfacing::AXIS_OF_ROTATION lean_axis;
+    if (req.AngleX == true)
+      lean_axis = BezierGrindingSurfacing::X;
+    else if (req.AngleY == true)
+      lean_axis = BezierGrindingSurfacing::Y;
+    else if (req.AngleZ == true)
+      lean_axis = BezierGrindingSurfacing::Z;
+    else
+    {
+      res.ReturnStatus = false;
+      res.ReturnMessage = "Please select a lean angle axis for the effector";
+      return true;
+    }
 
-  if (!error_string.empty())
-  {
-    res.ReturnStatus = false;
-    res.ReturnMessage = error_string;
-    return true;
+    BezierGrindingSurfacing bezier(input_mesh_filename, req.GrinderWidth, req.CoveringPercentage, req.ExtricationRadius,
+                                   req.LeanAngle, lean_axis);
+
+    status.data = "Generate Bezier trajectory";
+    status_pub->publish(status);
+    std::string error_string;
+    error_string = bezier.generateTrajectory(way_points_vector);
+
+    if (!error_string.empty())
+    {
+      res.ReturnStatus = false;
+      res.ReturnMessage = error_string;
+      return true;
+    }
   }
 
   // Copy the vector of Eigen poses into a vector of ROS poses
@@ -101,10 +104,12 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
     way_points_msg.push_back(tmp);
   }
 
+  res.RobotPosesOutput = way_points_msg;
+
   if (!req.Simulate)
   {
     res.ReturnStatus = true;
-    res.ReturnMessage = "Trajectory generated";
+    res.ReturnMessage = boost::lexical_cast<std::string>(way_points_msg.size()) + " poses generated";
     return true;
   }
 
@@ -117,9 +122,12 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
   ros::ServiceClient executeKnownTrajectoryServiceClient = node->serviceClient < moveit_msgs::ExecuteKnownTrajectory
       > ("/execute_kinematic_path");
   double percentage = group->computeCartesianPath(way_points_msg, 0.05, 0.0, srv.request.trajectory);
+
+  status.data = boost::lexical_cast<std::string>(percentage*100) + "% of the trajectory will be executed";
+  status_pub->publish(status);
   executeKnownTrajectoryServiceClient.call(srv);
 
-  if (percentage < 0.98)
+  if (percentage < 0.9)
   {
     res.ReturnStatus = false;
     res.ReturnMessage = "Could not compute the whole trajectory!";
@@ -127,7 +135,6 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
   else
     res.ReturnStatus = true;
 
-  res.RobotPosesOutput = way_points_msg;
   return true;
 }
 
