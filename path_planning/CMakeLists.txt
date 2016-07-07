@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
              geometry_msgs
              moveit_ros_planning_interface
              roscpp
+             rviz_visual_tools
              std_msgs
              tf_conversions
              visualization_msgs)
@@ -19,6 +20,7 @@ generate_messages(DEPENDENCIES geometry_msgs std_msgs)
 
 catkin_package(CATKIN_DEPENDS
                bezier_library
+               geometry_msgs
                message_runtime
                std_msgs)
 
