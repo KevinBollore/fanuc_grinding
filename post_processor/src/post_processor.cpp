@@ -27,7 +27,7 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
                    fanuc_grinding_post_processor::PostProcessorService::Response &res)
 {
   // Get parameters from the message and print them
-  ROS_INFO_STREAM(std::endl << req);
+  //ROS_INFO_STREAM(std::endl << req);
 
   std::vector<Eigen::Isometry3d, Eigen::aligned_allocator<Eigen::Isometry3d> > robot_poses_eigen;
 
