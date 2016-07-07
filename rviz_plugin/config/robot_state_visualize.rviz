@@ -5,13 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /TF1/Frames1
-        - /Marker1
-        - /Marker2
-        - /Marker3
-        - /Marker4
-        - /Marker5
-        - /Marker6
-        - /MarkerArray1
       Splitter Ratio: 0.5
     Tree Height: 410
   - Class: rviz/Selection
@@ -35,12 +28,12 @@ Panels:
   - Class: fanuc_grinding_rviz_plugin/fanuc_grinding
     Name: fanuc_grinding
     PathPlanningWidget_angle_value: -20
-    PathPlanningWidget_covering_percentage: 0
+    PathPlanningWidget_covering_percentage: 10
     PathPlanningWidget_depth_of_path: 30
-    PathPlanningWidget_extrication_radius: 20
+    PathPlanningWidget_extrication_radius: 35
     PathPlanningWidget_grinder_width: 20
-    PathPlanningWidget_radio_x: false
-    PathPlanningWidget_radio_y: true
+    PathPlanningWidget_radio_x: true
+    PathPlanningWidget_radio_y: false
     PathPlanningWidget_radio_z: false
     PathPlanningWidget_surfacing_mode: true
     PostProcessorWidget_comment: ""
@@ -48,17 +41,13 @@ Panels:
     PostProcessorWidget_ip_adress: 192.168.100.200
     PostProcessorWidget_machining_speed: 200
     PostProcessorWidget_program_name: ros_meulage_DaC
-    PostProcessorWidget_trajectory_z_offset: 0
-    PostProcessorWidget_upload_program: false
-    ScanningWidget_cad_file: /home/dell/MEGAsync/catkin_workspace/src/fanuc_grinding/scanning/meshes/DAC_580813_cad.stl
+    PostProcessorWidget_trajectory_z_offset: -400
+    PostProcessorWidget_upload_program: true
     ScanningWidget_cad_marker_name: cad
-    ScanningWidget_calibration_yaml_file: /home/dell/MEGAsync/catkin_workspace/src/fanuc_grinding/scanning/yaml/camera_calibration.yaml
     ScanningWidget_down_sampling_leaf_size: 0.03
-    ScanningWidget_scan_filename: /home/dell/MEGAsync/catkin_workspace/src/fanuc_grinding/scanning/meshes/DAC_580813_scan.ply
     ScanningWidget_scan_marker_name: scan
     ScanningWidget_sls_2_ip_address: 192.168.100.50
     ScanningWidget_sls_2_server_name: m4500
-    ScanningWidget_traj_yaml_file: /home/dell/MEGAsync/catkin_workspace/src/fanuc_grinding/scanning/yaml/trajectory_DaC.yaml
 Visualization Manager:
   Class: ""
   Displays:
@@ -351,40 +340,8 @@ Visualization Manager:
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /cad
-      Name: Marker
-      Namespaces:
-        {}
-      Queue Size: 2
-      Value: false
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /input_mesh
-      Name: Marker
-      Namespaces:
-        {}
-      Queue Size: 2
-      Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /defect_mesh
-      Name: Marker
-      Namespaces:
-        {}
-      Queue Size: 2
-      Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /dilated_mesh
-      Name: Marker
-      Namespaces:
-        {}
-      Queue Size: 2
-      Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /trajectory
       Name: Marker
       Namespaces:
         {}
@@ -395,7 +352,7 @@ Visualization Manager:
       Marker Topic: /scan
       Name: Marker
       Namespaces:
-        "": true
+        {}
       Queue Size: 2
       Value: true
     - Class: rviz/MarkerArray
@@ -403,8 +360,7 @@ Visualization Manager:
       Marker Topic: /rviz_visual_tools
       Name: MarkerArray
       Namespaces:
-        Arrow: true
-        Text: true
+        {}
       Queue Size: 2
       Value: true
   Enabled: true
@@ -427,23 +383,23 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.3093
+      Distance: 5.32071
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.62708
-        Y: 0.0499512
-        Z: 0.103013
+        X: 1.58519
+        Y: 0.0781493
+        Z: -0.061
       Focal Shape Size: 0.1
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.884798
+      Pitch: 0.414801
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.92177
+      Yaw: 6.14495
       Zoom Invariant Focal Shape: false
     Saved: ~
 Window Geometry:
