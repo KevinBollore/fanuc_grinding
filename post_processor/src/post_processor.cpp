@@ -31,11 +31,11 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
 
   std::vector<Eigen::Isometry3d, Eigen::aligned_allocator<Eigen::Isometry3d> > robot_poses_eigen;
 
-  for (geometry_msgs::Pose tmp : req.RobotPoses)
+  for (geometry_msgs::Pose &tmp : req.RobotPoses)
   {
     Eigen::Isometry3d pose;
     tf::poseMsgToEigen(tmp, pose);
-    pose.translate(Eigen::Vector3d(0, 0, req.TrajectoryZOffset));
+    pose.translation() += Eigen::Vector3d(0, 0, req.TrajectoryZOffset);
     robot_poses_eigen.push_back(pose);
   }
 
@@ -88,7 +88,7 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
 
   std::string program;
   fanuc_pp.generateProgram(program);
-  ROS_INFO_STREAM("This is the generated program:\n\n" << program);
+  //ROS_INFO_STREAM("This is the generated program:\n\n" << program);
 
   // TODO: Check if writing in a .ls file works
   std::ofstream tp_program_file;

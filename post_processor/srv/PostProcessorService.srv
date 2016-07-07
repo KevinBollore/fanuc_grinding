@@ -3,7 +3,7 @@ string ProgramName
 string Comment
 int32 MachiningSpeed
 int32 ExtricationSpeed
-int32 TrajectoryZOffset
+float64 TrajectoryZOffset
 bool Upload
 string IpAdress
 geometry_msgs/Pose[] RobotPoses
