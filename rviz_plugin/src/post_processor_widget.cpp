@@ -128,8 +128,7 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::setPostProcessorParams(con
   srv_post_processor_.request.IpAdress = params.IpAdress;
   // Probably not filled
   srv_post_processor_.request.RobotPoses = params.RobotPoses;
-  srv_post_processor_.request.PointColorViz = params.PointColorViz;
-  srv_post_processor_.request.IndexVector = params.IndexVector;
+  srv_post_processor_.request.IsGrindingPose = params.IsGrindingPose;
   updateGUI();
 }
 
@@ -139,7 +138,7 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateGUI()
   comment_->setText(QString::fromStdString(srv_post_processor_.request.Comment));
   machining_speed_->setValue(srv_post_processor_.request.MachiningSpeed);
   extrication_speed_->setValue(srv_post_processor_.request.ExtricationSpeed);
-  trajectory_z_offset_->setValue(srv_post_processor_.request.TrajectoryZOffset);
+  trajectory_z_offset_->setValue(srv_post_processor_.request.TrajectoryZOffset * 1000.0);
   upload_program_->setChecked(srv_post_processor_.request.Upload);
   ip_address_->setText(QString::fromStdString(srv_post_processor_.request.IpAdress));
   program_location_->setText(QString::fromStdString(srv_post_processor_.request.ProgramLocation));
@@ -151,7 +150,7 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::updateInternalValues()
   srv_post_processor_.request.Comment = comment_->text().toStdString();
   srv_post_processor_.request.MachiningSpeed = machining_speed_->value();
   srv_post_processor_.request.ExtricationSpeed = extrication_speed_->value();
-  srv_post_processor_.request.TrajectoryZOffset = trajectory_z_offset_->value();
+  srv_post_processor_.request.TrajectoryZOffset = trajectory_z_offset_->value() / 1000.0;
   srv_post_processor_.request.Upload = upload_program_->isChecked();
   srv_post_processor_.request.IpAdress = ip_address_->text().toStdString();
   // program_location_ is read only
@@ -193,25 +192,12 @@ void fanuc_grinding_rviz_plugin::PostProcessorWidget::setRobotPoses(const std::v
   }
 }
 
-void fanuc_grinding_rviz_plugin::PostProcessorWidget::setPointColorViz(const std::vector<bool> &point_color_viz)
+void fanuc_grinding_rviz_plugin::PostProcessorWidget::setIsGrindingPose(const std::vector<bool> &is_grinding_pose)
 {
-  srv_post_processor_.request.PointColorViz.clear();
-  for(std::vector<bool>::const_iterator iter (point_color_viz.begin());
-        iter != point_color_viz.end();
-        ++iter)
+  srv_post_processor_.request.IsGrindingPose.clear();
+  for (std::vector<bool>::const_iterator iter(is_grinding_pose.begin()); iter != is_grinding_pose.end(); ++iter)
   {
-    srv_post_processor_.request.PointColorViz.push_back(*iter);
-  }
-}
-
-void fanuc_grinding_rviz_plugin::PostProcessorWidget::setIndexVector(const std::vector<int> &index_vector)
-{
-  srv_post_processor_.request.IndexVector.clear();
-  for(std::vector<int>::const_iterator iter (index_vector.begin());
-        iter != index_vector.end();
-        ++iter)
-  {
-    srv_post_processor_.request.IndexVector.push_back(*iter);
+    srv_post_processor_.request.IsGrindingPose.push_back(*iter);
   }
 }
 

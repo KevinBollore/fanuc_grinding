@@ -27,8 +27,7 @@ public:
   void setPostProcessorParams(const fanuc_grinding_post_processor::PostProcessorService::Request &params);
   void setProgramLocation(const std::string &location);
   void setRobotPoses(const std::vector<geometry_msgs::Pose> &robot_poses);
-  void setPointColorViz(const std::vector<bool> &point_color_viz);
-  void setIndexVector(const std::vector<int> &index_vector);
+  void setIsGrindingPose(const std::vector<bool> &is_grinding_pose);
 
 Q_SIGNALS:
   void guiChanged();

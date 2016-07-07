@@ -211,16 +211,13 @@ std::vector<geometry_msgs::Pose> fanuc_grinding_rviz_plugin::PathPlanningWidget:
   return srv_path_planning_.response.RobotPosesOutput;
 }
 
-std::vector<bool> fanuc_grinding_rviz_plugin::PathPlanningWidget::getPointColorViz()
+std::vector<bool> fanuc_grinding_rviz_plugin::PathPlanningWidget::getIsGrindingPose()
 {
-  std::vector<bool> temp;
-  return temp;
-}
+  std::vector<bool> tmp;
+  for (unsigned i = 0; i < srv_path_planning_.response.IsGrindingPose.size(); ++i)
+    tmp.push_back(srv_path_planning_.response.IsGrindingPose[i]);
 
-std::vector<int> fanuc_grinding_rviz_plugin::PathPlanningWidget::getIndexVector()
-{
-  std::vector<int> temp;
-  return temp;
+  return tmp;
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::computeTrajectoryButtonHandler()

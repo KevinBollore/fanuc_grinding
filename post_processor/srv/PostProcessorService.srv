@@ -7,8 +7,7 @@ int32 TrajectoryZOffset
 bool Upload
 string IpAdress
 geometry_msgs/Pose[] RobotPoses
-bool[] PointColorViz
-int32[] IndexVector
+bool[] IsGrindingPose
 ---
 bool ReturnStatus
 string ReturnMessage

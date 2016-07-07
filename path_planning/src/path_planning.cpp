@@ -52,6 +52,7 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
   }
 
   std_msgs::String status;
+  std::vector<bool> is_grinding_pose;
 
   if (req.Compute)
   {
@@ -85,7 +86,7 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
     status.data = "Generate Bezier trajectory";
     status_pub->publish(status);
     std::string error_string;
-    error_string = bezier.generateTrajectory(way_points_vector);
+    error_string = bezier.generateTrajectory(way_points_vector, is_grinding_pose);
 
     if (!error_string.empty())
     {
@@ -105,6 +106,8 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
   }
 
   res.RobotPosesOutput = way_points_msg;
+  for (std::vector<bool>::const_iterator iter(is_grinding_pose.begin()); iter != is_grinding_pose.end(); ++iter)
+    res.IsGrindingPose.push_back(*iter);
 
   if (!req.Simulate)
   {
