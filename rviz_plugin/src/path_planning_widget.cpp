@@ -289,11 +289,16 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::pathPlanningService()
   {
     Q_EMIT sendMsgBox("Error in path planning service",
                       QString::fromStdString(srv_path_planning_.response.ReturnMessage), "");
-    Q_EMIT enableComputeTrajectoryButton(true);
     if (srv_path_planning_.request.Compute)
+    {
       Q_EMIT enableExecuteTrajectoryButton(false);
+      Q_EMIT enableComputeTrajectoryButton(true);
+    }
+
     else if (srv_path_planning_.request.Simulate)
+    {
       Q_EMIT enableExecuteTrajectoryButton(true);
+    }
   }
 
   // Re-enable UI

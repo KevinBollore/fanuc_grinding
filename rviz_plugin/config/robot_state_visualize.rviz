@@ -13,7 +13,7 @@ Panels:
         - /Marker6
         - /MarkerArray1
       Splitter Ratio: 0.5
-    Tree Height: 877
+    Tree Height: 410
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -34,11 +34,11 @@ Panels:
     SyncSource: ""
   - Class: fanuc_grinding_rviz_plugin/fanuc_grinding
     Name: fanuc_grinding
-    PathPlanningWidget_angle_value: 0
+    PathPlanningWidget_angle_value: -20
     PathPlanningWidget_covering_percentage: 0
     PathPlanningWidget_depth_of_path: 30
     PathPlanningWidget_extrication_radius: 20
-    PathPlanningWidget_grinder_width: 60
+    PathPlanningWidget_grinder_width: 20
     PathPlanningWidget_radio_x: false
     PathPlanningWidget_radio_y: true
     PathPlanningWidget_radio_z: false
@@ -48,6 +48,7 @@ Panels:
     PostProcessorWidget_ip_adress: 192.168.100.200
     PostProcessorWidget_machining_speed: 200
     PostProcessorWidget_program_name: ros_meulage_DaC
+    PostProcessorWidget_trajectory_z_offset: 0
     PostProcessorWidget_upload_program: false
     ScanningWidget_cad_file: /home/dell/MEGAsync/catkin_workspace/src/fanuc_grinding/scanning/meshes/DAC_580813_cad.stl
     ScanningWidget_cad_marker_name: cad
@@ -403,7 +404,6 @@ Visualization Manager:
       Name: MarkerArray
       Namespaces:
         Arrow: true
-        Cylinder: true
         Text: true
       Queue Size: 2
       Value: true
@@ -427,7 +427,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.16902
+      Distance: 1.3093
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -437,12 +437,14 @@ Visualization Manager:
         X: 1.62708
         Y: 0.0499512
         Z: 0.103013
+      Focal Shape Size: 0.1
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.949798
+      Pitch: 0.884798
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
       Yaw: 5.92177
+      Zoom Invariant Focal Shape: false
     Saved: ~
 Window Geometry:
   Displays:
