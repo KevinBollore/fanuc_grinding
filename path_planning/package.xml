@@ -14,17 +14,20 @@
   <build_depend>message_generation</build_depend>
   <build_depend>moveit_ros_planning_interface</build_depend>
   <build_depend>roscpp</build_depend>
+  <build_depend>rviz_visual_tools</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>tf_conversions</build_depend>
   <build_depend>visualization_msgs</build_depend>
 
   <build_export_depend>bezier_library</build_export_depend>
+  <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
 
   <exec_depend>bezier_library</exec_depend>
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>moveit_ros_planning_interface</exec_depend>
   <exec_depend>roscpp</exec_depend>
+  <exec_depend>rviz_visual_tools</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>visualization_msgs</exec_depend>
 </package>
